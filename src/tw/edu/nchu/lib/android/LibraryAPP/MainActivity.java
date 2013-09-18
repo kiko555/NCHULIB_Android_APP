@@ -13,6 +13,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -55,7 +57,7 @@ public class MainActivity extends Activity {
 	        try {
 	        	//透過keystore來解SSL
 	        	KeyStore trustStore  = KeyStore.getInstance(KeyStore.getDefaultType());          
-				InputStream instream = getResources().openRawResource(R.raw.aleph_console);
+				InputStream instream = getResources().openRawResource(R.raw.api);
 				try {  
 				    trustStore.load(instream, null);  
 				} finally {  
@@ -63,8 +65,6 @@ public class MainActivity extends Activity {
 				}  
 				SSLSocketFactory socketFactory = new SSLSocketFactory(trustStore);  
 				Scheme sch = new Scheme("https", socketFactory, 443);
-				
-				
 				
 	        	//初始apache的httpclient class
 	        	HttpClient client = new DefaultHttpClient();
@@ -86,21 +86,30 @@ public class MainActivity extends Activity {
 				//將回傳值丟進buffer
 				BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 				
-				//有值才寫入，沒收到資料就提醒
+				//有值才將buffer內的值彙整起來
 				String line = "";
 				String allline = "";
-				if (rd.readLine() != null) {
-					//將buffer內的值彙整起來，並拋出去
-					while ((line = rd.readLine()) != null) {
+				String strDecodeJSONData = "";
+				while ((line = rd.readLine()) != null) {
 						allline += line;
-					}
-					return allline;
-			    } else {
+				}
+				
+				//確認是否沒有收到資料
+				if (allline.equals("")) {
 			    	allline = "沒有收到資料，請確認網路有通！";
-			    	return allline;
+			    } else {
+			    	//抓取JSON物件中的特定陣列
+			    	JSONArray jsonResultArray = new JSONObject(allline).getJSONArray("Z69_SEARCH_QUERY");
+			    	
+			    	//取出JSON陣列內所有內容
+			    	for(int i = 0;i < jsonResultArray.length(); i++)
+			    	{
+			    		//讀出JSON的內容
+			    		strDecodeJSONData += jsonResultArray.get(i).toString();
+			    	}
 			    }
-				
-				
+			    
+				return strDecodeJSONData;
 	        } catch (Exception e) {
 	            this.exception = e;
 	            return "沒有收到資料，請確認網路有通！";
@@ -119,32 +128,15 @@ public class MainActivity extends Activity {
 	
 	private OnClickListener btListener = new OnClickListener(){
 		public void onClick(View v){
-			
-			
-			
-			/*KeyStore trustStore  = KeyStore.getInstance(KeyStore.getDefaultType());          
-			InputStream instream = getResources().openRawResource(R.raw.mis);
-			try {  
-			    trustStore.load(instream, null);  
-			} finally {  
-			    instream.close();  
-			}  
-			  
-			SSLSocketFactory socketFactory = new SSLSocketFactory(trustStore);  
-			Scheme sch = new Scheme("https", socketFactory, 443);*/
-			
-			//httpclient.getConnectionManager().getSchemeRegistry().register(sch);
-			
-			
+			tvShHttpGet.setText(R.string.DataLoading);
 
 			//呼叫非同步架構抓取http資料
-			RetreiveHTTPTask retreivehttpask = (RetreiveHTTPTask) new RetreiveHTTPTask().execute("https://aleph-console.lib.nchu.edu.tw/api/hotkeyword/");
+			RetreiveHTTPTask retreivehttpask = (RetreiveHTTPTask) new RetreiveHTTPTask().execute("https://api.lib.nchu.edu.tw/php/hotkeyword/index.php");
 			
 			//倘若失敗時的動作
 			if (retreivehttpask == null) {
 				tvShHttpGet.setText("請確認網路有通！");
             }
-			
 
 			//Toast.makeText(MainActivity.this,"123",Toast.LENGTH_SHORT).show();
 		}

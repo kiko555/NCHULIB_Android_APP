@@ -1,6 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">中興大學圖書館APP</string>
-    <string name="hello_world">哈囉!!</string>
-
+    <string name="app_name">中興大學圖書館</string>
+    <string name="action_settings">設定</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="https_content">目前沒收到資料！</string>
+    <string name="btPtSure">開始抓取</string>
+	<string name="DataLoading">接收資料中....</string>
 </resources>
