@@ -23,11 +23,13 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	private Button btSure;
 	private TextView tvShHttpGet;
+	private ProgressBar pbLoadingData;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,7 @@ public class MainActivity extends Activity {
 		
 		btSure = (Button)findViewById(R.id.button1);
 		tvShHttpGet = (TextView)findViewById(R.id.textView3);
+		pbLoadingData = (ProgressBar)findViewById(R.id.progressBar1);
 		
 		//監聽ok鈕的動作
 		btSure.setOnClickListener(btListener);
@@ -52,6 +55,13 @@ public class MainActivity extends Activity {
 	class RetreiveHTTPTask extends AsyncTask<String, Void, String> {
 
 	    private Exception exception;
+	    
+		@Override
+		protected void onPreExecute() {
+		// Initialize progress
+		pbLoadingData.setVisibility(View.VISIBLE);
+		//progressBar1.setProgress(0);
+		} 
 
 	    protected String doInBackground(String... urls) {
 	        try {
@@ -123,6 +133,7 @@ public class MainActivity extends Activity {
 	    	
 	    	//收完資料後直接寫到畫面上
 	    	tvShHttpGet.setText(result);
+	    	pbLoadingData.setVisibility(View.INVISIBLE);
 	    }
 	}
 	
