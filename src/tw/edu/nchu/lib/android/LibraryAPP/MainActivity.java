@@ -14,31 +14,40 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
 import android.widget.Button;
-import android.widget.ProgressBar;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	private Button btSure;
 	private TextView tvShHttpGet;
-	private ProgressBar pbLoadingData;
+	private TableLayout tlJOSN_list;
+	//private ProgressBar pbLoadingData;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_main);
+        setProgressBarIndeterminateVisibility(false);
 		
 		btSure = (Button)findViewById(R.id.button1);
-		tvShHttpGet = (TextView)findViewById(R.id.textView3);
-		pbLoadingData = (ProgressBar)findViewById(R.id.progressBar1);
+		tlJOSN_list = (TableLayout)findViewById(R.id.tableLayout1);
+		//pbLoadingData = (ProgressBar)findViewById(R.id.progressBar1);
 		
 		//監聽ok鈕的動作
 		btSure.setOnClickListener(btListener);
@@ -59,8 +68,7 @@ public class MainActivity extends Activity {
 		@Override
 		protected void onPreExecute() {
 		// Initialize progress
-		pbLoadingData.setVisibility(View.VISIBLE);
-		//progressBar1.setProgress(0);
+		setProgressBarIndeterminateVisibility(true);
 		} 
 
 	    protected String doInBackground(String... urls) {
@@ -87,43 +95,43 @@ public class MainActivity extends Activity {
 				
 				HttpResponse response = client.execute(request); 
 				
+				// TODO: add exception handle 
 				//確認回傳是否異常
 			    StatusLine status = response.getStatusLine();
 			    if (status.getStatusCode() != 200) {
-			    	  throw new IOException("Invalid response from server: " + status.toString());
+			    	//throw new IOException("Invalid response from server: " + status.toString());
+			    	Toast.makeText(MainActivity.this,R.string.Check_Network,Toast.LENGTH_SHORT).show();
+					super.cancel(true);
+		            return null;
+			    } else {
+			    	//將回傳值丟進buffer
+					BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+					
+					//有值才將buffer內的值彙整起來
+					String line = "";
+					String allline = "";
+					while ((line = rd.readLine()) != null) {
+							allline += line;
+					}
+					
+					//確認是否沒有收到資料，如果是空的就丟訊息提醒，並停止後續處理
+					if (allline.equals("")) {
+						Toast.makeText(MainActivity.this,R.string.Check_Network,Toast.LENGTH_SHORT).show();
+						super.cancel(true);
+			            return null;
+				    } else {
+				    	return allline;
+				    }	
 			    }
 			    			   
-				//將回傳值丟進buffer
-				BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 				
-				//有值才將buffer內的值彙整起來
-				String line = "";
-				String allline = "";
-				String strDecodeJSONData = "";
-				while ((line = rd.readLine()) != null) {
-						allline += line;
-				}
-				
-				//確認是否沒有收到資料
-				if (allline.equals("")) {
-			    	allline = "沒有收到資料，請確認網路有通！";
-			    } else {
-			    	//抓取JSON物件中的特定陣列
-			    	JSONArray jsonResultArray = new JSONObject(allline).getJSONArray("Z69_SEARCH_QUERY");
-			    	
-			    	//取出JSON陣列內所有內容
-			    	for(int i = 0;i < jsonResultArray.length(); i++)
-			    	{
-			    		//讀出JSON的內容
-			    		strDecodeJSONData += jsonResultArray.get(i).toString();
-			    	}
-			    }
-			    
-				return strDecodeJSONData;
 	        } catch (Exception e) {
 	            this.exception = e;
-	            return "沒有收到資料，請確認網路有通！";
+	            Toast.makeText(MainActivity.this,R.string.Check_Network,Toast.LENGTH_SHORT).show();
+	            super.cancel(true);
+	            return null;
 	        }
+			
 	    }
     	
 	    @Override
@@ -131,25 +139,71 @@ public class MainActivity extends Activity {
 	        // TODO: check this.exception 
 	        // TODO: do something with the feed
 	    	
-	    	//收完資料後直接寫到畫面上
-	    	tvShHttpGet.setText(result);
-	    	pbLoadingData.setVisibility(View.INVISIBLE);
+	    	tlJOSN_list.setStretchAllColumns(true);
+            TableLayout.LayoutParams row_layout = new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            TableRow.LayoutParams view_layout = new TableRow.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+	    	
+        	try {
+
+        		//確認是否沒有收到資料
+        		if (result.equals("")) {
+        			Toast.makeText(MainActivity.this,R.string.JSON_Data_downlaod_fail,Toast.LENGTH_SHORT).show();
+        		} else {
+        			//抓取JSON物件中的特定陣列
+	        		JSONArray jsonResult1Array;
+	        		JSONArray jsonResult2Array;
+	        		
+	        		jsonResult1Array = new JSONObject(result).getJSONArray("Z69_SEARCH_QUERY");
+	        		jsonResult2Array = new JSONObject(result).getJSONArray("COUNT_SEARCH_QUERY");
+	        		
+	        		//判斷所得JSON格式是否有錯
+	        		if (jsonResult1Array == null || jsonResult2Array == null){
+	        			Toast.makeText(MainActivity.this,R.string.JSON_Data_error,Toast.LENGTH_SHORT).show();
+	        		}
+	        		else{
+	        			//取出JSON陣列內所有內容
+		        		for(int i = 0;i < jsonResult1Array.length(); i++){
+			        		//讀出JSON的內容後直接寫到畫面上
+		        			//並且以table layout的方式呈現
+			        		TableRow tr = new TableRow(MainActivity.this);
+			        		tr.setLayoutParams(row_layout);
+			        		tr.setGravity(Gravity.CENTER_HORIZONTAL);
+			
+			        		TextView tvSEARCH_QUERY = new TextView(MainActivity.this);
+			        		tvSEARCH_QUERY.setText(jsonResult1Array.get(i).toString());
+			        		tvSEARCH_QUERY.setLayoutParams(view_layout);
+			
+			        		TextView tvCOUNT_SEARCH_QUERY = new TextView(MainActivity.this);
+			        		tvCOUNT_SEARCH_QUERY.setText(jsonResult2Array.get(i).toString());
+			        		tvCOUNT_SEARCH_QUERY.setLayoutParams(view_layout);
+			
+			        		tr.addView(tvSEARCH_QUERY);
+			        		tr.addView(tvCOUNT_SEARCH_QUERY);
+			        		tlJOSN_list.addView(tr);
+		        		}	
+	        		}
+        		}
+    		} catch (JSONException e) {
+        		// TODO Auto-generated catch block
+        		e.printStackTrace();
+    		}
+	    	//資料抓取完畢將讀取鈕移除
+	    	setProgressBarIndeterminateVisibility(false);
 	    }
 	}
 	
 	private OnClickListener btListener = new OnClickListener(){
 		public void onClick(View v){
-			tvShHttpGet.setText(R.string.DataLoading);
 
+			//Toast.makeText(MainActivity.this,R.string.DataLoading,Toast.LENGTH_SHORT).show();
+			
 			//呼叫非同步架構抓取http資料
 			RetreiveHTTPTask retreivehttpask = (RetreiveHTTPTask) new RetreiveHTTPTask().execute("https://api.lib.nchu.edu.tw/php/hotkeyword/index.php");
 			
 			//倘若失敗時的動作
 			if (retreivehttpask == null) {
-				tvShHttpGet.setText("請確認網路有通！");
+				Toast.makeText(MainActivity.this,R.string.Check_Network,Toast.LENGTH_SHORT).show();
             }
-
-			//Toast.makeText(MainActivity.this,"123",Toast.LENGTH_SHORT).show();
 		}
 	};
 }

@@ -7,5 +7,8 @@
     <string name="https_content">nothing</string>
     <string name="btPtSure">OK!!</string>
     <string name="DataLoading">downloading....</string>
-
+	<string name="JSON_Data_error">JSON data format error....</string>
+	<string name="JSON_Data_parse">JSON data parsing....</string>
+	<string name="JSON_Data_downlaod_fail">JSON data download fail....</string>
+	<string name="Check_Network">Error!!Check network....</string>
 </resources>
