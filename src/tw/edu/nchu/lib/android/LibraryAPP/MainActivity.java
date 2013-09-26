@@ -1,7 +1,6 @@
 package tw.edu.nchu.lib.android.LibraryAPP;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.KeyStore;
@@ -34,7 +33,6 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	private Button btSure;
-	private TextView tvShHttpGet;
 	private TableLayout tlJOSN_list;
 	//private ProgressBar pbLoadingData;
 	
@@ -63,8 +61,6 @@ public class MainActivity extends Activity {
 	//建非同步模式架構
 	class RetreiveHTTPTask extends AsyncTask<String, Void, String> {
 
-	    private Exception exception;
-	    
 		@Override
 		protected void onPreExecute() {
 		// Initialize progress
@@ -74,7 +70,7 @@ public class MainActivity extends Activity {
 	    protected String doInBackground(String... urls) {
 	        try {
 	        	//透過keystore來解SSL
-	        	KeyStore trustStore  = KeyStore.getInstance(KeyStore.getDefaultType());          
+	        	KeyStore trustStore  = KeyStore.getInstance(KeyStore.getDefaultType());
 				InputStream instream = getResources().openRawResource(R.raw.api);
 				try {  
 				    trustStore.load(instream, null);  
@@ -126,7 +122,7 @@ public class MainActivity extends Activity {
 			    			   
 				
 	        } catch (Exception e) {
-	            this.exception = e;
+	        	e.printStackTrace();
 	            Toast.makeText(MainActivity.this,R.string.Check_Network,Toast.LENGTH_SHORT).show();
 	            super.cancel(true);
 	            return null;
