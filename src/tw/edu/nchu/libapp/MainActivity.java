@@ -196,7 +196,7 @@ public class MainActivity extends ActionBarActivity {
 					jsonResult1Array = new JSONObject(result)
 							.getJSONArray("Z13_TITLE");
 					jsonResult2Array = new JSONObject(result)
-							.getJSONArray("Z36_DUE_DATE");
+							.getJSONArray("END_DATE");
 
 					// 判斷所得JSON格式是否有錯
 					if (jsonResult1Array == null || jsonResult2Array == null) {
