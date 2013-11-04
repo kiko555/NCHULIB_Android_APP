@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">NCHU Library</string>
+    <string name="action_cirlog">Circulation</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_exit">Exit</string>
+    <string name="JSON_DataLoading">JSON data loading</string>
+    <string name="JSON_Data_downlaod_fail">JSON data load fail</string>
+    <string name="JSON_Data_error">JSON data error</string>
+    <string name="Check_Network">Check 3G or Wifi Network</string>
+    <string name="hello_world">Hello world!</string>
+
+</resources>
