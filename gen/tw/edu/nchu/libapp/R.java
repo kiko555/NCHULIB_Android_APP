@@ -1016,7 +1016,8 @@ containing a value of this type.
         public static final int tab_unselected_pressed_nchulibstyle=0x7f020077;
     }
     public static final class id {
-        public static final int TableLayout01=0x7f060042;
+        public static final int RelativeLayout1=0x7f060041;
+        public static final int TableLayout01=0x7f060046;
         public static final int action_bar=0x7f06001c;
         public static final int action_bar_activity_content=0x7f060015;
         public static final int action_bar_container=0x7f06001b;
@@ -1024,14 +1025,15 @@ containing a value of this type.
         public static final int action_bar_root=0x7f06001a;
         public static final int action_bar_subtitle=0x7f060023;
         public static final int action_bar_title=0x7f060022;
-        public static final int action_cirlog=0x7f060044;
+        public static final int action_cirlog=0x7f060049;
         public static final int action_context_bar=0x7f06001d;
-        public static final int action_exit=0x7f060046;
+        public static final int action_exit=0x7f06004b;
+        public static final int action_login=0x7f060048;
         public static final int action_menu_divider=0x7f060016;
         public static final int action_menu_presenter=0x7f060017;
         public static final int action_mode_close_button=0x7f060024;
-        public static final int action_search=0x7f060043;
-        public static final int action_settings=0x7f060045;
+        public static final int action_search=0x7f060047;
+        public static final int action_settings=0x7f06004a;
         public static final int activity_chooser_view_content=0x7f060025;
         public static final int always=0x7f06000b;
         public static final int beginning=0x7f060011;
@@ -1042,6 +1044,8 @@ containing a value of this type.
         public static final int dialog=0x7f06000e;
         public static final int disableHome=0x7f060008;
         public static final int dropdown=0x7f06000f;
+        public static final int editText1=0x7f060043;
+        public static final int editText2=0x7f060044;
         public static final int edit_query=0x7f060030;
         public static final int end=0x7f060013;
         public static final int expand_activities_button=0x7f060026;
@@ -1060,6 +1064,7 @@ containing a value of this type.
         public static final int progress_circular=0x7f060018;
         public static final int progress_horizontal=0x7f060019;
         public static final int radio=0x7f06002f;
+        public static final int scrollView1=0x7f060045;
         public static final int search_badge=0x7f060032;
         public static final int search_bar=0x7f060031;
         public static final int search_button=0x7f060033;
@@ -1081,7 +1086,7 @@ containing a value of this type.
         public static final int tableRow2=0x7f06003e;
         public static final int tableRow3=0x7f06003f;
         public static final int tableRow4=0x7f060040;
-        public static final int textView1=0x7f060041;
+        public static final int textView1=0x7f060042;
         public static final int title=0x7f06002b;
         public static final int top_action_bar=0x7f060020;
         public static final int up=0x7f060021;
@@ -1138,8 +1143,9 @@ containing a value of this type.
         public static final int abc_search_dropdown_item_icons_2line=0x7f030015;
         public static final int abc_search_view=0x7f030016;
         public static final int activity_cirlog=0x7f030017;
-        public static final int activity_main=0x7f030018;
-        public static final int support_simple_spinner_dropdown_item=0x7f030019;
+        public static final int activity_login=0x7f030018;
+        public static final int activity_main=0x7f030019;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001a;
     }
     public static final class menu {
         public static final int main=0x7f0d0000;
@@ -1148,10 +1154,14 @@ containing a value of this type.
         public static final int api=0x7f050000;
     }
     public static final class string {
-        public static final int Check_Network=0x7f0b0014;
-        public static final int JSON_DataLoading=0x7f0b0011;
-        public static final int JSON_Data_downlaod_fail=0x7f0b0012;
-        public static final int JSON_Data_error=0x7f0b0013;
+        public static final int ActivityLogin_btLogin=0x7f0b001a;
+        public static final int ActivityLogin_tvTitle=0x7f0b0017;
+        public static final int ActivityLogin_txID=0x7f0b0018;
+        public static final int ActivityLogin_txPassword=0x7f0b0019;
+        public static final int Check_Network=0x7f0b0015;
+        public static final int JSON_DataLoading=0x7f0b0012;
+        public static final int JSON_Data_downlaod_fail=0x7f0b0013;
+        public static final int JSON_Data_error=0x7f0b0014;
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
          */
         public static final int abc_action_bar_home_description=0x7f0b0001;
@@ -1192,11 +1202,12 @@ containing a value of this type.
         /**  Description of a share target (both in the list of such or the default share button) in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] 
          */
         public static final int abc_shareactionprovider_share_with_application=0x7f0b000b;
-        public static final int action_cirlog=0x7f0b000e;
-        public static final int action_exit=0x7f0b0010;
-        public static final int action_settings=0x7f0b000f;
+        public static final int action_cirlog=0x7f0b000f;
+        public static final int action_exit=0x7f0b0011;
+        public static final int action_login=0x7f0b000e;
+        public static final int action_settings=0x7f0b0010;
         public static final int app_name=0x7f0b000d;
-        public static final int hello_world=0x7f0b0015;
+        public static final int hello_world=0x7f0b0016;
     }
     public static final class style {
         public static final int ActionBar_Solid_Nchulibstyle=0x7f0c0086;

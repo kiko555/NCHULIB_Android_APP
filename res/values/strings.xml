@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">NCHU Library</string>
+    <string name="action_login">Login</string>
     <string name="action_cirlog">Circulation</string>
     <string name="action_settings">Settings</string>
     <string name="action_exit">Exit</string>
@@ -10,5 +11,9 @@
     <string name="JSON_Data_error">JSON data error</string>
     <string name="Check_Network">Check 3G or Wifi Network</string>
     <string name="hello_world">Hello world!</string>
+    <string name="ActivityLogin_tvTitle">NCHU Library App Login System</string>
+    <string name="ActivityLogin_txID">ID</string>
+    <string name="ActivityLogin_txPassword">Password</string>
+    <string name="ActivityLogin_btLogin">Login</string>
 
 </resources>
