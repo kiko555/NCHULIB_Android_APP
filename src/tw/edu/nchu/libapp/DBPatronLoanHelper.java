@@ -12,10 +12,6 @@ public class DBPatronLoanHelper extends SQLiteOpenHelper {
 
 	// private final static String DBName = "nchulib.db"; // <-- db name
 	// private final static String TableName = "patronloan"; // <-- table name
-	// private final static String strTBsql = "CREATE TABLE IF NOT EXISTS "
-	// + TableName + "( " + "ID TEXT NOT NULL, " + "Title TEXT NOT NULL, "
-	// + "Barcode TEXT NOT NULL, " + "DataType TEXT NOT NULL, "
-	// + "EndDate TEXT NOT NULL, );"; // <-- table name
 
 	public DBPatronLoanHelper(Context context, String name,
 			CursorFactory factory, int version) {
@@ -46,11 +42,20 @@ public class DBPatronLoanHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		// TODO Auto-generated method stub
-		String strTBsql = "CREATE TABLE IF NOT EXISTS patronloan( "
-				+ "ID TEXT NOT NULL, " + "Title TEXT NOT NULL, "
-				+ "Barcode TEXT NOT NULL, " + "DataType TEXT NOT NULL, "
+
+		// 建立讀者資料表
+		String strTB_Patron_sql = "CREATE TABLE IF NOT EXISTS patron( "
+				+ "PID TEXT NOT NULL, PatronBarCode TEXT NOT NULL, "
+				+ "PatronName TEXT NOT NULL, LoanCnt TEXT NOT NULL, "
+				+ "RequestCnt TEXT NOT NULL, PatronToken TEXT NOT NULL );"; // <-- table name
+		db.execSQL(strTB_Patron_sql);
+
+		// 建立讀者借閱紀錄表
+		String strTB_patronloan_sql = "CREATE TABLE IF NOT EXISTS patronloan( "
+				+ "ID TEXT NOT NULL, Title TEXT NOT NULL, "
+				+ "Barcode TEXT NOT NULL, DataType TEXT NOT NULL, "
 				+ "EndDate TEXT NOT NULL );"; // <-- table name
-		db.execSQL(strTBsql);
+		db.execSQL(strTB_patronloan_sql);
 	}
 
 	@Override
@@ -60,14 +65,12 @@ public class DBPatronLoanHelper extends SQLiteOpenHelper {
 		onCreate(db);
 	}
 
-
-
 	// 取回資料表有幾筆資料
-//	public int RecCount() {
-//		SQLiteDatabase db = getWritableDatabase();
-//		String sql = "SELECT * FROM " + TableName;
-//		Cursor recSet = db.rawQuery(sql, null);
-//		return recSet.getCount();
-//	}
+	// public int RecCount() {
+	// SQLiteDatabase db = getWritableDatabase();
+	// String sql = "SELECT * FROM " + TableName;
+	// Cursor recSet = db.rawQuery(sql, null);
+	// return recSet.getCount();
+	// }
 
 }

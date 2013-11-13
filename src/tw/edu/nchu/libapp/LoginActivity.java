@@ -1,7 +1,6 @@
 package tw.edu.nchu.libapp;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.KeyStore;
@@ -11,7 +10,6 @@ import java.util.List;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -25,9 +23,11 @@ import org.json.JSONObject;
 
 import android.content.ContentValues;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -106,15 +106,39 @@ public class LoginActivity extends ActionBarActivity {
 
 				// 給予連線的網址
 				HttpPost httppost = new HttpPost(
-						"http://api.lib.nchu.edu.tw/php/appagent/acc_auth.php");
+						"https://api.lib.nchu.edu.tw/php/appagent/");
 
-				// Add your data
+				// 帶入POST要傳的參數
 				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(
 						2);
+				nameValuePairs.add(new BasicNameValuePair("op", "AccAuth"));
 				nameValuePairs.add(new BasicNameValuePair("sid", txID
 						.getEditableText().toString()));
-				nameValuePairs.add(new BasicNameValuePair("pwd",
-						txPassword.getEditableText().toString()));
+				nameValuePairs.add(new BasicNameValuePair("pwd", txPassword
+						.getEditableText().toString()));
+
+				// 產生DeviceID
+				DeviceClass deviceclass = new DeviceClass();
+				String strDeviceToken = deviceclass.doMakeDeviceToken(txID
+						.getEditableText().toString());
+
+				// 取得設備解析度
+				String strDisplayMetrics;
+				DisplayMetrics dm = new DisplayMetrics();
+				getWindowManager().getDefaultDisplay().getMetrics(dm);
+				strDisplayMetrics = dm.heightPixels + " * " + dm.widthPixels;
+
+				// 取得設備 SDK 版本
+				String strSdkVersion = Build.VERSION.SDK;
+
+				// 键address的值是对象，所以又要创建一个对象
+				JSONObject deviceinfo = new JSONObject();
+				deviceinfo.put("DeviceToken", strDeviceToken);
+				deviceinfo.put("AndroidVersion", strSdkVersion);
+				deviceinfo.put("Resolution", strDisplayMetrics);
+
+				nameValuePairs.add(new BasicNameValuePair("deviceinfo",
+						deviceinfo.toString()));
 				httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
 				// Execute HTTP Post Request
@@ -193,14 +217,34 @@ public class LoginActivity extends ActionBarActivity {
 					JSONArray jsonResult1Array;
 					JSONArray jsonResult2Array;
 
-					JSONArray jsonResultIDArray;
+					String strOpResult, strAuthResult, strPatronName, strPID;
+					String strPatronBarCode, strPatronToken, strErrorInfo;
+
 					JSONArray jsonResultTitleArray;
 					JSONArray jsonResultBarcodeArray;
 					JSONArray jsonResultDataTypeArray;
 					JSONArray jsonResultEndDateArray;
 
-					jsonResultIDArray = new JSONObject(result)
-							.getJSONArray("Z36_ID");
+					strOpResult = new JSONObject(result).getString("op_result");
+					if (strOpResult.equals("success")) {
+						strAuthResult = new JSONObject(result)
+								.getString("auth_result");
+						if (strAuthResult.equals("success")) {
+							strPatronName = new JSONObject(result)
+									.getString("PatronName");
+							strPID = new JSONObject(result).getString("PID");
+							strPatronBarCode = new JSONObject(result)
+									.getString("PatronBarCode");
+							strPatronToken = new JSONObject(result)
+									.getString("PatronToken");
+						}
+					} else {
+						strErrorInfo = new JSONObject(result)
+								.getString("error_info");
+						Toast.makeText(LoginActivity.this, strErrorInfo,
+								Toast.LENGTH_SHORT).show();
+					}
+
 					jsonResultTitleArray = new JSONObject(result)
 							.getJSONArray("Z13_TITLE");
 					jsonResultBarcodeArray = new JSONObject(result)
@@ -256,8 +300,7 @@ public class LoginActivity extends ActionBarActivity {
 							try {
 								// 寫入資料庫
 								ContentValues rec = new ContentValues();
-								rec.put("ID", jsonResultIDArray.get(i)
-										.toString());
+								rec.put("ID", "123");
 								rec.put("Title", jsonResultTitleArray.get(i)
 										.toString());
 								rec.put("Barcode", jsonResultBarcodeArray
@@ -295,7 +338,7 @@ public class LoginActivity extends ActionBarActivity {
 
 			// 呼叫非同步架構抓取http資料
 			RetreiveHTTPTask retreivehttpask = (RetreiveHTTPTask) new RetreiveHTTPTask()
-					.execute("http://api.lib.nchu.edu.tw/php/appagent/acc_auth.php");
+					.execute("https://api.lib.nchu.edu.tw/php/appagent/");
 
 			// 倘若失敗時的動作
 			if (retreivehttpask == null) {
