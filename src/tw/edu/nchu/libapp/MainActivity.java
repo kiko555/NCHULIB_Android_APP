@@ -50,7 +50,7 @@ public class MainActivity extends ActionBarActivity {
 	public String strTableNname = "patronloan";
 
 	// 輔助類名
-	DBPatronLoanHelper dbPatronLoanHelper = new DBPatronLoanHelper(
+	DBHelper dbHelper = new DBHelper(
 			MainActivity.this, strDBName);
 
 	@Override
@@ -69,7 +69,7 @@ public class MainActivity extends ActionBarActivity {
 		btGetJSON.setOnClickListener(btListener);
 
 		// 取得資料庫可寫入對象
-		db = dbPatronLoanHelper.getWritableDatabase();
+		db = dbHelper.getWritableDatabase();
 
 		// 右上角顯示讀取中圖示
 		// setSupportProgressBarIndeterminateVisibility(true);

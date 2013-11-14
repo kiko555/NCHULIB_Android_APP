@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,6 +46,21 @@ public class LoginActivity extends ActionBarActivity {
 	private EditText txID;
 	private EditText txPassword;
 
+	// SQLiteDatabase對象
+	SQLiteDatabase db_PatronHelper;
+	SQLiteDatabase db_PatronLoanHelper;
+
+	// 準備取用的資料庫名
+	public String strDBName = "nchulib";
+
+	// 準備取用的表格名
+	public String strPatronTableNname = "patron";
+	public String strPatronLoanTableNname = "patronloan";
+
+	// 輔助類名
+	DBHelper dbPatronHelper = new DBHelper(LoginActivity.this, strPatronTableNname);
+	DBHelper dbPatronLoanHelper = new DBHelper(LoginActivity.this, strPatronLoanTableNname);
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -63,6 +79,10 @@ public class LoginActivity extends ActionBarActivity {
 		// 帶入填寫的欄位
 		txID = (EditText) findViewById(R.id.editText1);
 		txPassword = (EditText) findViewById(R.id.editText2);
+
+		// 取得資料庫可寫入對象
+		db_PatronHelper = dbPatronHelper.getWritableDatabase();
+		db_PatronLoanHelper = dbPatronLoanHelper.getWritableDatabase();
 
 	}
 
@@ -298,7 +318,7 @@ public class LoginActivity extends ActionBarActivity {
 							// new TableLayout.LayoutParams(WC, WC));
 
 							try {
-								// 寫入資料庫
+								/*// 寫入資料庫
 								ContentValues rec = new ContentValues();
 								rec.put("ID", "123");
 								rec.put("Title", jsonResultTitleArray.get(i)
@@ -310,7 +330,8 @@ public class LoginActivity extends ActionBarActivity {
 								rec.put("EndDate", jsonResultEndDateArray
 										.get(i).toString());
 								// db.insert(strTableNname, null, rec);
-
+								 */
+								
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -337,14 +358,21 @@ public class LoginActivity extends ActionBarActivity {
 			// R.string.JSON_DataLoading,Toast.LENGTH_SHORT).show();
 
 			// 呼叫非同步架構抓取http資料
-			RetreiveHTTPTask retreivehttpask = (RetreiveHTTPTask) new RetreiveHTTPTask()
-					.execute("https://api.lib.nchu.edu.tw/php/appagent/");
+			RetreiveHTTPTask retreivehttpask;
+			try {
+				retreivehttpask = (RetreiveHTTPTask) new RetreiveHTTPTask()
+						.execute("https://api.lib.nchu.edu.tw/php/appagent/");
 
-			// 倘若失敗時的動作
-			if (retreivehttpask == null) {
-				Toast.makeText(LoginActivity.this, R.string.Check_Network,
-						Toast.LENGTH_SHORT).show();
+				// 倘若失敗時的動作
+				if (retreivehttpask == null) {
+					Toast.makeText(LoginActivity.this, R.string.Check_Network,
+							Toast.LENGTH_SHORT).show();
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+
 		}
 	};
 }
