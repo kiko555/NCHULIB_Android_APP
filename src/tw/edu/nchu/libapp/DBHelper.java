@@ -14,28 +14,32 @@ import android.database.sqlite.SQLiteOpenHelper;
  * @version 1.0
  */
 public class DBHelper extends SQLiteOpenHelper {
-	private final static int DBVersion = 1; // <-- 版本
-	private final static String strDBName = "nchulib"; // 準備取用的資料庫名
+	private final static int intDBVersion = 1; // <-- 版本
+	private final static String strDBName = "nchulib.db"; // 準備取用的資料庫名
 
 	// private final static String DBName = "nchulib.db"; // <-- db name
 	// private final static String TableName = "patronloan"; // <-- table name
 
-	public DBHelper(Context context, String name, CursorFactory factory,
+	public DBHelper(Context context, String DBname, CursorFactory factory,
 			int version) {
-		super(context, name, factory, version);
+		super(context, DBname, factory, version);
 		// TODO Auto-generated constructor stub
 	}
 
-	public DBHelper(Context context, String name) {
-		this(context, name, null, DBVersion);
+	public DBHelper(Context context, String DBname) {
+		this(context, DBname, null, intDBVersion);
 	}
 
-	public DBHelper(String name) {
-		this(null, name, null, DBVersion);
+	public DBHelper(String DBname) {
+		this(null, DBname, null, intDBVersion);
 	}
 
-	public DBHelper(Context context, String name, int version) {
-		this(context, name, null, version);
+	public DBHelper(Context context) {
+		this(context, strDBName, null, intDBVersion);
+	}
+
+	public DBHelper(Context context, String DBname, int version) {
+		this(context, DBname, null, version);
 	}
 
 	// 每次成功打開數據庫後首先被執行
@@ -101,10 +105,14 @@ public class DBHelper extends SQLiteOpenHelper {
 	/**
 	 * 將讀者資料寫入 Parton 表格
 	 * 
-	 * @param PID 使用者的PID
-	 * @param PatronBarCode 使用者的PID
-	 * @param PatronName 使用者名字
-	 * @param PatronToken 使用者的特殊代碼
+	 * @param PID
+	 *            使用者的PID
+	 * @param PatronBarCode
+	 *            使用者的PID
+	 * @param PatronName
+	 *            使用者名字
+	 * @param PatronToken
+	 *            使用者的特殊代碼
 	 * @throws exceptions
 	 *             No exceptions thrown
 	 */
@@ -113,26 +121,39 @@ public class DBHelper extends SQLiteOpenHelper {
 		/** 無需先宣告的變數 */
 		try {
 			// SQLiteDatabase對象
-			SQLiteDatabase db_PatronHelper;
-
-			// 準備取用的表格名
-			String strPatronTableNname = "patron";
-
-			// 輔助類名
-			DBHelper dbPatronHelper = new DBHelper(strPatronTableNname);
-
-			// 取得資料庫可寫入對象
-			db_PatronHelper = dbPatronHelper.getWritableDatabase();
-
-			// 寫入資料庫
+			SQLiteDatabase db_PatronHelper = getWritableDatabase();
+			// 寫入資料庫的內容
 			ContentValues rec = new ContentValues();
-			rec.put("PID", "123");
-			rec.put("PatronBarCode", "2dddd");
-			rec.put("PatronName", "3eeee");
-			rec.put("DataType", "4ffff");
-			rec.put("PatronToken", "5gggg");
-			db_PatronHelper.insert(strPatronTableNname, null, rec);
 
+			rec.put("PID", PID);
+			rec.put("PatronBarCode", PatronBarCode);
+			rec.put("PatronName", PatronName);
+			rec.put("PatronToken", PatronToken);
+			db_PatronHelper.insert("patron", null, rec);
+
+			db_PatronHelper.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	/**
+	 * 清空 Parton 表格
+	 * 
+	 * @throws exceptions
+	 *             No exceptions thrown
+	 */
+	public void doEmptyPartonTable() {
+		/** 無需先宣告的變數 */
+		try {
+			// SQLiteDatabase對象
+			SQLiteDatabase db_PatronHelper = getWritableDatabase();
+
+			db_PatronHelper.delete("patron", null, null);
+
+			db_PatronHelper.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -140,5 +161,64 @@ public class DBHelper extends SQLiteOpenHelper {
 
 	}
 
+	
+	/**
+	 * 將讀者資料寫入 PartonLoan 表格
+	 * 
+	 * @param Title
+	 *            借閱資料的題名
+	 * @param BarCode
+	 *            借閱資料的登錄號
+	 * @param DataType
+	 *            借閱資料類型
+	 * @param EndData
+	 *            借閱資料到期日
+	 * @throws exceptions
+	 *             No exceptions thrown
+	 */
+	public void doInsertPartonLoanTable(String Title, String BarCode,
+			String DataType, String EndDate) {
+		/** 無需先宣告的變數 */
+		try {
+			// SQLiteDatabase對象
+			SQLiteDatabase db_PatronLoanHelper = getWritableDatabase();
+			// 寫入資料庫的內容
+			ContentValues rec = new ContentValues();
+
+			rec.put("Title", Title);
+			rec.put("Barcode", BarCode);
+			rec.put("DataType", DataType);
+			rec.put("EndDate", EndDate);
+			db_PatronLoanHelper.insert("patronloan", null, rec);
+
+			db_PatronLoanHelper.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	/**
+	 * 清空 PartonLoan 表格
+	 * 
+	 * @throws exceptions
+	 *             No exceptions thrown
+	 */
+	public void doEmptyPartonLoanTable() {
+		/** 無需先宣告的變數 */
+		try {
+			// SQLiteDatabase對象
+			SQLiteDatabase db_PatronLoanHelper = getWritableDatabase();
+
+			db_PatronLoanHelper.delete("patronloan", null, null);
+
+			db_PatronLoanHelper.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 }
 // /:~
