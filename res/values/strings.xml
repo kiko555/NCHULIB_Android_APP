@@ -15,5 +15,10 @@
     <string name="ActivityLogin_txID">ID</string>
     <string name="ActivityLogin_txPassword">Password</string>
     <string name="ActivityLogin_btLogin">Login</string>
+    <string name="ActivityCirculationLog_lvLoanList">Loan list</string>
+    <string name="ActivityCirculationLog_lvDueList">Due notice list</string>
+    <string name="ActivityCirculationLog_lvOverduesList">Overdues notice list</string>
+    <string name="ActivityCirculationLog_lvRequestList">Request list</string>
+    <string name="ActivityCirculationLog_lvDuedate">,duedate:</string>
 
 </resources>

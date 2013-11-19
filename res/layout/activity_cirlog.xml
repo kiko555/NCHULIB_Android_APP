@@ -10,17 +10,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".CirLogActivity" >
 
-    <ScrollView
-        android:id="@+id/scrollView1"
-        android:layout_width="wrap_content"
+    <ExpandableListView
+        android:id="@+id/expandableCirLogListView1"
+        android:layout_width="match_parent"
         android:layout_height="match_parent" >
-
-        <ExpandableListView
-            android:id="@+id/expandableListView1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-        </ExpandableListView>
-
-    </ScrollView>
+    </ExpandableListView>
 
 </LinearLayout>

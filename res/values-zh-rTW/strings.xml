@@ -9,5 +9,14 @@
     <string name="JSON_Data_downlaod_fail">JSON 資料讀取失敗</string>
     <string name="JSON_Data_error">JSON 資料錯誤</string>
     <string name="Check_Network">確認3G或WIFI正常運作</string>
+    <string name="ActivityLogin_tvTitle">中興大學圖書館登入系統</string>
+    <string name="ActivityLogin_txID">帳號</string>
+    <string name="ActivityLogin_txPassword">密碼</string>
+    <string name="ActivityLogin_btLogin">登入</string>
+    <string name="ActivityCirculationLog_lvLoanList">借閱清單</string>
+    <string name="ActivityCirculationLog_lvDueList">借閱到期通知</string>
+    <string name="ActivityCirculationLog_lvOverduesList">借閱逾期通知</string>
+    <string name="ActivityCirculationLog_lvRequestList">預約到館通知</string>
+    <string name="ActivityCirculationLog_lvDuedate">，到期日：</string>
 
 </resources>

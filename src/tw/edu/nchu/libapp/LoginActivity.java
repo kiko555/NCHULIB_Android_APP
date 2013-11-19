@@ -233,14 +233,6 @@ public class LoginActivity extends ActionBarActivity {
 			// TODO: check this.exception
 			// TODO: do something with the feed
 
-			// tlJOSN_list.setStretchAllColumns(true);
-			// TableLayout.LayoutParams row_layout = new
-			// TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-			// LayoutParams.WRAP_CONTENT);
-			// TableRow.LayoutParams view_layout = new
-			// TableRow.LayoutParams(LayoutParams.WRAP_CONTENT,
-			// LayoutParams.WRAP_CONTENT);
-
 			// 建立取用資料庫的物件
 			DBHelper dbHelper = new DBHelper(LoginActivity.this);
 
@@ -268,9 +260,11 @@ public class LoginActivity extends ActionBarActivity {
 					JSONArray jsonResultEndDateArray;
 
 					strOpResult = new JSONObject(result).getString("op_result");
+					// 如果系統運作正常才繼續下去
 					if (strOpResult.equals("success")) {
 						strAuthResult = new JSONObject(result)
 								.getString("auth_result");
+						// 如果認證成功才執行
 						if (strAuthResult.equals("success")) {
 							strPatronName = new JSONObject(result)
 									.getString("PatronName");
@@ -300,57 +294,19 @@ public class LoginActivity extends ActionBarActivity {
 									.getJSONObject("PatronLoan").getJSONArray(
 											"END_DATE");
 
-							jsonResult1Array = new JSONObject(result)
-									.getJSONObject("PatronLoan").getJSONArray(
-											"Z13_TITLE");
-							jsonResult2Array = new JSONObject(result)
-									.getJSONObject("PatronLoan").getJSONArray(
-											"END_DATE");
-
 							// 判斷所得JSON格式是否有錯
-							if (jsonResult1Array == null
-									|| jsonResult2Array == null) {
+							if (jsonResultTitleArray == null
+									|| jsonResultEndDateArray == null) {
 								Toast.makeText(LoginActivity.this,
 										R.string.JSON_Data_error,
 										Toast.LENGTH_SHORT).show();
 							} else {
 
-								TableLayout tlJOSN_list = (TableLayout) findViewById(R.id.TableLayout01);
-								// tlJOSN_list.setStretchAllColumns(false);
-
 								// 先清空讀者借閱資料表
 								dbHelper.doEmptyPartonLoanTable();
 
 								// 取出JSON陣列內所有內容
-								for (int i = 0; i < jsonResult1Array.length(); i++) {
-									// 讀出JSON的內容後直接寫到畫面上
-									// 並且以table layout的方式呈現
-									// ****不要用兩個textview疊加的方式，看能不能用tablelayout直接切割
-									TableRow tr = new TableRow(
-											LoginActivity.this);
-									tr.setGravity(Gravity.CENTER_HORIZONTAL);
-
-									TextView tvSEARCH_QUERY = new TextView(
-											LoginActivity.this);
-									tvSEARCH_QUERY.setText(jsonResult1Array
-											.get(i).toString());
-									tvSEARCH_QUERY.setMaxEms(12);
-									tvSEARCH_QUERY.setTextSize(20);
-									tvSEARCH_QUERY
-											.setEllipsize(TextUtils.TruncateAt.END);
-									tvSEARCH_QUERY.setGravity(Gravity.LEFT);
-
-									TextView tvCOUNT_SEARCH_QUERY = new TextView(
-											LoginActivity.this);
-									tvCOUNT_SEARCH_QUERY
-											.setText(jsonResult2Array.get(i)
-													.toString());
-
-									tr.addView(tvSEARCH_QUERY);
-									tr.addView(tvCOUNT_SEARCH_QUERY);
-									// tlJOSN_list.addView(tr,
-									// new TableLayout.LayoutParams(WC, WC));
-
+								for (int i = 0; i < jsonResultTitleArray.length(); i++) {
 									// 寫入讀者借閱資料
 									dbHelper.doInsertPartonLoanTable(
 											jsonResultTitleArray.get(i)

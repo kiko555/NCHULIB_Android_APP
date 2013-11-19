@@ -1,8 +1,12 @@
 //: object/DBHelper.java
 package tw.edu.nchu.libapp;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -138,7 +142,7 @@ public class DBHelper extends SQLiteOpenHelper {
 		}
 
 	}
-	
+
 	/**
 	 * 清空 Parton 表格
 	 * 
@@ -161,7 +165,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
 	}
 
-	
 	/**
 	 * 將讀者資料寫入 PartonLoan 表格
 	 * 
@@ -198,7 +201,7 @@ public class DBHelper extends SQLiteOpenHelper {
 		}
 
 	}
-	
+
 	/**
 	 * 清空 PartonLoan 表格
 	 * 
@@ -219,6 +222,80 @@ public class DBHelper extends SQLiteOpenHelper {
 			e.printStackTrace();
 		}
 
+	}
+
+	/**
+	 * 取得 PartonLoan 表格的筆數
+	 * 
+	 * @return intRecCount 回傳總借閱的筆數
+	 * 
+	 * @throws exceptions
+	 *             No exceptions thrown
+	 */
+	public int doCountPartonLoanTable() {
+		/**
+		 * intRecCount 回傳的筆數
+		 */
+		int intRecCount = 0;
+
+		try {
+			// SQLiteDatabase對象
+			SQLiteDatabase db_PatronLoanHelper = getReadableDatabase();
+			String strSql = "Select * from patronloan where DataType='LOAN'";
+			Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
+
+			intRecCount = recSet.getCount();
+
+			db_PatronLoanHelper.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return intRecCount;
+	}
+
+	/**
+	 * 取得 PartonLoan 表格的內容
+	 * 
+	 * @return aryRec 回傳總借閱的筆數
+	 * 
+	 * @throws exceptions
+	 *             No exceptions thrown
+	 */
+	public String[][] getPartonLoanTable() {
+		/**
+		 * aryRec 回傳陣列內容
+		 */
+		// ArrayList<String> aryRec = new ArrayList<String>();
+		String[][] aryRec = new String[2][50];
+
+		try {
+			// SQLiteDatabase對象
+			SQLiteDatabase db_PatronLoanHelper = getReadableDatabase();
+			String strSql = "Select * from patronloan where DataType='LOAN'";
+			Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
+			int intColumnCount = recSet.getColumnCount();
+			int intRecCount = recSet.getCount();
+
+			while (recSet.moveToNext()) {
+				// while(){
+				// String strRecEachRow = "";
+				// for(int i=0;i<intColumnCount;i++){
+
+				// }
+				// 取出題名
+				int intRecCursor = recSet.getPosition();
+				aryRec[0][recSet.getPosition()] = recSet.getString(0);
+				aryRec[1][recSet.getPosition()] = recSet.getString(3);
+				
+			}
+
+			db_PatronLoanHelper.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return aryRec;
 	}
 }
 // /:~
