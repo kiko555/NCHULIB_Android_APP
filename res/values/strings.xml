@@ -20,5 +20,6 @@
     <string name="ActivityCirculationLog_lvOverduesList">Overdues notice list</string>
     <string name="ActivityCirculationLog_lvRequestList">Request list</string>
     <string name="ActivityCirculationLog_lvDuedate">,duedate:</string>
+    <string name="ActivitySettings_btLogout">Logout</string>
 
 </resources>

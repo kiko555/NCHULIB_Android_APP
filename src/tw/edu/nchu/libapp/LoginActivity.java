@@ -21,16 +21,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,333 +34,337 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class LoginActivity extends ActionBarActivity {
-	private Button btLogin;
-	private EditText txID;
-	private EditText txPassword;
+    private Button btLogin;
+    private EditText txID;
+    private EditText txPassword;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		// 設定讀取圖示
-		supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        // 確認資料庫是否有資料，如無跳轉到登入畫面
+        CheckIfDBEmpty();
 
-		setContentView(R.layout.activity_login);
+        // 設定讀取圖示
+        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
-		// JSON資料接收鈕
-		btLogin = (Button) findViewById(R.id.button1);
+        setContentView(R.layout.activity_login);
 
-		// 監聽ok鈕的動作
-		btLogin.setOnClickListener(btListener);
+        // JSON資料接收鈕
+        btLogin = (Button) findViewById(R.id.button1);
 
-		// 帶入填寫的欄位
-		txID = (EditText) findViewById(R.id.editText1);
-		txPassword = (EditText) findViewById(R.id.editText2);
-	}
+        // 監聽ok鈕的動作
+        btLogin.setOnClickListener(btListener);
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
+        // 帶入填寫的欄位
+        txID = (EditText) findViewById(R.id.editText1);
+        txPassword = (EditText) findViewById(R.id.editText2);
+    }
 
-	// 選單鈕被按住後會出現在動作
-	@Override
-	public boolean onOptionsItemSelected(MenuItem Item) {
-		switch (Item.getItemId()) {
-		case R.id.action_login:
-			try {
-				Intent intent = new Intent();
-				intent.setClass(LoginActivity.this, LoginActivity.class);
-				startActivity(intent);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return true;
-		case R.id.action_cirlog:
-			try {
-				Intent intent = new Intent();
-				intent.setClass(LoginActivity.this, CirculationLogActivity.class);
-				startActivity(intent);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return true;
-		case R.id.action_settings:
-			Toast.makeText(LoginActivity.this, Item.getTitle(),
-					Toast.LENGTH_LONG).show();
-			return true;
-		case R.id.action_exit:
-			finish();
-			return true;
-		default:
-			return false;
-		}
-	}
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 確認資料庫是否有資料，如無跳轉到登入畫面
+        CheckIfDBEmpty();
+    }
 
-	// 建非同步模式架構
-	class RetreiveHTTPTask extends AsyncTask<String, Void, String> {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.login_activity, menu);
+        return true;
+    }
 
-		@Override
-		protected void onPreExecute() {
-			// Initialize progress
-			setSupportProgressBarIndeterminateVisibility(true);
-		}
+    // 選單鈕被按住後會出現在動作
+    @Override
+    public boolean onOptionsItemSelected(MenuItem Item) {
+        switch (Item.getItemId()) {
+        case R.id.action_exit:
+            finish();
+            return true;
+        default:
+            return false;
+        }
+    }
 
-		@Override
-		protected String doInBackground(String... urls) {
-			try {
-				// 透過keystore來解SSL
-				KeyStore trustStore = KeyStore.getInstance(KeyStore
-						.getDefaultType());
-				InputStream instream = getResources()
-						.openRawResource(R.raw.api);
-				try {
-					trustStore.load(instream, null);
-				} finally {
-					instream.close();
-				}
-				SSLSocketFactory socketFactory = new SSLSocketFactory(
-						trustStore);
-				Scheme sch = new Scheme("https", socketFactory, 443);
+    // 建非同步模式架構
+    class RetreiveHTTPTask extends AsyncTask<String, Void, String> {
 
-				// 初始apache的httpclient class
-				HttpClient client = new DefaultHttpClient();
+        @Override
+        protected void onPreExecute() {
+            // Initialize progress
+            setSupportProgressBarIndeterminateVisibility(true);
+        }
 
-				// 將keystore及SSLSocketFactory指回來給httoclient使用
-				client.getConnectionManager().getSchemeRegistry().register(sch);
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                // 透過keystore來解SSL
+                KeyStore trustStore = KeyStore.getInstance(KeyStore
+                        .getDefaultType());
+                InputStream instream = getResources()
+                        .openRawResource(R.raw.api);
+                try {
+                    trustStore.load(instream, null);
+                } finally {
+                    instream.close();
+                }
+                SSLSocketFactory socketFactory = new SSLSocketFactory(
+                        trustStore);
+                Scheme sch = new Scheme("https", socketFactory, 443);
 
-				// 給予連線的網址
-				HttpPost httppost = new HttpPost(
-						"https://api.lib.nchu.edu.tw/php/appagent/");
+                // 初始apache的httpclient class
+                HttpClient client = new DefaultHttpClient();
 
-				// 帶入POST要傳的參數
-				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(
-						2);
-				nameValuePairs.add(new BasicNameValuePair("op", "AccAuth"));
-				nameValuePairs.add(new BasicNameValuePair("sid", txID
-						.getEditableText().toString()));
-				nameValuePairs.add(new BasicNameValuePair("pwd", txPassword
-						.getEditableText().toString()));
+                // 將keystore及SSLSocketFactory指回來給httoclient使用
+                client.getConnectionManager().getSchemeRegistry().register(sch);
 
-				// 產生DeviceID
-				DeviceClass deviceclass = new DeviceClass();
-				String strDeviceToken = deviceclass.doMakeDeviceToken(txID
-						.getEditableText().toString());
+                // 給予連線的網址
+                HttpPost httppost = new HttpPost(
+                        "https://api.lib.nchu.edu.tw/php/appagent/");
 
-				// 取得設備解析度
-				String strDisplayMetrics;
-				DisplayMetrics dm = new DisplayMetrics();
-				getWindowManager().getDefaultDisplay().getMetrics(dm);
-				strDisplayMetrics = dm.heightPixels + " * " + dm.widthPixels;
+                // 帶入POST要傳的參數
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(
+                        2);
+                nameValuePairs.add(new BasicNameValuePair("op", "AccAuth"));
+                nameValuePairs.add(new BasicNameValuePair("sid", txID
+                        .getEditableText().toString()));
+                nameValuePairs.add(new BasicNameValuePair("pwd", txPassword
+                        .getEditableText().toString()));
 
-				// 取得設備 SDK 版本
-				String strSdkVersion = Build.VERSION.SDK;
+                // 產生DeviceID
+                DeviceClass deviceclass = new DeviceClass();
+                String strDeviceToken = deviceclass.doMakeDeviceToken(txID
+                        .getEditableText().toString());
 
-				// 键address的值是对象，所以又要创建一个对象
-				JSONObject deviceinfo = new JSONObject();
-				deviceinfo.put("DeviceToken", strDeviceToken);
-				deviceinfo.put("AndroidVersion", strSdkVersion);
-				deviceinfo.put("Resolution", strDisplayMetrics);
+                // 取得設備解析度
+                String strDisplayMetrics;
+                DisplayMetrics dm = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(dm);
+                strDisplayMetrics = dm.heightPixels + " * " + dm.widthPixels;
 
-				nameValuePairs.add(new BasicNameValuePair("deviceinfo",
-						deviceinfo.toString()));
-				httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                // 取得設備 SDK 版本
+                String strSdkVersion = Build.VERSION.SDK;
 
-				// Execute HTTP Post Request
-				HttpResponse response = client.execute(httppost);
+                // 键address的值是对象，所以又要创建一个对象
+                JSONObject deviceinfo = new JSONObject();
+                deviceinfo.put("DeviceToken", strDeviceToken);
+                deviceinfo.put("AndroidVersion", strSdkVersion);
+                deviceinfo.put("Resolution", strDisplayMetrics);
 
-				// TODO: add exception handle
-				// 確認回傳是否異常
-				StatusLine status = response.getStatusLine();
-				if (status.getStatusCode() != 200) {
-					// throw new IOException("Invalid response from server: " +
-					// status.toString());
-					Toast.makeText(LoginActivity.this, R.string.Check_Network,
-							Toast.LENGTH_SHORT).show();
-					super.cancel(true);
-					return null;
-				} else {
-					// 將回傳值丟進buffer
-					BufferedReader rd = new BufferedReader(
-							new InputStreamReader(response.getEntity()
-									.getContent()));
+                nameValuePairs.add(new BasicNameValuePair("deviceinfo",
+                        deviceinfo.toString()));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-					// 有值才將buffer內的值彙整起來
-					String line = "";
-					String allline = "";
-					while ((line = rd.readLine()) != null) {
-						allline += line;
-					}
+                // Execute HTTP Post Request
+                HttpResponse response = client.execute(httppost);
 
-					// 確認是否沒有收到資料，如果是空的就丟訊息提醒，並停止後續處理
-					if (allline.equals("")) {
-						Toast.makeText(LoginActivity.this,
-								R.string.Check_Network, Toast.LENGTH_SHORT)
-								.show();
-						super.cancel(true);
-						return null;
-					} else {
-						return allline;
-					}
-				}
+                // TODO: add exception handle
+                // 確認回傳是否異常
+                StatusLine status = response.getStatusLine();
+                if (status.getStatusCode() != 200) {
+                    // throw new IOException("Invalid response from server: " +
+                    // status.toString());
+                    Toast.makeText(LoginActivity.this, R.string.Check_Network,
+                            Toast.LENGTH_SHORT).show();
+                    super.cancel(true);
+                    return null;
+                } else {
+                    // 將回傳值丟進buffer
+                    BufferedReader rd = new BufferedReader(
+                            new InputStreamReader(response.getEntity()
+                                    .getContent()));
 
-			} catch (Exception e) {
-				e.printStackTrace();
-				Toast.makeText(LoginActivity.this, R.string.Check_Network,
-						Toast.LENGTH_SHORT).show();
-				super.cancel(true);
-				return null;
-			}
+                    // 有值才將buffer內的值彙整起來
+                    String line = "";
+                    String allline = "";
+                    while ((line = rd.readLine()) != null) {
+                        allline += line;
+                    }
 
-		}
+                    // 確認是否沒有收到資料，如果是空的就丟訊息提醒，並停止後續處理
+                    if (allline.equals("")) {
+                        Toast.makeText(LoginActivity.this,
+                                R.string.Check_Network, Toast.LENGTH_SHORT)
+                                .show();
+                        super.cancel(true);
+                        return null;
+                    } else {
+                        return allline;
+                    }
+                }
 
-		@Override
-		protected void onPostExecute(String result) {
-			// TODO: check this.exception
-			// TODO: do something with the feed
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(LoginActivity.this, R.string.Check_Network,
+                        Toast.LENGTH_SHORT).show();
+                super.cancel(true);
+                return null;
+            }
 
-			// 建立取用資料庫的物件
-			DBHelper dbHelper = new DBHelper(LoginActivity.this);
+        }
 
-			try {
+        @Override
+        protected void onPostExecute(String result) {
+            // TODO: check this.exception
+            // TODO: do something with the feed
 
-				// 確認是否沒有收到資料
-				if (result.equals("")) {
-					Toast.makeText(LoginActivity.this,
-							R.string.JSON_Data_downlaod_fail,
-							Toast.LENGTH_SHORT).show();
-				} else {
-					Toast.makeText(LoginActivity.this, result.toString(),
-							Toast.LENGTH_SHORT).show();
+            // 建立取用資料庫的物件
+            DBHelper dbHelper = new DBHelper(LoginActivity.this);
 
-					// 抓取JSON物件中的特定陣列
-					JSONArray jsonResult1Array;
-					JSONArray jsonResult2Array;
+            try {
 
-					String strOpResult, strAuthResult, strPatronName, strPID;
-					String strPatronBarCode, strPatronToken, strErrorInfo;
+                // 確認是否沒有收到資料
+                if (result.equals("")) {
+                    Toast.makeText(LoginActivity.this,
+                            R.string.JSON_Data_downlaod_fail,
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    // 測試回傳的內容
+                    // Toast.makeText(LoginActivity.this, result.toString(),
+                    // Toast.LENGTH_SHORT).show();
 
-					JSONArray jsonResultTitleArray;
-					JSONArray jsonResultBarcodeArray;
-					JSONArray jsonResultDataTypeArray;
-					JSONArray jsonResultEndDateArray;
+                    // 抓取JSON物件中的特定陣列
+                    JSONArray jsonResult1Array;
+                    JSONArray jsonResult2Array;
 
-					strOpResult = new JSONObject(result).getString("op_result");
-					// 如果系統運作正常才繼續下去
-					if (strOpResult.equals("success")) {
-						strAuthResult = new JSONObject(result)
-								.getString("auth_result");
-						// 如果認證成功才執行
-						if (strAuthResult.equals("success")) {
-							strPatronName = new JSONObject(result)
-									.getString("PatronName");
-							strPID = new JSONObject(result).getString("PID");
-							strPatronBarCode = new JSONObject(result)
-									.getString("PatronBarCode");
-							strPatronToken = new JSONObject(result)
-									.getString("PatronToken");
+                    String strOpResult, strAuthResult, strPatronName, strPID;
+                    String strPatronBarCode, strPatronToken, strErrorInfo;
 
-							// 先清空讀者資料表
-							dbHelper.doEmptyPartonTable();
-							// 寫入讀者資料
-							dbHelper.doInsertPartonTable(strPID,
-									strPatronBarCode, strPatronName,
-									strPatronToken);
+                    JSONArray jsonResultTitleArray;
+                    JSONArray jsonResultBarcodeArray;
+                    JSONArray jsonResultDataTypeArray;
+                    JSONArray jsonResultEndDateArray;
 
-							jsonResultTitleArray = new JSONObject(result)
-									.getJSONObject("PatronLoan").getJSONArray(
-											"Z13_TITLE");
-							jsonResultBarcodeArray = new JSONObject(result)
-									.getJSONObject("PatronLoan").getJSONArray(
-											"Z30_BARCODE");
-							jsonResultDataTypeArray = new JSONObject(result)
-									.getJSONObject("PatronLoan").getJSONArray(
-											"DATA_TYPE");
-							jsonResultEndDateArray = new JSONObject(result)
-									.getJSONObject("PatronLoan").getJSONArray(
-											"END_DATE");
+                    strOpResult = new JSONObject(result).getString("op_result");
+                    // 如果系統運作正常才繼續下去
+                    if (strOpResult.equals("success")) {
+                        strAuthResult = new JSONObject(result)
+                                .getString("auth_result");
+                        // 如果認證成功才執行
+                        if (strAuthResult.equals("success")) {
+                            strPatronName = new JSONObject(result)
+                                    .getString("PatronName");
+                            strPID = new JSONObject(result).getString("PID");
+                            strPatronBarCode = new JSONObject(result)
+                                    .getString("PatronBarCode");
+                            strPatronToken = new JSONObject(result)
+                                    .getString("PatronToken");
 
-							// 判斷所得JSON格式是否有錯
-							if (jsonResultTitleArray == null
-									|| jsonResultEndDateArray == null) {
-								Toast.makeText(LoginActivity.this,
-										R.string.JSON_Data_error,
-										Toast.LENGTH_SHORT).show();
-							} else {
+                            // 先清空讀者資料表
+                            dbHelper.doEmptyPartonTable();
+                            // 寫入讀者資料
+                            dbHelper.doInsertPartonTable(strPID,
+                                    strPatronBarCode, strPatronName,
+                                    strPatronToken);
 
-								// 先清空讀者借閱資料表
-								dbHelper.doEmptyPartonLoanTable();
+                            jsonResultTitleArray = new JSONObject(result)
+                                    .getJSONObject("PatronLoan").getJSONArray(
+                                            "Z13_TITLE");
+                            jsonResultBarcodeArray = new JSONObject(result)
+                                    .getJSONObject("PatronLoan").getJSONArray(
+                                            "Z30_BARCODE");
+                            jsonResultDataTypeArray = new JSONObject(result)
+                                    .getJSONObject("PatronLoan").getJSONArray(
+                                            "DATA_TYPE");
+                            jsonResultEndDateArray = new JSONObject(result)
+                                    .getJSONObject("PatronLoan").getJSONArray(
+                                            "END_DATE");
 
-								// 取出JSON陣列內所有內容
-								for (int i = 0; i < jsonResultTitleArray.length(); i++) {
-									// 寫入讀者借閱資料
-									dbHelper.doInsertPartonLoanTable(
-											jsonResultTitleArray.get(i)
-													.toString(),
-											jsonResultBarcodeArray.get(i)
-													.toString(),
-											jsonResultDataTypeArray.get(i)
-													.toString(),
-											jsonResultEndDateArray.get(i)
-													.toString());
-									
-									// 登入成功，也成功寫入資料庫，立刻跳轉到借閱紀錄畫面
-									Intent intent = new Intent();
-									intent.setClass(LoginActivity.this, CirculationLogActivity.class);
-									startActivity(intent);
-								}
+                            // 判斷所得JSON格式是否有錯
+                            if (jsonResultTitleArray == null
+                                    || jsonResultEndDateArray == null) {
+                                Toast.makeText(LoginActivity.this,
+                                        R.string.JSON_Data_error,
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
 
-							}
-						}
-					} else {
-						strErrorInfo = new JSONObject(result)
-								.getString("error_info");
-						Toast.makeText(LoginActivity.this, strErrorInfo,
-								Toast.LENGTH_SHORT).show();
-					}
+                                // 先清空讀者借閱資料表
+                                dbHelper.doEmptyPartonLoanTable();
 
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			// 資料抓取完畢將讀取鈕移除
-			setSupportProgressBarIndeterminateVisibility(false);
-		}
-	}
+                                // 取出JSON陣列內所有內容
+                                for (int i = 0; i < jsonResultTitleArray
+                                        .length(); i++) {
+                                    // 寫入讀者借閱資料
+                                    dbHelper.doInsertPartonLoanTable(
+                                            jsonResultTitleArray.get(i)
+                                                    .toString(),
+                                            jsonResultBarcodeArray.get(i)
+                                                    .toString(),
+                                            jsonResultDataTypeArray.get(i)
+                                                    .toString(),
+                                            jsonResultEndDateArray.get(i)
+                                                    .toString());
 
-	private OnClickListener btListener = new OnClickListener() {
-		public void onClick(View v) {
+                                    // 登入成功，也成功寫入資料庫，立刻跳轉到借閱紀錄畫面
+                                    Intent intent = new Intent();
+                                    intent.setClass(LoginActivity.this,
+                                            CirculationLogActivity.class);
+                                    startActivity(intent);
+                                }
 
-			// Toast.makeText(MainActivity.this,
-			// R.string.JSON_DataLoading,Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    } else {
+                        strErrorInfo = new JSONObject(result)
+                                .getString("error_info");
+                        Toast.makeText(LoginActivity.this, strErrorInfo,
+                                Toast.LENGTH_SHORT).show();
+                    }
 
-			// 呼叫非同步架構抓取http資料
-			RetreiveHTTPTask retreivehttpask;
-			try {
-				retreivehttpask = (RetreiveHTTPTask) new RetreiveHTTPTask()
-						.execute("https://api.lib.nchu.edu.tw/php/appagent/");
+                }
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            // 資料抓取完畢將讀取鈕移除
+            setSupportProgressBarIndeterminateVisibility(false);
+        }
+    }
 
-				// 倘若失敗時的動作
-				if (retreivehttpask == null) {
-					Toast.makeText(LoginActivity.this, R.string.Check_Network,
-							Toast.LENGTH_SHORT).show();
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+    private OnClickListener btListener = new OnClickListener() {
+        public void onClick(View v) {
 
-		}
-	};
+            // Toast.makeText(MainActivity.this,
+            // R.string.JSON_DataLoading,Toast.LENGTH_SHORT).show();
+
+            // 呼叫非同步架構抓取http資料
+            RetreiveHTTPTask retreivehttpask;
+            try {
+                retreivehttpask = (RetreiveHTTPTask) new RetreiveHTTPTask()
+                        .execute("https://api.lib.nchu.edu.tw/php/appagent/");
+
+                // 倘若失敗時的動作
+                if (retreivehttpask == null) {
+                    Toast.makeText(LoginActivity.this, R.string.Check_Network,
+                            Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+        }
+    };
+
+    private void CheckIfDBEmpty() {
+        // 建立取用資料庫的物件
+        DBHelper dbHelper = new DBHelper(LoginActivity.this);
+
+        int intCountPartonTable = dbHelper.doCountPartonTable();
+        if (intCountPartonTable == 1) {
+            // 在資料庫中有登入紀錄，立刻跳轉到流通紀錄畫面
+            Intent intent = new Intent();
+            intent.setClass(LoginActivity.this, CirculationLogActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+        // 關閉資料庫
+        dbHelper.close();
+    }
 }
+// /:~
