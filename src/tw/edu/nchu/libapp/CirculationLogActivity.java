@@ -1,10 +1,17 @@
 //: object/CirculationLogActivity.java
 package tw.edu.nchu.libapp;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Vector;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources.NotFoundException;
 import android.os.Bundle;
@@ -28,7 +35,9 @@ import android.widget.TextView;
  */
 public class CirculationLogActivity extends ActionBarActivity {
     /**
-     * GroupData 定義第一層清單 ChildrenData 定義第二層清單
+     * GroupData 定義第一層清單
+     * 
+     * ChildrenData 定義第二層清單
      */
     private List<String> GroupData;
     private List<List<String>> ChildrenData;
@@ -121,10 +130,70 @@ public class CirculationLogActivity extends ActionBarActivity {
      * @throws exceptions
      *             No exceptions thrown
      */
+    @SuppressWarnings("unchecked")
+    @SuppressLint("SimpleDateFormat")
     private void LoadListDate() {
         try {
             // 建立取用資料庫的物件
             DBHelper dbHelper = new DBHelper(CirculationLogActivity.this);
+
+            // 將回傳的全部的借閱資料陣列轉入 aryPartonLoan 中
+            String[][] aryPartonLoan = dbHelper.getPartonLoanTable();
+
+            // 將回傳的全部的預約資料陣列轉入 aryPartonLoan 中
+            String[][] aryPartonLoan_Request = dbHelper
+                    .getPartonLoanTable_Request();
+
+            // 建立子擴展清單功能所需的陣列
+            String[] aryChildPartonLoan = new String[aryPartonLoan[0].length];
+            @SuppressWarnings("rawtypes")
+            Vector vectorChildPartonLoan_Due = new Vector();
+            @SuppressWarnings("rawtypes")
+            Vector vectorChildPartonLoan_OverDue = new Vector();
+            String[] aryChildPartonLoan_Request = null;
+
+            // 將 aryPartonLoan 全部借閱資料陣列的值合併，並將其中內容帶入"，到期日："，最後整合至
+            // aryChildPartonLoan中
+            for (int i = 0; i < aryPartonLoan[0].length; i++) {
+                try {
+                    aryChildPartonLoan[i] = aryPartonLoan[0][i].toString()
+                            + (String) this.getResources().getText(
+                                    R.string.ActivityCirculationLog_lvDuedate)
+                            + aryPartonLoan[1][i].toString();
+
+                    // 利用判斷天數來控制清單的內容
+                    SimpleDateFormat smdf = new SimpleDateFormat("yyyyMMdd");
+
+                    // 取得今天日期
+                    Calendar cal = new GregorianCalendar();
+                    cal.set(Calendar.HOUR_OF_DAY, 0); // anything 0 - 23
+                    cal.set(Calendar.MINUTE, 0);
+                    cal.set(Calendar.SECOND, 0);
+                    Date dateToday = cal.getTime();
+
+                    // 將到期日轉成特定格式
+                    Date dateDue = smdf.parse(aryPartonLoan[1][i].toString());
+
+                    //Date dateTestDue = smdf.parse("20131231");
+
+                    // 計算到期日跟今天差幾天
+                    long longDay = dateDue.getTime() - dateToday.getTime();
+                    longDay = longDay / (24 * 60 * 60 * 1000);
+
+                    // 判斷是過期還是快過期
+                    if (longDay >= 0 && longDay < 20) {
+                        vectorChildPartonLoan_Due.add(aryPartonLoan[0][i]
+                                .toString() + ",倒數：" + longDay);
+                    } else if (longDay < 0) {
+                        vectorChildPartonLoan_OverDue.add(aryPartonLoan[0][i]
+                                .toString() + ",過期：" + longDay);
+                    }
+
+                } catch (ParseException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
 
             // 擴展清單所需的陣列清單
             GroupData = new ArrayList<String>();
@@ -137,11 +206,12 @@ public class CirculationLogActivity extends ActionBarActivity {
             // 帶入讀者借閱到期資料表筆數，供擴展清單用
             GroupData.add((String) this.getResources().getText(
                     R.string.ActivityCirculationLog_lvDueList)
-                    + " (" + dbHelper.doCountPartonLoanTable() + ")");
-
+                    + " (" + vectorChildPartonLoan_Due.size() + ")");//
+            
+            // 帶入讀者借閱過期資料表筆數，供擴展清單用
             GroupData.add((String) this.getResources().getText(
                     R.string.ActivityCirculationLog_lvOverduesList)
-                    + " (" + dbHelper.doCountPartonLoanTable() + ")");
+                    + " (" + vectorChildPartonLoan_OverDue.size() + ")");
 
             // 帶入讀者預約資料表筆數，供擴展清單用
             GroupData.add((String) this.getResources().getText(
@@ -150,39 +220,34 @@ public class CirculationLogActivity extends ActionBarActivity {
 
             ChildrenData = new ArrayList<List<String>>();
 
-            // 將回傳的全部的借閱資料陣列轉入 aryPartonLoan 中
-            String[][] aryPartonLoan = dbHelper.getPartonLoanTable();
-
-            // 將回傳的全部的預約資料陣列轉入 aryPartonLoan 中
-            String[][] aryPartonLoan_Request = dbHelper
-                    .getPartonLoanTable_Request();
-
-            // 建立子擴展清單功能所需的陣列
-            String[] aryChildPartonLoan = new String[aryPartonLoan[0].length];
-            String[] aryChildPartonLoan_Request = new String[aryPartonLoan_Request[0].length];
-
-            // 將 aryPartonLoan 全部借閱資料陣列的值合併，並將其中內容帶入"，到期日："，最後整合至
-            // aryChildPartonLoan中
-            for (int i = 0; i < aryPartonLoan[0].length; i++) {
-                aryChildPartonLoan[i] = aryPartonLoan[0][i].toString()
-                        + (String) this.getResources().getText(
-                                R.string.ActivityCirculationLog_lvDuedate)
-                        + aryPartonLoan[1][i].toString();
-            }
-            // 將array轉為arraylist格式，供UI使用
+            // 將借閱資料陣列轉為arraylist格式，供UI使用
             List<String> ChildPartonLoanlist = Arrays
                     .asList(aryChildPartonLoan);
             ChildrenData.add(ChildPartonLoanlist);
 
-            List<String> Child2 = new ArrayList<String>();
-            ChildrenData.add(Child2);
+            // 將即將到期資料陣列轉為arraylist格式，供UI使用
+            List<String> ChildPartonLoanDuelist;
+            // 判斷是否為空陣列，來決定list的內容
+            if (vectorChildPartonLoan_Due.size() > 0) {
+                ChildPartonLoanDuelist = new ArrayList<String>(
+                        vectorChildPartonLoan_Due);
+                ChildrenData.add(ChildPartonLoanDuelist);
+            } else {
+                ChildPartonLoanDuelist = new ArrayList<String>();
+                ChildrenData.add(ChildPartonLoanDuelist);
+            }
 
-            List<String> Child3 = new ArrayList<String>();
-            Child3.add("cccccc");
-            ChildrenData.add(Child3);
-
-            List<String> Child4 = new ArrayList<String>();
-            ChildrenData.add(Child4);
+            // 將過期資料陣列轉為arraylist格式，供UI使用
+            List<String> ChildPartonLoanOverDuelist;
+            // 判斷是否為空陣列，來決定list的內容
+            if (vectorChildPartonLoan_OverDue.size() > 0) {
+                ChildPartonLoanOverDuelist = new ArrayList<String>(
+                        vectorChildPartonLoan_OverDue);
+                ChildrenData.add(ChildPartonLoanOverDuelist);
+            } else {
+                ChildPartonLoanOverDuelist = new ArrayList<String>();
+                ChildrenData.add(ChildPartonLoanOverDuelist);
+            }
 
             // 將 aryPartonLoan_Request 全部借預約資料陣列的值合併，並將其中內容帶入"，到館日："，最後整合至
             // ChildPartonLoan_Requestlist 中
@@ -194,10 +259,18 @@ public class CirculationLogActivity extends ActionBarActivity {
                                 R.string.ActivityCirculationLog_lvDuedate)
                         + aryPartonLoan_Request[1][i].toString();
             }
+
             // 將array轉為arraylist格式，供UI使用
-            List<String> ChildPartonLoan_Requestlist = Arrays
-                    .asList(aryChildPartonLoan_Request);
-            ChildrenData.add(ChildPartonLoan_Requestlist);
+            List<String> ChildPartonLoan_Requestlist;
+            // 判斷是否為空陣列，來決定list的內容
+            if (aryPartonLoan_Request[0].length > 0) {
+                ChildPartonLoan_Requestlist = Arrays
+                        .asList(aryChildPartonLoan_Request);
+                ChildrenData.add(ChildPartonLoan_Requestlist);
+            } else {
+                ChildPartonLoan_Requestlist = new ArrayList<String>();
+                ChildrenData.add(ChildPartonLoan_Requestlist);
+            }
 
             // 關閉資料庫
             dbHelper.close();
