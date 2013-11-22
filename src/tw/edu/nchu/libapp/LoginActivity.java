@@ -1,3 +1,4 @@
+//: object/LoginActivity.java
 package tw.edu.nchu.libapp;
 
 import java.io.BufferedReader;
@@ -36,7 +37,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * 登入畫面所需程式
+ * 
+ * @author kiko
+ * @version 1.0
+ */
 public class LoginActivity extends ActionBarActivity {
+    /**
+     * btLogin 登入按鈕 txID 讀者證號輸入欄 txPassword 密碼輸入欄
+     */
     private Button btLogin;
     private EditText txID;
     private EditText txPassword;
@@ -90,7 +100,12 @@ public class LoginActivity extends ActionBarActivity {
         }
     }
 
-    // 建非同步模式架構
+    /**
+     * HTTP連線的整個過程
+     * 
+     * @throws exceptions
+     *             No exceptions thrown
+     */
     class RetreiveHTTPTask extends AsyncTask<String, Void, String> {
 
         @Override
@@ -325,8 +340,17 @@ public class LoginActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * 登入按鈕的動作，點選後開始執行HTTP連線工作
+     * 
+     * @throws exceptions
+     *             No exceptions thrown
+     */
     private OnClickListener btListener = new OnClickListener() {
         public void onClick(View v) {
+            /**
+             *  retreivehttpask HTTP連線工作
+             */
 
             // Toast.makeText(MainActivity.this,
             // R.string.JSON_DataLoading,Toast.LENGTH_SHORT).show();
@@ -350,13 +374,25 @@ public class LoginActivity extends ActionBarActivity {
         }
     };
 
+    /**
+     * 確認是否資料庫是空的，如果有資料就跳轉到流通紀錄畫面
+     * 
+     * @throws exceptions
+     *             No exceptions thrown
+     */
     private void CheckIfDBEmpty() {
+        /**
+         *  dbHelper 資料庫的物件
+         *  intCountPartonTable 讀者資料表筆數
+         */
         // 建立取用資料庫的物件
         DBHelper dbHelper = new DBHelper(LoginActivity.this);
 
+        // 取得讀者資料表筆數
         int intCountPartonTable = dbHelper.doCountPartonTable();
+        
+        // 在資料庫中有登入紀錄，立刻跳轉到流通紀錄畫面
         if (intCountPartonTable == 1) {
-            // 在資料庫中有登入紀錄，立刻跳轉到流通紀錄畫面
             Intent intent = new Intent();
             intent.setClass(LoginActivity.this, CirculationLogActivity.class);
             startActivity(intent);

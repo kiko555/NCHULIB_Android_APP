@@ -9,32 +9,36 @@ import android.util.DisplayMetrics;
 import android.view.Window;
 
 /** 這是一個取得設備資料的物件
-* 1.產生設備唯一辨識碼
-* @author kiko
-* @version 1.0
-*/
+ * 1.產生設備唯一辨識碼
+ * 
+ * @author kiko
+ * @version 1.0
+ */
 public class DeviceClass {
-	/** Entry point to class & application.
+	/** 物件進入點
 	* 
-	* @param args array of string arguments
-	* @throws exceptions No exceptions thrown
 	*/
 	public DeviceClass() {
 	}
 		
 	/** 產生設備唯一辨識碼
 	* 
-	* @param 使用者的PID
+	* @param PID 使用者的PID
+	* 
+	* @return m_szUniqueID 設備唯一辨識碼
+	* 
 	* @throws exceptions No exceptions thrown
 	*/
 	public String doMakeDeviceToken(String PID) {
-		/** m_szUniqueID 是此方法的回傳變數 */
+		/**
+		 *  strPid 讀者證號
+		 *  m_szUniqueID 設備唯一辨識碼
+		 */
 		String strPid = PID;
 		String m_szUniqueID = new String();
 		
 		try {
-			// we make this look like a valid IMEI
-			// 13 digits
+			// 建立一組 IMEI
 			String m_szDevIDShort = "99" + Build.BOARD.length() % 10
 					+ Build.BRAND.length() % 10 + Build.CPU_ABI.length()
 					% 10 + Build.DEVICE.length() % 10
@@ -45,6 +49,7 @@ public class DeviceClass {
 					% 10 + Build.TAGS.length() % 10 + Build.TYPE.length()
 					% 10 + Build.USER.length() % 10;
 
+			// 混合讀者證號
 			String m_szLongID = m_szDevIDShort + strPid;
 			// compute md5
 			MessageDigest m = null;
@@ -82,11 +87,13 @@ public class DeviceClass {
 	
 	/** 取得設備解析度
 	* 
-	* 
+	* @return strDeviceDispaly 設備解析度
 	* @throws exceptions No exceptions thrown
 	*/
 	public String getDeviceDispaly() {
-		/** m_szUniqueID 是此方法的回傳變數 */
+		/**
+		 *  strDeviceDispaly 設備解析度 
+		 */
 		String strDeviceDispaly = new String();
 		
 		try {

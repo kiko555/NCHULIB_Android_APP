@@ -18,6 +18,9 @@ import android.widget.Button;
  * @version 1.0
  */
 public class SettingsActivity extends ActionBarActivity {
+    /**
+     *  btLogout 登出按鈕
+     */
     private Button btLogout;
 
     @Override
@@ -40,7 +43,7 @@ public class SettingsActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.settings_activity, menu);
         return true;
     }
 
@@ -58,9 +61,6 @@ public class SettingsActivity extends ActionBarActivity {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            return true;
-        case R.id.action_exit:
-            finish();
             return true;
         default:
             return false;

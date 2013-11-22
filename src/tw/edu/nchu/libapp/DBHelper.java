@@ -18,11 +18,11 @@ import android.database.sqlite.SQLiteOpenHelper;
  * @version 1.0
  */
 public class DBHelper extends SQLiteOpenHelper {
-    private final static int intDBVersion = 1; // <-- 版本
-    private final static String strDBName = "nchulib.db"; // 準備取用的資料庫名
-
-    // private final static String DBName = "nchulib.db"; // <-- db name
-    // private final static String TableName = "patronloan"; // <-- table name
+    /**
+     * intDBVersion 資料庫版本 strDBName 準備取用的資料庫名
+     */
+    private final static int intDBVersion = 1;
+    private final static String strDBName = "nchulib.db";
 
     public DBHelper(Context context, String DBname, CursorFactory factory,
             int version) {
@@ -98,14 +98,6 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // 取回資料表有幾筆資料
-    // public int RecCount() {
-    // SQLiteDatabase db = getWritableDatabase();
-    // String sql = "SELECT * FROM " + TableName;
-    // Cursor recSet = db.rawQuery(sql, null);
-    // return recSet.getCount();
-    // }
-
     /**
      * 將讀者資料寫入 Parton 表格
      * 
@@ -122,7 +114,6 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public void doInsertPartonTable(String PID, String PatronBarCode,
             String PatronName, String PatronToken) {
-        /** 無需先宣告的變數 */
         try {
             // SQLiteDatabase對象
             SQLiteDatabase db_PatronHelper = getWritableDatabase();
@@ -150,7 +141,6 @@ public class DBHelper extends SQLiteOpenHelper {
      *             No exceptions thrown
      */
     public void doEmptyPartonTable() {
-        /** 無需先宣告的變數 */
         try {
             // SQLiteDatabase對象
             SQLiteDatabase db_PatronHelper = getWritableDatabase();
@@ -174,9 +164,6 @@ public class DBHelper extends SQLiteOpenHelper {
      *             No exceptions thrown
      */
     public int doCountPartonTable() {
-        /**
-         * intPartonCount 回傳的筆數
-         */
         int intPartonCount = 0;
 
         try {
@@ -211,7 +198,6 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public void doInsertPartonLoanTable(String Title, String BarCode,
             String DataType, String EndDate) {
-        /** 無需先宣告的變數 */
         try {
             // SQLiteDatabase對象
             SQLiteDatabase db_PatronLoanHelper = getWritableDatabase();
@@ -239,7 +225,6 @@ public class DBHelper extends SQLiteOpenHelper {
      *             No exceptions thrown
      */
     public void doEmptyPartonLoanTable() {
-        /** 無需先宣告的變數 */
         try {
             // SQLiteDatabase對象
             SQLiteDatabase db_PatronLoanHelper = getWritableDatabase();
@@ -263,9 +248,6 @@ public class DBHelper extends SQLiteOpenHelper {
      *             No exceptions thrown
      */
     public int doCountPartonLoanTable() {
-        /**
-         * intRecCount 回傳的筆數
-         */
         int intRecCount = 0;
 
         try {
@@ -293,15 +275,11 @@ public class DBHelper extends SQLiteOpenHelper {
      *             No exceptions thrown
      */
     public String[][] getPartonLoanTable() {
-        /**
-         * aryRec 回傳陣列內容
-         */
-
         // SQLiteDatabase對象
         SQLiteDatabase db_PatronLoanHelper = getReadableDatabase();
         String strSql = "Select * from patronloan where DataType='LOAN'";
         Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
-        
+
         // 取得資料筆數
         int intRecCount = recSet.getCount();
 
@@ -325,7 +303,6 @@ public class DBHelper extends SQLiteOpenHelper {
      *             No exceptions thrown
      */
     public void doEmptyAllTable() {
-        /** 無需先宣告的變數 */
         try {
             // SQLiteDatabase對象
             SQLiteDatabase db_PatronHelper = getWritableDatabase();

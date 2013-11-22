@@ -1,3 +1,4 @@
+//: object/CirculationLogActivity.java
 package tw.edu.nchu.libapp;
 
 import java.util.ArrayList;
@@ -20,9 +21,19 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * 流通資料畫面所需程式
+ * 
+ * @author kiko
+ * @version 1.0
+ */
 public class CirculationLogActivity extends ActionBarActivity {
-    private List<String> GroupData;// 定义组数据
-    private List<List<String>> ChildrenData;// 定义组中的子数据
+    /** 
+     * GroupData 定義第一層清單
+     * ChildrenData 定義第二層清單
+     */
+    private List<String> GroupData;
+    private List<List<String>> ChildrenData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +88,12 @@ public class CirculationLogActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * 檢查資料是否沒有資料，如果是就跳轉到登入畫面
+     * 
+     * @throws exceptions
+     *             No exceptions thrown
+     */
     private void CheckIfDBEmpty() {
         try {
             // 建立取用資料庫的物件
@@ -86,7 +103,8 @@ public class CirculationLogActivity extends ActionBarActivity {
             if (intCountPartonTable != 1) {
                 // 在資料庫中無登入紀錄，立刻跳轉到登入畫面
                 Intent intent = new Intent();
-                intent.setClass(CirculationLogActivity.this, LoginActivity.class);
+                intent.setClass(CirculationLogActivity.this,
+                        LoginActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -99,6 +117,12 @@ public class CirculationLogActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * 呼叫資料庫帶出借閱或預約資料，並將其轉入擴展清單功能所需參數中
+     * 
+     * @throws exceptions
+     *             No exceptions thrown
+     */
     private void LoadListDate() {
         try {
             // 建立取用資料庫的物件
@@ -126,18 +150,21 @@ public class CirculationLogActivity extends ActionBarActivity {
 
             ChildrenData = new ArrayList<List<String>>();
 
-            // 帶入全部的借閱資料
+            // 將回傳的全部的借閱資料陣列轉入 aryPartonLoan 中
             String[][] aryPartonLoan = dbHelper.getPartonLoanTable();
-            String[] Child1 = new String[aryPartonLoan[0].length];
 
+            // 建立擴展清單功能所需的陣列
+            String[] aryChild1 = new String[aryPartonLoan[0].length];
+
+            // 將 aryPartonLoan 全部借閱資料陣列的值合併，並將其中內容帶入"，到期日："，最後整合至 aryChild1中
             for (int i = 0; i < aryPartonLoan[0].length; i++) {
-                Child1[i] = aryPartonLoan[0][i].toString()
+                aryChild1[i] = aryPartonLoan[0][i].toString()
                         + (String) this.getResources().getText(
                                 R.string.ActivityCirculationLog_lvDuedate)
                         + aryPartonLoan[1][i].toString();
             }
-            List<String> Child1list = Arrays.asList(Child1);
-
+            // 將array轉為arraylist格式，供UI使用
+            List<String> Child1list = Arrays.asList(aryChild1);
             ChildrenData.add(Child1list);
 
             List<String> Child2 = new ArrayList<String>();
@@ -239,3 +266,4 @@ public class CirculationLogActivity extends ActionBarActivity {
         }
     }
 }
+// /:~
