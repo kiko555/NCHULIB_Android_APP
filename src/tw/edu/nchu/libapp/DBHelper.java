@@ -1,9 +1,6 @@
 //: object/DBHelper.java
 package tw.edu.nchu.libapp;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -81,7 +78,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "EndTime TEXT NOT NULL, " + "ExecuteStatus TEXT NOT NULL );";
         db.execSQL(strTB_SystemLog_sql);
 
-        // 建立讀者借閱紀錄表
+        // 建立系統設定紀錄表
         String strTB_SystemSet_sql = "CREATE TABLE IF NOT EXISTS SystemSet( "
                 + "SysStatusDes TEXT NOT NULL, "
                 + "SysStatus INTEGER NOT NULL );";
@@ -240,7 +237,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * 取得 PartonLoan 表格的筆數
+     * 取得 PartonLoan 表格的借閱筆數
      * 
      * @return intRecCount 回傳總借閱的筆數
      * 
@@ -265,11 +262,38 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         return intRecCount;
     }
+    
+    /**
+     * 取得 PartonLoan 表格的預約筆數
+     * 
+     * @return intRequestCount 回傳總借閱的筆數
+     * 
+     * @throws exceptions
+     *             No exceptions thrown
+     */
+    public int doCountPartonLoanTable_Request() {
+        int intRequestCount = 0;
+
+        try {
+            // SQLiteDatabase對象
+            SQLiteDatabase db_PatronLoanHelper = getReadableDatabase();
+            String strSql = "Select * from patronloan where DataType='REQUEST'";
+            Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
+
+            intRequestCount = recSet.getCount();
+
+            db_PatronLoanHelper.close();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return intRequestCount;
+    }
 
     /**
-     * 取得 PartonLoan 表格的內容
+     * 取得 PartonLoan 表格中的借閱內容
      * 
-     * @return aryRec 回傳總借閱的筆數
+     * @return aryRec 回傳借閱資料的陣列
      * 
      * @throws exceptions
      *             No exceptions thrown
@@ -278,6 +302,36 @@ public class DBHelper extends SQLiteOpenHelper {
         // SQLiteDatabase對象
         SQLiteDatabase db_PatronLoanHelper = getReadableDatabase();
         String strSql = "Select * from patronloan where DataType='LOAN'";
+        Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
+
+        // 取得資料筆數
+        int intRecCount = recSet.getCount();
+
+        // 宣告符合需求的陣列大小
+        String[][] aryRec = new String[2][intRecCount];
+
+        while (recSet.moveToNext()) {
+            int intRecCursor = recSet.getPosition();
+            aryRec[0][intRecCursor] = recSet.getString(0);
+            aryRec[1][intRecCursor] = recSet.getString(3);
+
+        }
+
+        return aryRec;
+    }
+    
+    /**
+     * 取得 PartonLoan 表格中的預約內容
+     * 
+     * @return aryRec 回傳預約資料的陣列
+     * 
+     * @throws exceptions
+     *             No exceptions thrown
+     */
+    public String[][] getPartonLoanTable_Request() {
+        // SQLiteDatabase對象
+        SQLiteDatabase db_PatronLoanHelper = getReadableDatabase();
+        String strSql = "Select * from patronloan where DataType='REQUEST'";
         Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
 
         // 取得資料筆數

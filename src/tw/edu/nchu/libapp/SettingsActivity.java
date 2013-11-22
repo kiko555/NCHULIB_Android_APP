@@ -80,8 +80,9 @@ public class SettingsActivity extends ActionBarActivity {
             // 建立取用資料庫的物件
             DBHelper dbHelper = new DBHelper(SettingsActivity.this);
 
-            // 先清空讀者資料表
-            dbHelper.doEmptyAllTable();
+            // 先清空讀者及借閱資料表
+            dbHelper.doEmptyPartonLoanTable();
+            dbHelper.doEmptyPartonTable();
 
             // 清空後直接跳轉到登入畫面
             Intent intent = new Intent();

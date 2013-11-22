@@ -19,7 +19,6 @@ import android.widget.AbsListView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * 流通資料畫面所需程式
@@ -28,9 +27,8 @@ import android.widget.Toast;
  * @version 1.0
  */
 public class CirculationLogActivity extends ActionBarActivity {
-    /** 
-     * GroupData 定義第一層清單
-     * ChildrenData 定義第二層清單
+    /**
+     * GroupData 定義第一層清單 ChildrenData 定義第二層清單
      */
     private List<String> GroupData;
     private List<List<String>> ChildrenData;
@@ -144,38 +142,62 @@ public class CirculationLogActivity extends ActionBarActivity {
             GroupData.add((String) this.getResources().getText(
                     R.string.ActivityCirculationLog_lvOverduesList)
                     + " (" + dbHelper.doCountPartonLoanTable() + ")");
+
+            // 帶入讀者預約資料表筆數，供擴展清單用
             GroupData.add((String) this.getResources().getText(
                     R.string.ActivityCirculationLog_lvRequestList)
-                    + " (" + dbHelper.doCountPartonLoanTable() + ")");
+                    + " (" + dbHelper.doCountPartonLoanTable_Request() + ")");
 
             ChildrenData = new ArrayList<List<String>>();
 
             // 將回傳的全部的借閱資料陣列轉入 aryPartonLoan 中
             String[][] aryPartonLoan = dbHelper.getPartonLoanTable();
 
-            // 建立擴展清單功能所需的陣列
-            String[] aryChild1 = new String[aryPartonLoan[0].length];
+            // 將回傳的全部的預約資料陣列轉入 aryPartonLoan 中
+            String[][] aryPartonLoan_Request = dbHelper
+                    .getPartonLoanTable_Request();
 
-            // 將 aryPartonLoan 全部借閱資料陣列的值合併，並將其中內容帶入"，到期日："，最後整合至 aryChild1中
+            // 建立子擴展清單功能所需的陣列
+            String[] aryChildPartonLoan = new String[aryPartonLoan[0].length];
+            String[] aryChildPartonLoan_Request = new String[aryPartonLoan_Request[0].length];
+
+            // 將 aryPartonLoan 全部借閱資料陣列的值合併，並將其中內容帶入"，到期日："，最後整合至
+            // aryChildPartonLoan中
             for (int i = 0; i < aryPartonLoan[0].length; i++) {
-                aryChild1[i] = aryPartonLoan[0][i].toString()
+                aryChildPartonLoan[i] = aryPartonLoan[0][i].toString()
                         + (String) this.getResources().getText(
                                 R.string.ActivityCirculationLog_lvDuedate)
                         + aryPartonLoan[1][i].toString();
             }
             // 將array轉為arraylist格式，供UI使用
-            List<String> Child1list = Arrays.asList(aryChild1);
-            ChildrenData.add(Child1list);
+            List<String> ChildPartonLoanlist = Arrays
+                    .asList(aryChildPartonLoan);
+            ChildrenData.add(ChildPartonLoanlist);
 
             List<String> Child2 = new ArrayList<String>();
-
             ChildrenData.add(Child2);
+
             List<String> Child3 = new ArrayList<String>();
             Child3.add("cccccc");
             ChildrenData.add(Child3);
+
             List<String> Child4 = new ArrayList<String>();
-            Child4.add("dddddd");
             ChildrenData.add(Child4);
+
+            // 將 aryPartonLoan_Request 全部借預約資料陣列的值合併，並將其中內容帶入"，到館日："，最後整合至
+            // ChildPartonLoan_Requestlist 中
+            // TODO 修改到期字樣，改成預約書到館日
+            for (int i = 0; i < aryPartonLoan_Request[0].length; i++) {
+                aryChildPartonLoan_Request[i] = aryPartonLoan_Request[0][i]
+                        .toString()
+                        + (String) this.getResources().getText(
+                                R.string.ActivityCirculationLog_lvDuedate)
+                        + aryPartonLoan_Request[1][i].toString();
+            }
+            // 將array轉為arraylist格式，供UI使用
+            List<String> ChildPartonLoan_Requestlist = Arrays
+                    .asList(aryChildPartonLoan_Request);
+            ChildrenData.add(ChildPartonLoan_Requestlist);
 
             // 關閉資料庫
             dbHelper.close();

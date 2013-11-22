@@ -5,8 +5,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import android.os.Build;
-import android.util.DisplayMetrics;
-import android.view.Window;
 
 /** 這是一個取得設備資料的物件
  * 1.產生設備唯一辨識碼
