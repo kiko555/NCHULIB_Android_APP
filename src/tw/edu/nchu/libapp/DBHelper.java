@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
@@ -16,7 +17,9 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DBHelper extends SQLiteOpenHelper {
     /**
-     * intDBVersion 資料庫版本 strDBName 準備取用的資料庫名
+     * intDBVersion 資料庫版本
+     * 
+     * strDBName 準備取用的資料庫名
      */
     private final static int intDBVersion = 1;
     private final static String strDBName = "nchulib.db";
@@ -83,6 +86,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "SysStatusDes TEXT NOT NULL, "
                 + "SysStatus INTEGER NOT NULL );";
         db.execSQL(strTB_SystemSet_sql);
+        
+
     }
 
     @Override
@@ -93,6 +98,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS SystemLog");
         db.execSQL("DROP TABLE IF EXISTS SystemSet");
         onCreate(db);
+
     }
 
     /**
@@ -123,7 +129,7 @@ public class DBHelper extends SQLiteOpenHelper {
             rec.put("PatronToken", PatronToken);
             db_PatronHelper.insert("patron", null, rec);
 
-            db_PatronHelper.close();
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -144,7 +150,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
             db_PatronHelper.delete("patron", null, null);
 
-            db_PatronHelper.close();
+
+        } catch (SQLiteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -171,7 +180,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             intPartonCount = recSet.getCount();
 
-            db_PatronLoanHelper.close();
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -207,7 +216,7 @@ public class DBHelper extends SQLiteOpenHelper {
             rec.put("EndDate", EndDate);
             db_PatronLoanHelper.insert("patronloan", null, rec);
 
-            db_PatronLoanHelper.close();
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -228,7 +237,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             db_PatronLoanHelper.delete("patronloan", null, null);
 
-            db_PatronLoanHelper.close();
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -255,14 +264,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
             intRecCount = recSet.getCount();
 
-            db_PatronLoanHelper.close();
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return intRecCount;
     }
-    
+
     /**
      * 取得 PartonLoan 表格的預約筆數
      * 
@@ -282,7 +291,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             intRequestCount = recSet.getCount();
 
-            db_PatronLoanHelper.close();
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -317,9 +326,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
         }
 
+
+
         return aryRec;
     }
-    
+
     /**
      * 取得 PartonLoan 表格中的預約內容
      * 
@@ -347,6 +358,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         }
 
+
+
         return aryRec;
     }
 
@@ -359,14 +372,14 @@ public class DBHelper extends SQLiteOpenHelper {
     public void doEmptyAllTable() {
         try {
             // SQLiteDatabase對象
-            SQLiteDatabase db_PatronHelper = getWritableDatabase();
+            SQLiteDatabase db_Helper = getWritableDatabase();
 
-            db_PatronHelper.delete("patron", null, null);
-            db_PatronHelper.delete("patronloan", null, null);
-            db_PatronHelper.delete("SystemLog", null, null);
-            db_PatronHelper.delete("SystemSet", null, null);
+            db_Helper.delete("patron", null, null);
+            db_Helper.delete("patronloan", null, null);
+            db_Helper.delete("SystemLog", null, null);
+            db_Helper.delete("SystemSet", null, null);
 
-            db_PatronHelper.close();
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

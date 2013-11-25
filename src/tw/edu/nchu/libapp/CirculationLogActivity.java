@@ -26,6 +26,7 @@ import android.widget.AbsListView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * 流通資料畫面所需程式
@@ -82,6 +83,10 @@ public class CirculationLogActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem Item) {
         switch (Item.getItemId()) {
+        case R.id.action_refresh:
+            Toast.makeText(CirculationLogActivity.this, "222222",
+                    Toast.LENGTH_SHORT).show();
+            return true;
         case R.id.action_settings:
             Intent intent = new Intent();
             intent.setClass(CirculationLogActivity.this, SettingsActivity.class);
@@ -174,7 +179,7 @@ public class CirculationLogActivity extends ActionBarActivity {
                     // 將到期日轉成特定格式
                     Date dateDue = smdf.parse(aryPartonLoan[1][i].toString());
 
-                    //Date dateTestDue = smdf.parse("20131231");
+                    // Date dateTestDue = smdf.parse("20131231");
 
                     // 計算到期日跟今天差幾天
                     long longDay = dateDue.getTime() - dateToday.getTime();
@@ -207,7 +212,7 @@ public class CirculationLogActivity extends ActionBarActivity {
             GroupData.add((String) this.getResources().getText(
                     R.string.ActivityCirculationLog_lvDueList)
                     + " (" + vectorChildPartonLoan_Due.size() + ")");//
-            
+
             // 帶入讀者借閱過期資料表筆數，供擴展清單用
             GroupData.add((String) this.getResources().getText(
                     R.string.ActivityCirculationLog_lvOverduesList)
@@ -275,6 +280,9 @@ public class CirculationLogActivity extends ActionBarActivity {
             // 關閉資料庫
             dbHelper.close();
         } catch (NotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
