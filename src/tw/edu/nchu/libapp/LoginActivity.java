@@ -4,7 +4,6 @@ package tw.edu.nchu.libapp;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -95,8 +94,21 @@ public class LoginActivity extends ActionBarActivity {
     private OnClickListener btListener = new OnClickListener() {
         public void onClick(View v) {
             /**
-             * retreivehttpask HTTP連線工作
+             * logJobType 工作類型
+             * 
+             * logStartTime 工作執行開始時間
+             * 
+             * logEndTime 工作結束時間
+             * 
+             * logExecuteStatus 工作執行狀態
              */
+
+            LOGClass logclass = new LOGClass();
+            String logJobType = "登入";
+
+            String logTime = "";
+            String logEndTime = "";
+            String logExecuteStatus = "";
 
             // Toast.makeText(MainActivity.this,
             // R.string.JSON_DataLoading,Toast.LENGTH_SHORT).show();
@@ -168,9 +180,18 @@ public class LoginActivity extends ActionBarActivity {
                     LoginActivity.this);
 
             // 如果系統運作正常才繼續下去
-            if (aryResult[0].equals("success")) {
+            if (aryResult[0].equals("Success")) {
                 // 如果認證成功才執行
-                if (aryResult[1].equals("success")) {
+                if (aryResult[1].equals("Success")) {
+                    // 紀錄登入成功訊息
+                    java.util.Date now = new java.util.Date();
+                    now = new java.util.Date();
+                    logTime = new java.text.SimpleDateFormat(
+                            "yyyy-MM-dd HH:mm:ss").format(now);
+                    logExecuteStatus = "認證成功";
+                    logclass.setLOGtoDB(LoginActivity.this, logJobType,
+                            logTime, logExecuteStatus);
+
                     // 登入成功，立刻跳轉到借閱紀錄畫面
                     Intent intent = new Intent();
                     intent.setClass(LoginActivity.this,
@@ -179,6 +200,13 @@ public class LoginActivity extends ActionBarActivity {
                 } else {
                     // 認證失敗就丟個警告
                     // TODO: LOG
+                    java.util.Date now = new java.util.Date();
+                    now = new java.util.Date();
+                    logTime = new java.text.SimpleDateFormat(
+                            "yyyy-MM-dd HH:mm:ss").format(now);
+                    logExecuteStatus = "帳密錯誤";
+                    logclass.setLOGtoDB(LoginActivity.this, logJobType,
+                            logTime, logExecuteStatus);
                     Toast.makeText(LoginActivity.this,
                             R.string.ActivityLogin_toastLoginFail,
                             Toast.LENGTH_SHORT).show();

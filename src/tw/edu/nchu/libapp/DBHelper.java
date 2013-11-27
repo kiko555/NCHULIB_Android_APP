@@ -21,7 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * 
      * strDBName 準備取用的資料庫名
      */
-    private final static int intDBVersion = 1;
+    private final static int intDBVersion = 2;
     private final static String strDBName = "nchulib.db";
 
     public DBHelper(Context context, String DBname, CursorFactory factory,
@@ -77,8 +77,8 @@ public class DBHelper extends SQLiteOpenHelper {
         // 建立系統紀錄表
         String strTB_SystemLog_sql = "CREATE TABLE IF NOT EXISTS SystemLog( "
                 + "ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
-                + "JobType TEXT NOT NULL, " + "StartTime TEXT NOT NULL, "
-                + "EndTime TEXT NOT NULL, " + "ExecuteStatus TEXT NOT NULL );";
+                + "JobType TEXT NOT NULL, " + "Time TEXT NOT NULL, "
+                + "ExecuteStatus TEXT NOT NULL );";
         db.execSQL(strTB_SystemLog_sql);
 
         // 建立系統設定紀錄表
@@ -86,19 +86,46 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "SysStatusDes TEXT NOT NULL, "
                 + "SysStatus INTEGER NOT NULL );";
         db.execSQL(strTB_SystemSet_sql);
-        
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // TODO Auto-generated method stub
-        db.execSQL("DROP TABLE IF EXISTS patron");
-        db.execSQL("DROP TABLE IF EXISTS patronloan");
-        db.execSQL("DROP TABLE IF EXISTS SystemLog");
-        db.execSQL("DROP TABLE IF EXISTS SystemSet");
-        onCreate(db);
 
+        if (newVersion > oldVersion) {
+            db.beginTransaction();// 建立交易
+
+            boolean success = false;// 判斷參數
+
+            // 由之前不用的版本，可做不同的動作
+            switch (oldVersion) {
+            case 1:
+                // 因log紀錄方式變動，所以欄位變動，刪除StartTime及EndTime改成一個Time
+                db.execSQL("CREATE TEMPORARY TABLE SystemLog_backup("
+                        + "ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
+                        + "JobType TEXT NOT NULL, " + "Time TEXT NOT NULL, "
+                        + "ExecuteStatus TEXT NOT NULL );");
+                db.execSQL("INSERT INTO SystemLog_backup SELECT ID,JobType,StartTime,ExecuteStatus FROM SystemLog;");
+                db.execSQL("DROP TABLE SystemLog;");
+                db.execSQL("CREATE TABLE IF NOT EXISTS SystemLog( "
+                        + "ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
+                        + "JobType TEXT NOT NULL, " + "Time TEXT NOT NULL, "
+                        + "ExecuteStatus TEXT NOT NULL );");
+                db.execSQL("INSERT INTO SystemLog SELECT ID,JobType,Time,ExecuteStatus FROM SystemLog_backup;");
+                db.execSQL("DROP TABLE SystemLog_backup;");
+                oldVersion++;
+
+                success = true;
+                break;
+            }
+
+            if (success) {
+                db.setTransactionSuccessful();// 正確交易才成功
+            }
+            db.endTransaction();
+        } else {
+            onCreate(db);
+        }
     }
 
     /**
@@ -129,7 +156,6 @@ public class DBHelper extends SQLiteOpenHelper {
             rec.put("PatronToken", PatronToken);
             db_PatronHelper.insert("patron", null, rec);
 
-
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -149,7 +175,6 @@ public class DBHelper extends SQLiteOpenHelper {
             SQLiteDatabase db_PatronHelper = getWritableDatabase();
 
             db_PatronHelper.delete("patron", null, null);
-
 
         } catch (SQLiteException e) {
             // TODO Auto-generated catch block
@@ -179,7 +204,6 @@ public class DBHelper extends SQLiteOpenHelper {
             Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
 
             intPartonCount = recSet.getCount();
-
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -216,7 +240,6 @@ public class DBHelper extends SQLiteOpenHelper {
             rec.put("EndDate", EndDate);
             db_PatronLoanHelper.insert("patronloan", null, rec);
 
-
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -236,7 +259,6 @@ public class DBHelper extends SQLiteOpenHelper {
             SQLiteDatabase db_PatronLoanHelper = getWritableDatabase();
 
             db_PatronLoanHelper.delete("patronloan", null, null);
-
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -264,7 +286,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
             intRecCount = recSet.getCount();
 
-
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -290,7 +311,6 @@ public class DBHelper extends SQLiteOpenHelper {
             Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
 
             intRequestCount = recSet.getCount();
-
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -326,8 +346,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
         }
 
-
-
         return aryRec;
     }
 
@@ -358,9 +376,41 @@ public class DBHelper extends SQLiteOpenHelper {
 
         }
 
-
-
         return aryRec;
+    }
+
+    /**
+     * 將讀者資料寫入 Parton 表格
+     * 
+     * @param JobType
+     *            工作的類型
+     * @param StartTime
+     *            工作開始執行的時間
+     * @param EndTime
+     *            工作結束的時間
+     * @param ExecuteStatus
+     *            執行狀態
+     * @throws exceptions
+     *             No exceptions thrown
+     */
+    public void doInsertSystemLogTable(String JobType, String Time,
+            String ExecuteStatus) {
+        try {
+            // SQLiteDatabase對象
+            SQLiteDatabase db_PatronHelper = getWritableDatabase();
+            // 寫入資料庫的內容
+            ContentValues rec = new ContentValues();
+
+            rec.put("JobType", JobType);
+            rec.put("Time", Time);
+            rec.put("ExecuteStatus", ExecuteStatus);
+            db_PatronHelper.insert("SystemLog", null, rec);
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -378,7 +428,6 @@ public class DBHelper extends SQLiteOpenHelper {
             db_Helper.delete("patronloan", null, null);
             db_Helper.delete("SystemLog", null, null);
             db_Helper.delete("SystemSet", null, null);
-
 
         } catch (Exception e) {
             // TODO Auto-generated catch block

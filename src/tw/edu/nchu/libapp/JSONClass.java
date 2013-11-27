@@ -31,9 +31,9 @@ public class JSONClass {
      * 
      * @param LoginJSON
      *            登入後回傳的JSON
-     *            
-     *  @param context
-     *            使用者的PID          
+     * 
+     * @param context
+     *            使用者的PID
      * 
      * @return aryReturnResult 將系統狀態、認證狀態回傳
      * 
@@ -60,25 +60,32 @@ public class JSONClass {
 
         // 先將JSON內解出來放到各個陣列中
         try {
-            strOpResult = new JSONObject(strLoginJSON).getString("op_result");
+            strOpResult = new JSONObject(strLoginJSON).getJSONObject("Status")
+                    .getString("OpResult");
             strAuthResult = new JSONObject(strLoginJSON)
-                    .getString("auth_result");
-            strPatronName = new JSONObject(strLoginJSON)
-                    .getString("PatronName");
-            strPID = new JSONObject(strLoginJSON).getString("PID");
-            strPatronBarCode = new JSONObject(strLoginJSON)
-                    .getString("PatronBarCode");
-            strPatronToken = new JSONObject(strLoginJSON)
-                    .getString("PatronToken");
+                    .getJSONObject("Status").getString("AuthResult");
 
-            jsonResultTitleArray = new JSONObject(strLoginJSON).getJSONObject(
-                    "PatronLoan").getJSONArray("Z13_TITLE");
-            jsonResultBarcodeArray = new JSONObject(strLoginJSON)
-                    .getJSONObject("PatronLoan").getJSONArray("Z30_BARCODE");
-            jsonResultDataTypeArray = new JSONObject(strLoginJSON)
-                    .getJSONObject("PatronLoan").getJSONArray("DATA_TYPE");
-            jsonResultEndDateArray = new JSONObject(strLoginJSON)
-                    .getJSONObject("PatronLoan").getJSONArray("END_DATE");
+            // 如果認證有過才去解析它的資料
+            if (strAuthResult.equals("Success")) {
+                strPatronName = new JSONObject(strLoginJSON).getJSONObject(
+                        "PatronInfo").getString("PatronName");
+                strPID = new JSONObject(strLoginJSON).getJSONObject(
+                        "PatronInfo").getString("PID");
+                strPatronBarCode = new JSONObject(strLoginJSON).getJSONObject(
+                        "PatronInfo").getString("PatronBarCode");
+                strPatronToken = new JSONObject(strLoginJSON).getJSONObject(
+                        "PatronInfo").getString("UserToken");
+
+                jsonResultTitleArray = new JSONObject(strLoginJSON)
+                        .getJSONObject("PatronLoan").getJSONArray("Z13_TITLE");
+                jsonResultBarcodeArray = new JSONObject(strLoginJSON)
+                        .getJSONObject("PatronLoan")
+                        .getJSONArray("Z30_BARCODE");
+                jsonResultDataTypeArray = new JSONObject(strLoginJSON)
+                        .getJSONObject("PatronLoan").getJSONArray("DATA_TYPE");
+                jsonResultEndDateArray = new JSONObject(strLoginJSON)
+                        .getJSONObject("PatronLoan").getJSONArray("END_DATE");
+            }
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -86,11 +93,11 @@ public class JSONClass {
 
         // 如果系統運作正常才繼續下去，並在回傳陣列寫入系統狀態
         aryReturnResult[0] = strOpResult;
-        if (strOpResult.equals("success")) {
+        if (strOpResult.equals("Success")) {
 
             aryReturnResult[1] = strAuthResult;
             // 如果認證成功才執行
-            if (strAuthResult.equals("success")) {
+            if (strAuthResult.equals("Success")) {
                 // 判斷所得JSON是否有內容
                 if (jsonResultTitleArray == null
                         || jsonResultEndDateArray == null) {
@@ -128,6 +135,5 @@ public class JSONClass {
         }
         return aryReturnResult;
     }
-
 }
 // /:~
