@@ -1,10 +1,6 @@
 //: object/LogClass.java
 package tw.edu.nchu.libapp;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
 
 /**
@@ -27,17 +23,11 @@ public class LOGClass {
      * @param LoginJSON
      *            登入後回傳的JSON
      * 
-     * @param context
-     *            使用者的PID
-     * @return
-     * 
-     * @return aryReturnResult 將系統狀態、認證狀態回傳
-     * 
      * @throws exceptions
      *             No exceptions thrown
      */
     public void setLOGtoDB(Context context, String JobType, String Time,
-             String ExecuteStatus) {
+            String ExecuteStatus) {
         /**
          * 
          */
@@ -47,8 +37,7 @@ public class LOGClass {
 
         try {
             // 寫入讀者借閱資料
-            dbHelper.doInsertSystemLogTable(JobType, Time, 
-                    ExecuteStatus);
+            dbHelper.doInsertSystemLogTable(JobType, Time, ExecuteStatus);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
