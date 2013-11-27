@@ -60,7 +60,12 @@ public class CirculationLogActivity extends ActionBarActivity {
 
         // 使用擴展選單來呈現流通資料
         ExpandableListView myExpandableListView = (ExpandableListView) findViewById(R.id.expandableCirLogListView1);
-        myExpandableListView.setAdapter(new ExpandableAdapter());
+        try {
+            myExpandableListView.setAdapter(new ExpandableAdapter());
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 
@@ -155,7 +160,7 @@ public class CirculationLogActivity extends ActionBarActivity {
             Vector vectorChildPartonLoan_Due = new Vector();
             @SuppressWarnings("rawtypes")
             Vector vectorChildPartonLoan_OverDue = new Vector();
-            String[] aryChildPartonLoan_Request = null;
+            String[] aryChildPartonLoan_Request = new String[aryPartonLoan_Request.length];
 
             // 將 aryPartonLoan 全部借閱資料陣列的值合併，並將其中內容帶入"，到期日："，最後整合至
             // aryChildPartonLoan中
