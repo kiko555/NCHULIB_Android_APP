@@ -163,7 +163,11 @@ public class CirculationLogActivity extends ActionBarActivity {
                 try {
                     aryChildPartonLoan[i] = aryPartonLoan[0][i].toString()
                             + (String) this.getResources().getText(
+                                    R.string.ActivityCirculationLog_lvComma)
+                            + (String) this.getResources().getText(
                                     R.string.ActivityCirculationLog_lvDuedate)
+                            + (String) this.getResources().getText(
+                                    R.string.ActivityCirculationLog_lvColon)
                             + aryPartonLoan[1][i].toString();
 
                     // 利用判斷天數來控制清單的內容
@@ -179,6 +183,7 @@ public class CirculationLogActivity extends ActionBarActivity {
                     // 將到期日轉成特定格式
                     Date dateDue = smdf.parse(aryPartonLoan[1][i].toString());
 
+                    // 測試用，強迫指定日期用
                     // Date dateTestDue = smdf.parse("20131231");
 
                     // 計算到期日跟今天差幾天
@@ -187,11 +192,47 @@ public class CirculationLogActivity extends ActionBarActivity {
 
                     // 判斷是過期還是快過期
                     if (longDay >= 0 && longDay < 20) {
-                        vectorChildPartonLoan_Due.add(aryPartonLoan[0][i]
-                                .toString() + ",倒數：" + longDay);
+                        // 到期資訊寫入陣列中，後面UI要用
+                        vectorChildPartonLoan_Due
+                                .add(aryPartonLoan[0][i].toString()
+                                        + (String) this
+                                                .getResources()
+                                                .getText(
+                                                        R.string.ActivityCirculationLog_lvComma)
+                                        + (String) this
+                                                .getResources()
+                                                .getText(
+                                                        R.string.ActivityCirculationLog_lvCountdown)
+                                        + (String) this
+                                                .getResources()
+                                                .getText(
+                                                        R.string.ActivityCirculationLog_lvColon)
+                                        + longDay
+                                        + (String) this
+                                                .getResources()
+                                                .getText(
+                                                        R.string.ActivityCirculationLog_lvDay));
                     } else if (longDay < 0) {
-                        vectorChildPartonLoan_OverDue.add(aryPartonLoan[0][i]
-                                .toString() + ",過期：" + longDay);
+                        // 過期資訊寫入陣列中，後面UI要用
+                        vectorChildPartonLoan_OverDue
+                                .add(aryPartonLoan[0][i].toString()
+                                        + (String) this
+                                                .getResources()
+                                                .getText(
+                                                        R.string.ActivityCirculationLog_lvComma)
+                                        + (String) this
+                                                .getResources()
+                                                .getText(
+                                                        R.string.ActivityCirculationLog_lvOverDue)
+                                        + (String) this
+                                                .getResources()
+                                                .getText(
+                                                        R.string.ActivityCirculationLog_lvColon)
+                                        + longDay
+                                        + (String) this
+                                                .getResources()
+                                                .getText(
+                                                        R.string.ActivityCirculationLog_lvDay));
                     }
 
                 } catch (ParseException e) {
@@ -261,7 +302,11 @@ public class CirculationLogActivity extends ActionBarActivity {
                 aryChildPartonLoan_Request[i] = aryPartonLoan_Request[0][i]
                         .toString()
                         + (String) this.getResources().getText(
-                                R.string.ActivityCirculationLog_lvDuedate)
+                                R.string.ActivityCirculationLog_lvComma)
+                        + (String) this.getResources().getText(
+                                R.string.ActivityCirculationLog_lvArrivalDate)
+                        + (String) this.getResources().getText(
+                                R.string.ActivityCirculationLog_lvColon)
                         + aryPartonLoan_Request[1][i].toString();
             }
 

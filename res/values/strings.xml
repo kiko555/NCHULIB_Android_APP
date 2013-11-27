@@ -21,7 +21,13 @@
     <string name="ActivityCirculationLog_lvDueList">Due notice list</string>
     <string name="ActivityCirculationLog_lvOverduesList">Overdues notice list</string>
     <string name="ActivityCirculationLog_lvRequestList">Request list</string>
-    <string name="ActivityCirculationLog_lvDuedate">,duedate:</string>
+    <string name="ActivityCirculationLog_lvDuedate">duedate</string>
+    <string name="ActivityCirculationLog_lvOverDue">overdue</string>
+    <string name="ActivityCirculationLog_lvArrivalDate">arrival date</string>
+    <string name="ActivityCirculationLog_lvCountdown">countdown</string>
+    <string name="ActivityCirculationLog_lvDay">days</string>
+    <string name="ActivityCirculationLog_lvComma">,</string>
+    <string name="ActivityCirculationLog_lvColon">:</string>
     <string name="ActivitySettings_btLogout">Logout</string>
 
 </resources>
