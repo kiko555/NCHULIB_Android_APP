@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources.NotFoundException;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
@@ -164,6 +165,9 @@ public class DBHelper extends SQLiteOpenHelper {
             rec.put("PatronToken", PatronToken);
             db_PatronHelper.insert("patron", null, rec);
 
+            // 關閉資料庫
+            db_PatronHelper.close();
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -183,6 +187,9 @@ public class DBHelper extends SQLiteOpenHelper {
             SQLiteDatabase db_PatronHelper = getWritableDatabase();
 
             db_PatronHelper.delete("patron", null, null);
+
+            // 關閉資料庫
+            db_PatronHelper.close();
 
         } catch (SQLiteException e) {
             // TODO Auto-generated catch block
@@ -207,11 +214,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
         try {
             // SQLiteDatabase對象
-            SQLiteDatabase db_PatronLoanHelper = getReadableDatabase();
+            SQLiteDatabase db_PatronHelper = getReadableDatabase();
             String strSql = "Select * from patron";
-            Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
+            Cursor recSet = db_PatronHelper.rawQuery(strSql, null);
 
             intPartonCount = recSet.getCount();
+
+            // 關閉資料庫
+            db_PatronHelper.close();
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -248,6 +258,9 @@ public class DBHelper extends SQLiteOpenHelper {
             rec.put("EndDate", EndDate);
             db_PatronLoanHelper.insert("patronloan", null, rec);
 
+            // 關閉資料庫
+            db_PatronLoanHelper.close();
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -267,6 +280,9 @@ public class DBHelper extends SQLiteOpenHelper {
             SQLiteDatabase db_PatronLoanHelper = getWritableDatabase();
 
             db_PatronLoanHelper.delete("patronloan", null, null);
+
+            // 關閉資料庫
+            db_PatronLoanHelper.close();
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -294,6 +310,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
             intRecCount = recSet.getCount();
 
+            // 關閉資料庫
+            db_PatronLoanHelper.close();
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -320,6 +339,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
             intRequestCount = recSet.getCount();
 
+            // 關閉資料庫
+            db_PatronLoanHelper.close();
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -336,22 +357,32 @@ public class DBHelper extends SQLiteOpenHelper {
      *             No exceptions thrown
      */
     public String[][] getPartonLoanTable() {
-        // SQLiteDatabase對象
-        SQLiteDatabase db_PatronLoanHelper = getReadableDatabase();
-        String strSql = "Select * from patronloan where DataType='LOAN'";
-        Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
+        String[][] aryRec = null;
 
-        // 取得資料筆數
-        int intRecCount = recSet.getCount();
+        try {
+            // SQLiteDatabase對象
+            SQLiteDatabase db_PatronLoanHelper = getReadableDatabase();
+            String strSql = "Select * from patronloan where DataType='LOAN'";
+            Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
 
-        // 宣告符合需求的陣列大小
-        String[][] aryRec = new String[2][intRecCount];
+            // 取得資料筆數
+            int intRecCount = recSet.getCount();
 
-        while (recSet.moveToNext()) {
-            int intRecCursor = recSet.getPosition();
-            aryRec[0][intRecCursor] = recSet.getString(0);
-            aryRec[1][intRecCursor] = recSet.getString(3);
+            // 宣告符合需求的陣列大小
+            aryRec = new String[2][intRecCount];
 
+            while (recSet.moveToNext()) {
+                int intRecCursor = recSet.getPosition();
+                aryRec[0][intRecCursor] = recSet.getString(0);
+                aryRec[1][intRecCursor] = recSet.getString(3);
+
+            }
+
+            // 關閉資料庫
+            db_PatronLoanHelper.close();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
 
         return aryRec;
@@ -366,22 +397,31 @@ public class DBHelper extends SQLiteOpenHelper {
      *             No exceptions thrown
      */
     public String[][] getPartonLoanTable_Request() {
-        // SQLiteDatabase對象
-        SQLiteDatabase db_PatronLoanHelper = getReadableDatabase();
-        String strSql = "Select * from patronloan where DataType='REQUEST'";
-        Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
+        // 宣告符合需求的陣列
+        String[][] aryRec = null;
+        try {
+            // SQLiteDatabase對象
+            SQLiteDatabase db_PatronLoanHelper = getReadableDatabase();
+            String strSql = "Select * from patronloan where DataType='REQUEST'";
+            Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
 
-        // 取得資料筆數
-        int intRecCount = recSet.getCount();
+            // 取得資料筆數
+            int intRecCount = recSet.getCount();
 
-        // 宣告符合需求的陣列大小
-        String[][] aryRec = new String[2][intRecCount];
+            aryRec = new String[2][intRecCount];
 
-        while (recSet.moveToNext()) {
-            int intRecCursor = recSet.getPosition();
-            aryRec[0][intRecCursor] = recSet.getString(0);
-            aryRec[1][intRecCursor] = recSet.getString(3);
+            while (recSet.moveToNext()) {
+                int intRecCursor = recSet.getPosition();
+                aryRec[0][intRecCursor] = recSet.getString(0);
+                aryRec[1][intRecCursor] = recSet.getString(3);
 
+            }
+
+            // 關閉資料庫
+            db_PatronLoanHelper.close();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
 
         return aryRec;
@@ -414,6 +454,9 @@ public class DBHelper extends SQLiteOpenHelper {
             rec.put("ExecuteStatus", ExecuteStatus);
             db_PatronHelper.insert("SystemLog", null, rec);
 
+            // 關閉資料庫
+            db_PatronHelper.close();
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -430,44 +473,51 @@ public class DBHelper extends SQLiteOpenHelper {
      *             No exceptions thrown
      */
     public ArrayList<HashMap<String, String>> getAllSystemLog(Context context) {
-        // SQLiteDatabase對象
-        SQLiteDatabase db_SystemLogHelper = getReadableDatabase();
-
-        // select query
-        String selectQuery = "SELECT JobType,Time,ExecuteStatus FROM SystemLog ORDER BY Time DESC";
-
+        // 宣告列表所需的格式
         ArrayList<HashMap<String, String>> mylist = new ArrayList<HashMap<String, String>>();
         HashMap<String, String> map = new HashMap<String, String>();
 
-        // 先把表頭帶入
-        map.put("JobType",
-                (String) context.getResources().getText(
-                        R.string.ActivitySystemLog_tvJobType));
-        map.put("Time",
-                (String) context.getResources().getText(
-                        R.string.ActivitySystemLog_tvTime));
-        map.put("ExecuteStatus",
-                (String) context.getResources().getText(
-                        R.string.ActivitySystemLog_tvNote));
-        mylist.add(map);
+        try {
+            // SQLiteDatabase對象
+            SQLiteDatabase db_SystemLogHelper = getReadableDatabase();
 
-        // 建立查詢元件
-        Cursor cursor = db_SystemLogHelper.rawQuery(selectQuery, null);
+            // select query
+            String selectQuery = "SELECT JobType,Time,ExecuteStatus FROM SystemLog ORDER BY Time DESC";
 
-        // 把表格內的每一筆資料都寫入hashmap中
-        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            map = new HashMap<String, String>();
-
-            // 把Log內容帶入hash
-            map.put("JobType", cursor.getString(0));
-            map.put("Time", cursor.getString(1));
-            map.put("ExecuteStatus", cursor.getString(2));
-
+            // 先把表頭帶入
+            map.put("JobType",
+                    (String) context.getResources().getText(
+                            R.string.ActivitySystemLog_tvJobType));
+            map.put("Time",
+                    (String) context.getResources().getText(
+                            R.string.ActivitySystemLog_tvTime));
+            map.put("ExecuteStatus",
+                    (String) context.getResources().getText(
+                            R.string.ActivitySystemLog_tvNote));
             mylist.add(map);
-        }
 
-        // 關閉資料庫
-        db_SystemLogHelper.close();
+            // 建立查詢元件
+            Cursor cursor = db_SystemLogHelper.rawQuery(selectQuery, null);
+
+            // 把表格內的每一筆資料都寫入hashmap中
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor
+                    .moveToNext()) {
+                map = new HashMap<String, String>();
+
+                // 把Log內容帶入hash
+                map.put("JobType", cursor.getString(0));
+                map.put("Time", cursor.getString(1));
+                map.put("ExecuteStatus", cursor.getString(2));
+
+                mylist.add(map);
+            }
+
+            // 關閉資料庫
+            db_SystemLogHelper.close();
+        } catch (NotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         return mylist;
 
@@ -488,6 +538,9 @@ public class DBHelper extends SQLiteOpenHelper {
             db_Helper.delete("patronloan", null, null);
             db_Helper.delete("SystemLog", null, null);
             db_Helper.delete("SystemSet", null, null);
+
+            // 關閉資料庫
+            db_Helper.close();
 
         } catch (Exception e) {
             // TODO Auto-generated catch block

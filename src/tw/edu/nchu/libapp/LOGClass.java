@@ -43,6 +43,8 @@ public class LOGClass {
             e.printStackTrace();
         }
 
+        // 關閉資料庫
+        dbHelper.close();
     }
 }
 // /:~

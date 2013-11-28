@@ -107,7 +107,6 @@ public class LoginActivity extends ActionBarActivity {
             String logJobType = "登入";
 
             String logTime = "";
-            String logEndTime = "";
             String logExecuteStatus = "";
 
             // Toast.makeText(MainActivity.this,
@@ -242,6 +241,9 @@ public class LoginActivity extends ActionBarActivity {
             startActivity(intent);
             finish();
         }
+        
+        // 資料庫關閉
+        dbHelper.close();
 
     }
 
