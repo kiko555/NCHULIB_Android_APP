@@ -1,6 +1,9 @@
 //: object/DBHelper.java
 package tw.edu.nchu.libapp;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -51,11 +54,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onOpen(SQLiteDatabase db) {
         super.onOpen(db);
         // TODO 每次成功打開數據庫後首先被執行
-    }
-
-    @Override
-    public synchronized void close() {
-        super.close();
     }
 
     @Override
@@ -126,6 +124,16 @@ public class DBHelper extends SQLiteOpenHelper {
         } else {
             onCreate(db);
         }
+    }
+
+    public SQLiteDatabase openReadDb() {
+        return this.getReadableDatabase(); // Use Readable because you're not
+                                           // actually writing any values into
+                                           // your db
+    }
+
+    public void closeDb(SQLiteDatabase db) {
+        db.close();
     }
 
     /**
@@ -380,7 +388,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * 將讀者資料寫入 Parton 表格
+     * 將LOG寫入 SystemLog 表格
      * 
      * @param JobType
      *            工作的類型
@@ -410,6 +418,58 @@ public class DBHelper extends SQLiteOpenHelper {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+    }
+
+    /**
+     * 取得 SystemLog 表格的內容
+     * 
+     * @return mylist 操作紀錄透過HashMap方式儲存，最後再以arraylist的方式回傳
+     * 
+     * @throws exceptions
+     *             No exceptions thrown
+     */
+    public ArrayList<HashMap<String, String>> getAllSystemLog(Context context) {
+        // SQLiteDatabase對象
+        SQLiteDatabase db_SystemLogHelper = getReadableDatabase();
+
+        // select query
+        String selectQuery = "SELECT JobType,Time,ExecuteStatus FROM SystemLog ORDER BY Time DESC";
+
+        ArrayList<HashMap<String, String>> mylist = new ArrayList<HashMap<String, String>>();
+        HashMap<String, String> map = new HashMap<String, String>();
+
+        // 先把表頭帶入
+        map.put("JobType",
+                (String) context.getResources().getText(
+                        R.string.ActivitySystemLog_tvJobType));
+        map.put("Time",
+                (String) context.getResources().getText(
+                        R.string.ActivitySystemLog_tvTime));
+        map.put("ExecuteStatus",
+                (String) context.getResources().getText(
+                        R.string.ActivitySystemLog_tvNote));
+        mylist.add(map);
+
+        // 建立查詢元件
+        Cursor cursor = db_SystemLogHelper.rawQuery(selectQuery, null);
+
+        // 把表格內的每一筆資料都寫入hashmap中
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            map = new HashMap<String, String>();
+
+            // 把Log內容帶入hash
+            map.put("JobType", cursor.getString(0));
+            map.put("Time", cursor.getString(1));
+            map.put("ExecuteStatus", cursor.getString(2));
+
+            mylist.add(map);
+        }
+
+        // 關閉資料庫
+        db_SystemLogHelper.close();
+
+        return mylist;
 
     }
 

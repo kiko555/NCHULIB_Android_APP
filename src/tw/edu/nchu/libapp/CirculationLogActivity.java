@@ -97,6 +97,12 @@ public class CirculationLogActivity extends ActionBarActivity {
             intent.setClass(CirculationLogActivity.this, SettingsActivity.class);
             startActivity(intent);
             return true;
+        case R.id.action_systemlog:
+            Intent intent1 = new Intent();
+            intent1.setClass(CirculationLogActivity.this,
+                    SystemLogActivity.class);
+            startActivity(intent1);
+            return true;
         case R.id.action_exit:
             finish();
             return true;
@@ -117,6 +123,10 @@ public class CirculationLogActivity extends ActionBarActivity {
             DBHelper dbHelper = new DBHelper(CirculationLogActivity.this);
 
             int intCountPartonTable = dbHelper.doCountPartonTable();
+            
+            // 關閉資料庫
+            dbHelper.close();
+            
             if (intCountPartonTable != 1) {
                 // 在資料庫中無登入紀錄，立刻跳轉到登入畫面
                 Intent intent = new Intent();
@@ -126,8 +136,6 @@ public class CirculationLogActivity extends ActionBarActivity {
                 finish();
             }
 
-            // 關閉資料庫
-            dbHelper.close();
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -153,6 +161,8 @@ public class CirculationLogActivity extends ActionBarActivity {
             // 將回傳的全部的預約資料陣列轉入 aryPartonLoan 中
             String[][] aryPartonLoan_Request = dbHelper
                     .getPartonLoanTable_Request();
+            
+
 
             // 建立子擴展清單功能所需的陣列
             String[] aryChildPartonLoan = new String[aryPartonLoan[0].length];
@@ -326,9 +336,10 @@ public class CirculationLogActivity extends ActionBarActivity {
                 ChildPartonLoan_Requestlist = new ArrayList<String>();
                 ChildrenData.add(ChildPartonLoan_Requestlist);
             }
-
+            
             // 關閉資料庫
             dbHelper.close();
+
         } catch (NotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -418,5 +429,6 @@ public class CirculationLogActivity extends ActionBarActivity {
             return myText;
         }
     }
+
 }
 // /:~
