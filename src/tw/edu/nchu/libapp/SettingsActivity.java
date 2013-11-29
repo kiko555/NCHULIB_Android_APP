@@ -76,7 +76,15 @@ public class SettingsActivity extends ActionBarActivity {
      */
     private OnClickListener btListener = new OnClickListener() {
         public void onClick(View v) {
-
+             // 宣告LOG物件，並決定工作類型
+            LOGClass logclass = new LOGClass();
+            String logJobType = "帳密登出";
+            
+            // 寫log
+            logclass.setLOGtoDB(SettingsActivity.this, logJobType,
+                    new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            .format(new java.util.Date()), "清空讀者檔及借閱資料");
+            
             // 建立取用資料庫的物件
             DBHelper dbHelper = new DBHelper(SettingsActivity.this);
 

@@ -514,7 +514,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             // 關閉資料庫
             db_SystemLogHelper.close();
-        } catch (NotFoundException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

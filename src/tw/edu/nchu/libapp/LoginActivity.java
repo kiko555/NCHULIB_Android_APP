@@ -103,14 +103,17 @@ public class LoginActivity extends ActionBarActivity {
              * logExecuteStatus 工作執行狀態
              */
 
+            // 宣告LOG物件，並決定工作類型
             LOGClass logclass = new LOGClass();
-            String logJobType = "登入";
-
-            String logTime = "";
-            String logExecuteStatus = "";
+            String logJobType = "帳密登入";
 
             // Toast.makeText(MainActivity.this,
             // R.string.JSON_DataLoading,Toast.LENGTH_SHORT).show();
+
+            // 寫log
+            logclass.setLOGtoDB(LoginActivity.this, logJobType,
+                    new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            .format(new java.util.Date()), "開始認證程序");
 
             // 資料開始抓取讀取鈕可見
             setSupportProgressBarIndeterminateVisibility(true);
@@ -158,6 +161,11 @@ public class LoginActivity extends ActionBarActivity {
                 e.printStackTrace();
             }
 
+            // 寫log
+            logclass.setLOGtoDB(LoginActivity.this, logJobType,
+                    new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            .format(new java.util.Date()), "開始連線");
+            
             // 進行連線
             AsyncTask<String, Void, String> asyncTask = httpTaskClass
                     .execute("https://api.lib.nchu.edu.tw/php/appagent/");
@@ -165,7 +173,10 @@ public class LoginActivity extends ActionBarActivity {
             try {
                 strReturnContent = asyncTask.get();
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
+                // 寫log
+                logclass.setLOGtoDB(LoginActivity.this, logJobType,
+                        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .format(new java.util.Date()), "連線抓取資料異常");
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 // TODO Auto-generated catch block
@@ -173,6 +184,11 @@ public class LoginActivity extends ActionBarActivity {
             }
             // 資料抓取完畢將讀取鈕移除
             setSupportProgressBarIndeterminateVisibility(false);
+            
+            // 寫log
+            logclass.setLOGtoDB(LoginActivity.this, logJobType,
+                    new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            .format(new java.util.Date()), "連線結束");
 
             JSONClass jsonClass = new JSONClass();
             String[] aryResult = jsonClass.setLoginJSONtoDB(strReturnContent,
@@ -182,14 +198,10 @@ public class LoginActivity extends ActionBarActivity {
             if (aryResult[0].equals("Success")) {
                 // 如果認證成功才執行
                 if (aryResult[1].equals("Success")) {
-                    // 紀錄登入成功訊息
-                    java.util.Date now = new java.util.Date();
-                    now = new java.util.Date();
-                    logTime = new java.text.SimpleDateFormat(
-                            "yyyy-MM-dd HH:mm:ss").format(now);
-                    logExecuteStatus = "認證成功";
+                    // 寫log
                     logclass.setLOGtoDB(LoginActivity.this, logJobType,
-                            logTime, logExecuteStatus);
+                            new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                    .format(new java.util.Date()), "認證成功");
 
                     // 登入成功，立刻跳轉到借閱紀錄畫面
                     Intent intent = new Intent();
@@ -197,15 +209,11 @@ public class LoginActivity extends ActionBarActivity {
                             CirculationLogActivity.class);
                     startActivity(intent);
                 } else {
-                    // 認證失敗就丟個警告
-                    // TODO: LOG
-                    java.util.Date now = new java.util.Date();
-                    now = new java.util.Date();
-                    logTime = new java.text.SimpleDateFormat(
-                            "yyyy-MM-dd HH:mm:ss").format(now);
-                    logExecuteStatus = "帳密錯誤";
+                    // 寫log
                     logclass.setLOGtoDB(LoginActivity.this, logJobType,
-                            logTime, logExecuteStatus);
+                            new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                    .format(new java.util.Date()), "認證失敗-帳密錯誤");
+                    // 認證失敗就丟個警告
                     Toast.makeText(LoginActivity.this,
                             R.string.ActivityLogin_toastLoginFail,
                             Toast.LENGTH_SHORT).show();
@@ -241,7 +249,7 @@ public class LoginActivity extends ActionBarActivity {
             startActivity(intent);
             finish();
         }
-        
+
         // 資料庫關閉
         dbHelper.close();
 

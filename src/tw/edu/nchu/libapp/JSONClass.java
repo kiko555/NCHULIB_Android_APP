@@ -44,6 +44,10 @@ public class JSONClass {
         /**
          * strPid 讀者證號 m_szUniqueID 設備唯一辨識碼
          */
+        // 宣告LOG物件，並決定工作類型
+        LOGClass logclass = new LOGClass();
+        String logJobType = "JSON處理";
+
         String strLoginJSON = LoginJSON;
         String[] aryReturnResult = new String[3];
 
@@ -60,6 +64,11 @@ public class JSONClass {
 
         // 先將JSON內解出來放到各個陣列中
         try {
+            // 寫log
+            logclass.setLOGtoDB(context, logJobType,
+                    new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            .format(new java.util.Date()), "帳密認證JSON解析");
+
             strOpResult = new JSONObject(strLoginJSON).getJSONObject("Status")
                     .getString("OpResult");
             strAuthResult = new JSONObject(strLoginJSON)
@@ -98,11 +107,24 @@ public class JSONClass {
             aryReturnResult[1] = strAuthResult;
             // 如果認證成功才執行
             if (strAuthResult.equals("Success")) {
+
                 // 判斷所得JSON是否有內容
                 if (jsonResultTitleArray == null
                         || jsonResultEndDateArray == null) {
-                    // TODO: 有錯就寫log
+                    // 寫log
+                    logclass.setLOGtoDB(context, logJobType,
+                            new java.text.SimpleDateFormat(
+                                    "yyyy-MM-dd HH:mm:ss")
+                                    .format(new java.util.Date()),
+                            "帳密認證JSON資料為空的");
                 } else {
+                    // 寫log
+                    logclass.setLOGtoDB(context, logJobType,
+                            new java.text.SimpleDateFormat(
+                                    "yyyy-MM-dd HH:mm:ss")
+                                    .format(new java.util.Date()),
+                            "帳密認證JSON資料寫入DB");
+
                     // 先清空讀者資料表
                     dbHelper.doEmptyPartonTable();
 
