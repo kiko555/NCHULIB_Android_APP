@@ -1,6 +1,7 @@
 //: object/LoginActivity.java
 package tw.edu.nchu.libapp;
 
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.message.BasicNameValuePair;
@@ -77,8 +78,10 @@ public class LoginActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem Item) {
         switch (Item.getItemId()) {
-        case R.id.action_exit:
-            finish();
+        case R.id.action_systemlog:
+            Intent intent = new Intent();
+            intent.setClass(LoginActivity.this, SystemLogActivity.class);
+            startActivity(intent);
             return true;
         default:
             return false;
@@ -106,6 +109,9 @@ public class LoginActivity extends ActionBarActivity {
             // 宣告LOG物件，並決定工作類型
             LOGClass logclass = new LOGClass();
             String logJobType = "帳密登入";
+
+            // 宣告處理JSON的物件
+            JSONClass jsonClass = new JSONClass();
 
             // Toast.makeText(MainActivity.this,
             // R.string.JSON_DataLoading,Toast.LENGTH_SHORT).show();
@@ -165,7 +171,7 @@ public class LoginActivity extends ActionBarActivity {
             logclass.setLOGtoDB(LoginActivity.this, logJobType,
                     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             .format(new java.util.Date()), "開始連線");
-            
+
             // 進行連線
             AsyncTask<String, Void, String> asyncTask = httpTaskClass
                     .execute("https://api.lib.nchu.edu.tw/php/appagent/");
@@ -184,23 +190,24 @@ public class LoginActivity extends ActionBarActivity {
             }
             // 資料抓取完畢將讀取鈕移除
             setSupportProgressBarIndeterminateVisibility(false);
-            
+
             // 寫log
             logclass.setLOGtoDB(LoginActivity.this, logJobType,
                     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             .format(new java.util.Date()), "連線結束");
 
-            JSONClass jsonClass = new JSONClass();
-            String[] aryResult = jsonClass.setLoginJSONtoDB(strReturnContent,
-                    LoginActivity.this);
+            // 呼叫jsonClass處理JSON並寫入資料庫，會回傳交易狀態的各項值
+            HashMap<String, String> hmOpResult = jsonClass.setLoginJSONtoDB(
+                    strReturnContent, LoginActivity.this);
 
             // 如果系統運作正常才繼續下去
-            if (aryResult[0].equals("Success")) {
+            if (hmOpResult.get("OpResult").equals("Success")) {
                 // 如果認證成功才執行
-                if (aryResult[1].equals("Success")) {
+                if (hmOpResult.get("AuthResult").equals("Success")) {
                     // 寫log
                     logclass.setLOGtoDB(LoginActivity.this, logJobType,
-                            new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            new java.text.SimpleDateFormat(
+                                    "yyyy-MM-dd HH:mm:ss")
                                     .format(new java.util.Date()), "認證成功");
 
                     // 登入成功，立刻跳轉到借閱紀錄畫面
@@ -211,7 +218,8 @@ public class LoginActivity extends ActionBarActivity {
                 } else {
                     // 寫log
                     logclass.setLOGtoDB(LoginActivity.this, logJobType,
-                            new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            new java.text.SimpleDateFormat(
+                                    "yyyy-MM-dd HH:mm:ss")
                                     .format(new java.util.Date()), "認證失敗-帳密錯誤");
                     // 認證失敗就丟個警告
                     Toast.makeText(LoginActivity.this,

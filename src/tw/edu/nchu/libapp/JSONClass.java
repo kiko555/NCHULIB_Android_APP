@@ -1,6 +1,8 @@
 //: object/JSONClass.java
 package tw.edu.nchu.libapp;
 
+import java.util.HashMap;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,18 +42,20 @@ public class JSONClass {
      * @throws exceptions
      *             No exceptions thrown
      */
-    public String[] setLoginJSONtoDB(String LoginJSON, Context context) {
+    public HashMap<String, String> setLoginJSONtoDB(String LoginJSON, Context context) {
         /**
-         * strPid 讀者證號 m_szUniqueID 設備唯一辨識碼
+         * 
          */
         // 宣告LOG物件，並決定工作類型
         LOGClass logclass = new LOGClass();
         String logJobType = "JSON處理";
 
         String strLoginJSON = LoginJSON;
-        String[] aryReturnResult = new String[3];
+        
+        // 回傳所需的hashmap
+        HashMap<String, String> hmReturnResult = new HashMap<String, String>();
 
-        String strOpResult = null, strAuthResult = null, strPatronName = null, strPID = null;
+        String strPatronName = null, strPID = null;
         String strPatronBarCode = null, strPatronToken = null;
 
         JSONArray jsonResultTitleArray = null;
@@ -69,13 +73,23 @@ public class JSONClass {
                     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             .format(new java.util.Date()), "帳密認證JSON解析");
 
-            strOpResult = new JSONObject(strLoginJSON).getJSONObject("Status")
-                    .getString("OpResult");
-            strAuthResult = new JSONObject(strLoginJSON)
-                    .getJSONObject("Status").getString("AuthResult");
+            hmReturnResult.put("OpResult", new JSONObject(strLoginJSON)
+                    .getJSONObject("Status").getString("OpResult"));
+            hmReturnResult.put("OpInfo", new JSONObject(strLoginJSON)
+                    .getJSONObject("Status").getString("OpInfo"));
+            hmReturnResult.put("AuthResult", new JSONObject(strLoginJSON)
+                    .getJSONObject("Status").getString("AuthResult"));
+            hmReturnResult.put("AuthInfo", new JSONObject(strLoginJSON)
+                    .getJSONObject("Status").getString("AuthInfo"));
+            hmReturnResult.put("SysStatus", new JSONObject(strLoginJSON)
+                    .getJSONObject("Status").getString("SysStatus"));
+            hmReturnResult.put("SysInfo", new JSONObject(strLoginJSON)
+                    .getJSONObject("Status").getString("SysInfo"));
+            hmReturnResult.put("AppStableVersion", new JSONObject(strLoginJSON)
+                    .getJSONObject("Status").getString("AppStableVersion"));
 
             // 如果認證有過才去解析它的資料
-            if (strAuthResult.equals("Success")) {
+            if (hmReturnResult.get("AuthResult").equals("Success")) {
                 strPatronName = new JSONObject(strLoginJSON).getJSONObject(
                         "PatronInfo").getString("PatronName");
                 strPID = new JSONObject(strLoginJSON).getJSONObject(
@@ -101,12 +115,9 @@ public class JSONClass {
         }
 
         // 如果系統運作正常才繼續下去，並在回傳陣列寫入系統狀態
-        aryReturnResult[0] = strOpResult;
-        if (strOpResult.equals("Success")) {
-
-            aryReturnResult[1] = strAuthResult;
+        if (hmReturnResult.get("OpResult").equals("Success")) {
             // 如果認證成功才執行
-            if (strAuthResult.equals("Success")) {
+            if (hmReturnResult.get("AuthResult").equals("Success")) {
 
                 // 判斷所得JSON是否有內容
                 if (jsonResultTitleArray == null
@@ -116,14 +127,14 @@ public class JSONClass {
                             new java.text.SimpleDateFormat(
                                     "yyyy-MM-dd HH:mm:ss")
                                     .format(new java.util.Date()),
-                            "帳密認證JSON資料為空的");
+                            "借閱資料為空的");
                 } else {
                     // 寫log
                     logclass.setLOGtoDB(context, logJobType,
                             new java.text.SimpleDateFormat(
                                     "yyyy-MM-dd HH:mm:ss")
                                     .format(new java.util.Date()),
-                            "帳密認證JSON資料寫入DB");
+                            "借閱資料寫入DB");
 
                     // 先清空讀者資料表
                     dbHelper.doEmptyPartonTable();
@@ -155,7 +166,7 @@ public class JSONClass {
                 }
             }
         }
-        return aryReturnResult;
+        return hmReturnResult;
     }
 }
 // /:~

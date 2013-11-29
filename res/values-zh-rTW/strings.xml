@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">中興大學圖書館</string>
+    <string name="action_login">登入</string>
     <string name="action_cirlog">流通紀錄</string>
     <string name="action_settings">設定</string>
     <string name="action_refresh">更新頁面</string>

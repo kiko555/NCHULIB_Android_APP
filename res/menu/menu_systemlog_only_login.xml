@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <item
-        android:id="@+id/action_systemlog"
+        android:id="@+id/action_login"
         android:showAsAction="never"
-        android:title="@string/action_systemlog"
+        android:title="@string/action_login"
         app:showAsAction="never"/>
+
 
 </menu>

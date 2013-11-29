@@ -36,8 +36,29 @@ public class SystemLogActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_systemlog, menu);
+        try {
+            // 建立取用資料庫的物件
+            DBHelper dbHelper = new DBHelper(SystemLogActivity.this);
+
+            int intCountPartonTable = dbHelper.doCountPartonTable();
+
+            // 關閉資料庫
+            dbHelper.close();
+
+            if (intCountPartonTable != 1) {
+                // 在資料庫中登入紀錄不對，選擇可以看到系統紀錄的選單，但其它不行
+                getMenuInflater().inflate(R.menu.menu_systemlog_only_login,
+                        menu);
+            } else {
+                // 在資料庫中有一筆登入紀錄，選擇可以看到全部選單
+                getMenuInflater().inflate(R.menu.menu_systemlog, menu);
+            }
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
         return true;
     }
 
@@ -60,6 +81,11 @@ public class SystemLogActivity extends ActionBarActivity {
             Intent intent = new Intent();
             intent.setClass(SystemLogActivity.this, SettingsActivity.class);
             startActivity(intent);
+            return true;
+        case R.id.action_login:
+            Intent intent1 = new Intent();
+            intent1.setClass(SystemLogActivity.this, LoginActivity.class);
+            startActivity(intent1);
             return true;
         default:
             return false;
