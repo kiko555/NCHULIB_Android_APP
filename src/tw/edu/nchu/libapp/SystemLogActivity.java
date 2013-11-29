@@ -29,6 +29,9 @@ public class SystemLogActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_systemlog);
 
+        // 隱藏讀取鈕
+        setSupportProgressBarIndeterminateVisibility(false);
+        
         // 帶入系統紀錄
         drawTable();
 

@@ -31,6 +31,9 @@ public class SettingsActivity extends ActionBarActivity {
         supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         setContentView(R.layout.activity_settings);
+        
+        // 隱藏讀取鈕
+        setSupportProgressBarIndeterminateVisibility(false);
 
         // 登出鈕鈕
         btLogout = (Button) findViewById(R.id.button1);

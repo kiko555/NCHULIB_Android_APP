@@ -24,13 +24,8 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 設定讀取圖示
-        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-
         setContentView(R.layout.activity_main);
 
-        // 右上角顯示讀取中圖示
-        // setSupportProgressBarIndeterminateVisibility(true);
 
         int intCountPartonTable = dbHelper.doCountPartonTable();
         if (intCountPartonTable == 1) {

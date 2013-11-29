@@ -40,15 +40,17 @@ public class LoginActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // 確認資料庫是否有資料，如無跳轉到登入畫面
-        CheckIfDBEmpty();
-
+        
         // 設定讀取圖示
         supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-
         setContentView(R.layout.activity_login);
-
+        
+        // 隱藏讀取鈕
+        setSupportProgressBarIndeterminateVisibility(false);
+        
+        // 確認資料庫是否有資料，如無跳轉到登入畫面
+        CheckIfDBEmpty();
+        
         // JSON資料接收鈕
         btLogin = (Button) findViewById(R.id.button1);
 

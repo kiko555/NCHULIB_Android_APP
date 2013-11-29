@@ -49,8 +49,10 @@ public class CirculationLogActivity extends ActionBarActivity {
 
         // 設定讀取圖示
         supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-
         setContentView(R.layout.activity_cirlog);
+        
+        // 隱藏讀取鈕
+        setSupportProgressBarIndeterminateVisibility(false);
 
         // 確認資料庫是否有資料，如無跳轉到登入畫面
         CheckIfDBEmpty();
