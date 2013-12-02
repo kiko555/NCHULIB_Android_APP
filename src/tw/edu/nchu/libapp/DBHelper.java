@@ -482,7 +482,8 @@ public class DBHelper extends SQLiteOpenHelper {
             SQLiteDatabase db_SystemLogHelper = getReadableDatabase();
 
             // select query
-            String selectQuery = "SELECT JobType,Time,ExecuteStatus FROM SystemLog ORDER BY Time DESC";
+            String selectQuery = "SELECT JobType,Time,ExecuteStatus FROM SystemLog"
+                    + " ORDER BY Time DESC,JobType,ExecuteStatus Desc";
 
             // 先把表頭帶入
             map.put("JobType",

@@ -122,7 +122,7 @@ public class LoginActivity extends ActionBarActivity {
             // 寫log
             logclass.setLOGtoDB(LoginActivity.this, logJobType,
                     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                            .format(new java.util.Date()), "開始認證程序");
+                            .format(new java.util.Date()), "1.開始認證程序");
 
             // 資料開始抓取讀取鈕可見
             setSupportProgressBarIndeterminateVisibility(true);
@@ -173,7 +173,7 @@ public class LoginActivity extends ActionBarActivity {
             // 寫log
             logclass.setLOGtoDB(LoginActivity.this, logJobType,
                     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                            .format(new java.util.Date()), "開始連線");
+                            .format(new java.util.Date()), "2.開始連線");
 
             String strReturnContent = null;
             try {
@@ -186,7 +186,7 @@ public class LoginActivity extends ActionBarActivity {
                 // 寫log
                 logclass.setLOGtoDB(LoginActivity.this, logJobType,
                         new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                                .format(new java.util.Date()), "連線抓取資料中斷");
+                                .format(new java.util.Date()), "3.連線抓取資料中斷");
                 Toast.makeText(LoginActivity.this, "連線抓取資料中斷",
                         Toast.LENGTH_LONG).show();
                 e.printStackTrace();
@@ -194,7 +194,7 @@ public class LoginActivity extends ActionBarActivity {
                 // 寫log
                 logclass.setLOGtoDB(LoginActivity.this, logJobType,
                         new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                                .format(new java.util.Date()), "連線抓取資料異常");
+                                .format(new java.util.Date()), "3.連線抓取資料異常");
                 Toast.makeText(LoginActivity.this, "連線抓取資料異常",
                         Toast.LENGTH_LONG).show();
                 e.printStackTrace();
@@ -202,7 +202,7 @@ public class LoginActivity extends ActionBarActivity {
                 // 寫log
                 logclass.setLOGtoDB(LoginActivity.this, logJobType,
                         new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                                .format(new java.util.Date()), "連線抓取資料其它異常，請確認網路連線是否正常。");
+                                .format(new java.util.Date()), "3.連線抓取資料其它異常，請確認網路連線是否正常。");
                 Toast.makeText(LoginActivity.this, "連線抓取資料其它異常，請確認網路連線是否正常。",
                         Toast.LENGTH_LONG).show();
                 e.printStackTrace();
@@ -214,7 +214,7 @@ public class LoginActivity extends ActionBarActivity {
             // 寫log
             logclass.setLOGtoDB(LoginActivity.this, logJobType,
                     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                            .format(new java.util.Date()), "連線結束");
+                            .format(new java.util.Date()), "4.連線結束");
 
             if (strReturnContent != null) {
                 // 呼叫jsonClass處理JSON並寫入資料庫，會回傳交易狀態的各項值
@@ -229,7 +229,7 @@ public class LoginActivity extends ActionBarActivity {
                         logclass.setLOGtoDB(LoginActivity.this, logJobType,
                                 new java.text.SimpleDateFormat(
                                         "yyyy-MM-dd HH:mm:ss")
-                                        .format(new java.util.Date()), "認證成功");
+                                        .format(new java.util.Date()), "5.認證成功");
 
                         // 登入成功，立刻跳轉到借閱紀錄畫面
                         Intent intent = new Intent();
@@ -242,7 +242,7 @@ public class LoginActivity extends ActionBarActivity {
                                 new java.text.SimpleDateFormat(
                                         "yyyy-MM-dd HH:mm:ss")
                                         .format(new java.util.Date()),
-                                "認證失敗-帳密錯誤");
+                                "5.認證失敗-帳密錯誤");
                         // 認證失敗就丟個警告
                         Toast.makeText(LoginActivity.this,
                                 R.string.ActivityLogin_toastLoginFail,
