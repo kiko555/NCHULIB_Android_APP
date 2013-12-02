@@ -8,6 +8,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.ClipData.Item;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -40,17 +41,17 @@ public class LoginActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         // 設定讀取圖示
         supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_login);
-        
+
         // 隱藏讀取鈕
         setSupportProgressBarIndeterminateVisibility(false);
-        
+
         // 確認資料庫是否有資料，如無跳轉到登入畫面
         CheckIfDBEmpty();
-        
+
         // JSON資料接收鈕
         btLogin = (Button) findViewById(R.id.button1);
 
@@ -174,21 +175,38 @@ public class LoginActivity extends ActionBarActivity {
                     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             .format(new java.util.Date()), "開始連線");
 
-            // 進行連線
-            AsyncTask<String, Void, String> asyncTask = httpTaskClass
-                    .execute("https://api.lib.nchu.edu.tw/php/appagent/");
             String strReturnContent = null;
             try {
+                // 進行連線
+                AsyncTask<String, Void, String> asyncTask = httpTaskClass
+                        .execute("https://api.lib.nchu.edu.tw/php/appagent/");
+
                 strReturnContent = asyncTask.get();
             } catch (InterruptedException e) {
                 // 寫log
                 logclass.setLOGtoDB(LoginActivity.this, logJobType,
                         new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                                .format(new java.util.Date()), "連線抓取資料異常");
+                                .format(new java.util.Date()), "連線抓取資料中斷");
+                Toast.makeText(LoginActivity.this, "連線抓取資料中斷",
+                        Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
+                // 寫log
+                logclass.setLOGtoDB(LoginActivity.this, logJobType,
+                        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .format(new java.util.Date()), "連線抓取資料異常");
+                Toast.makeText(LoginActivity.this, "連線抓取資料異常",
+                        Toast.LENGTH_LONG).show();
                 e.printStackTrace();
+            } catch (Exception e) {
+                // 寫log
+                logclass.setLOGtoDB(LoginActivity.this, logJobType,
+                        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .format(new java.util.Date()), "連線抓取資料其它異常，請確認網路連線是否正常。");
+                Toast.makeText(LoginActivity.this, "連線抓取資料其它異常，請確認網路連線是否正常。",
+                        Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+
             }
             // 資料抓取完畢將讀取鈕移除
             setSupportProgressBarIndeterminateVisibility(false);
@@ -198,39 +216,43 @@ public class LoginActivity extends ActionBarActivity {
                     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             .format(new java.util.Date()), "連線結束");
 
-            // 呼叫jsonClass處理JSON並寫入資料庫，會回傳交易狀態的各項值
-            HashMap<String, String> hmOpResult = jsonClass.setLoginJSONtoDB(
-                    strReturnContent, LoginActivity.this);
+            if (strReturnContent != null) {
+                // 呼叫jsonClass處理JSON並寫入資料庫，會回傳交易狀態的各項值
+                HashMap<String, String> hmOpResult = jsonClass
+                        .setLoginJSONtoDB(strReturnContent, LoginActivity.this);
 
-            // 如果系統運作正常才繼續下去
-            if (hmOpResult.get("OpResult").equals("Success")) {
-                // 如果認證成功才執行
-                if (hmOpResult.get("AuthResult").equals("Success")) {
-                    // 寫log
-                    logclass.setLOGtoDB(LoginActivity.this, logJobType,
-                            new java.text.SimpleDateFormat(
-                                    "yyyy-MM-dd HH:mm:ss")
-                                    .format(new java.util.Date()), "認證成功");
+                // 如果系統運作正常才繼續下去
+                if (hmOpResult.get("OpResult").equals("Success")) {
+                    // 如果認證成功才執行
+                    if (hmOpResult.get("AuthResult").equals("Success")) {
+                        // 寫log
+                        logclass.setLOGtoDB(LoginActivity.this, logJobType,
+                                new java.text.SimpleDateFormat(
+                                        "yyyy-MM-dd HH:mm:ss")
+                                        .format(new java.util.Date()), "認證成功");
 
-                    // 登入成功，立刻跳轉到借閱紀錄畫面
-                    Intent intent = new Intent();
-                    intent.setClass(LoginActivity.this,
-                            CirculationLogActivity.class);
-                    startActivity(intent);
+                        // 登入成功，立刻跳轉到借閱紀錄畫面
+                        Intent intent = new Intent();
+                        intent.setClass(LoginActivity.this,
+                                CirculationLogActivity.class);
+                        startActivity(intent);
+                    } else {
+                        // 寫log
+                        logclass.setLOGtoDB(LoginActivity.this, logJobType,
+                                new java.text.SimpleDateFormat(
+                                        "yyyy-MM-dd HH:mm:ss")
+                                        .format(new java.util.Date()),
+                                "認證失敗-帳密錯誤");
+                        // 認證失敗就丟個警告
+                        Toast.makeText(LoginActivity.this,
+                                R.string.ActivityLogin_toastLoginFail,
+                                Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    // 寫log
-                    logclass.setLOGtoDB(LoginActivity.this, logJobType,
-                            new java.text.SimpleDateFormat(
-                                    "yyyy-MM-dd HH:mm:ss")
-                                    .format(new java.util.Date()), "認證失敗-帳密錯誤");
-                    // 認證失敗就丟個警告
-                    Toast.makeText(LoginActivity.this,
-                            R.string.ActivityLogin_toastLoginFail,
-                            Toast.LENGTH_SHORT).show();
+                    // TODO: 增加系統狀態的判斷
                 }
-            } else {
-                // TODO: 增加系統狀態的判斷
             }
+
         }
     };
 
