@@ -19,6 +19,7 @@
     <string name="ActivityLogin_btLogin">Login</string>
     <string name="ActivityLogin_toastLoginFail">ID or Password Error!!</string>
     <string name="ActivityCirculationLog_lvLoanList">Loan list</string>
+    <string name="ActivityCirculationLog_lvTitle">Title</string>
     <string name="ActivityCirculationLog_lvDueList">Due notice list</string>
     <string name="ActivityCirculationLog_lvOverduesList">Overdues notice list</string>
     <string name="ActivityCirculationLog_lvRequestList">Request list</string>

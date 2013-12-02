@@ -18,6 +18,7 @@
     <string name="ActivityLogin_btLogin">登入</string>
     <string name="ActivityLogin_toastLoginFail">帳號或密碼錯誤!!</string>
     <string name="ActivityCirculationLog_lvLoanList">借閱清單</string>
+    <string name="ActivityCirculationLog_lvTitle">題名</string>
     <string name="ActivityCirculationLog_lvDueList">借閱到期通知</string>
     <string name="ActivityCirculationLog_lvOverduesList">借閱逾期通知</string>
     <string name="ActivityCirculationLog_lvRequestList">預約到館通知</string>

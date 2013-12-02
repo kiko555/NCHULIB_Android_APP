@@ -356,26 +356,38 @@ public class DBHelper extends SQLiteOpenHelper {
      * @throws exceptions
      *             No exceptions thrown
      */
-    public String[][] getPartonLoanTable() {
-        String[][] aryRec = null;
+    public ArrayList<HashMap<String, String>> getPartonLoanTable(Context context) {
+
+        // 宣告列表所需的格式
+        ArrayList<HashMap<String, String>> mylist = new ArrayList<HashMap<String, String>>();
+        HashMap<String, String> map = new HashMap<String, String>();
 
         try {
             // SQLiteDatabase對象
             SQLiteDatabase db_PatronLoanHelper = getReadableDatabase();
-            String strSql = "Select * from patronloan where DataType='LOAN'";
+            String strSql = "Select * from patronloan where DataType='LOAN'"
+                    + " ORDER BY EndDate DESC";
             Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
 
-            // 取得資料筆數
-            int intRecCount = recSet.getCount();
+            // 先把表頭帶入
+            map.put("Title",
+                    (String) context.getResources().getText(
+                            R.string.ActivityCirculationLog_lvTitle));
+            map.put("Time",
+                    (String) context.getResources().getText(
+                            R.string.ActivityCirculationLog_lvDuedate));
+            mylist.add(map);
 
-            // 宣告符合需求的陣列大小
-            aryRec = new String[2][intRecCount];
+            // 把表格內的每一筆資料都寫入hashmap中
+            for (recSet.moveToFirst(); !recSet.isAfterLast(); recSet
+                    .moveToNext()) {
+                map = new HashMap<String, String>();
 
-            while (recSet.moveToNext()) {
-                int intRecCursor = recSet.getPosition();
-                aryRec[0][intRecCursor] = recSet.getString(0);
-                aryRec[1][intRecCursor] = recSet.getString(3);
+                // 把Log內容帶入hash
+                map.put("Title", recSet.getString(0));
+                map.put("Time", recSet.getString(1));
 
+                mylist.add(map);
             }
 
             // 關閉資料庫
@@ -385,7 +397,7 @@ public class DBHelper extends SQLiteOpenHelper {
             e.printStackTrace();
         }
 
-        return aryRec;
+        return mylist;
     }
 
     /**
@@ -396,25 +408,40 @@ public class DBHelper extends SQLiteOpenHelper {
      * @throws exceptions
      *             No exceptions thrown
      */
-    public String[][] getPartonLoanTable_Request() {
-        // 宣告符合需求的陣列
-        String[][] aryRec = null;
+    public ArrayList<HashMap<String, String>> getPartonLoanTable_Request(
+            Context context) {
+
+        // 宣告列表所需的格式
+        ArrayList<HashMap<String, String>> mylist = new ArrayList<HashMap<String, String>>();
+        HashMap<String, String> map = new HashMap<String, String>();
+
         try {
             // SQLiteDatabase對象
             SQLiteDatabase db_PatronLoanHelper = getReadableDatabase();
-            String strSql = "Select * from patronloan where DataType='REQUEST'";
+            String strSql = "Select Title,EndDate from patronloan "
+                    + "where DataType='REQUEST' ORDER BY EndDate DESC";
+            // 建立查詢元件
             Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
 
-            // 取得資料筆數
-            int intRecCount = recSet.getCount();
+            // 先把表頭帶入
+            map.put("Title",
+                    (String) context.getResources().getText(
+                            R.string.ActivityCirculationLog_lvTitle));
+            map.put("Time",
+                    (String) context.getResources().getText(
+                            R.string.ActivityCirculationLog_lvArrivalDate));
+            mylist.add(map);
 
-            aryRec = new String[2][intRecCount];
+            // 把表格內的每一筆資料都寫入hashmap中
+            for (recSet.moveToFirst(); !recSet.isAfterLast(); recSet
+                    .moveToNext()) {
+                map = new HashMap<String, String>();
 
-            while (recSet.moveToNext()) {
-                int intRecCursor = recSet.getPosition();
-                aryRec[0][intRecCursor] = recSet.getString(0);
-                aryRec[1][intRecCursor] = recSet.getString(3);
+                // 把Log內容帶入hash
+                map.put("Title", recSet.getString(0));
+                map.put("Time", recSet.getString(1));
 
+                mylist.add(map);
             }
 
             // 關閉資料庫
@@ -424,7 +451,7 @@ public class DBHelper extends SQLiteOpenHelper {
             e.printStackTrace();
         }
 
-        return aryRec;
+        return mylist;
     }
 
     /**
