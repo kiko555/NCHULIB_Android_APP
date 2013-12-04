@@ -1,12 +1,13 @@
 //: object/DBHelper.java
 package tw.edu.nchu.libapp;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.res.Resources.NotFoundException;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
@@ -365,9 +366,12 @@ public class DBHelper extends SQLiteOpenHelper {
         try {
             // SQLiteDatabase對象
             SQLiteDatabase db_PatronLoanHelper = getReadableDatabase();
-            String strSql = "Select * from patronloan where DataType='LOAN'"
+            String strSql = "Select Title,EndDate from patronloan where DataType='LOAN'"
                     + " ORDER BY EndDate DESC";
             Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
+            
+            // 利用判斷天數來控制清單的內容
+            SimpleDateFormat smdf = new SimpleDateFormat("yyyyMMdd");
 
             // 先把表頭帶入
             map.put("Title",
@@ -383,9 +387,12 @@ public class DBHelper extends SQLiteOpenHelper {
                     .moveToNext()) {
                 map = new HashMap<String, String>();
 
-                // 把Log內容帶入hash
+                // 把借閱內容帶入hash
                 map.put("Title", recSet.getString(0));
-                map.put("Time", recSet.getString(1));
+                
+                // 將到館日轉成特定格式
+                Date dateRequest = smdf.parse(recSet.getString(1));
+                map.put("Time", dateRequest.toString());
 
                 mylist.add(map);
             }
@@ -422,6 +429,11 @@ public class DBHelper extends SQLiteOpenHelper {
                     + "where DataType='REQUEST' ORDER BY EndDate DESC";
             // 建立查詢元件
             Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
+            
+            // 利用判斷天數來控制清單的內容
+            SimpleDateFormat smdf = new SimpleDateFormat("yyyyMMdd");
+            
+            
 
             // 先把表頭帶入
             map.put("Title",
@@ -439,7 +451,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
                 // 把Log內容帶入hash
                 map.put("Title", recSet.getString(0));
-                map.put("Time", recSet.getString(1));
+                
+                // 將到館日轉成特定格式
+                Date dateRequest = smdf.parse(recSet.getString(1));
+                map.put("Time", dateRequest.toString());
 
                 mylist.add(map);
             }
