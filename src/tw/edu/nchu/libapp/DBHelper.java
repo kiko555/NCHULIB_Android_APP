@@ -390,9 +390,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 // 把借閱內容帶入hash
                 map.put("Title", recSet.getString(0));
                 
-                // 將到館日轉成特定格式
-                Date dateRequest = smdf.parse(recSet.getString(1));
-                map.put("Time", dateRequest.toString());
+                map.put("Time", recSet.getString(1));
 
                 mylist.add(map);
             }
