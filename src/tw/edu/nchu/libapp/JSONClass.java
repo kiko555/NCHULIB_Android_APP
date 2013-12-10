@@ -42,7 +42,8 @@ public class JSONClass {
      * @throws exceptions
      *             No exceptions thrown
      */
-    public HashMap<String, String> setLoginJSONtoDB(String LoginJSON, Context context) {
+    public HashMap<String, String> setLoginJSONtoDB(String LoginJSON,
+            Context context) {
         /**
          * 
          */
@@ -51,7 +52,7 @@ public class JSONClass {
         String logJobType = "JSON處理";
 
         String strLoginJSON = LoginJSON;
-        
+
         // 回傳所需的hashmap
         HashMap<String, String> hmReturnResult = new HashMap<String, String>();
 
@@ -97,7 +98,7 @@ public class JSONClass {
                 strPatronBarCode = new JSONObject(strLoginJSON).getJSONObject(
                         "PatronInfo").getString("PatronBarCode");
                 strPatronToken = new JSONObject(strLoginJSON).getJSONObject(
-                        "PatronInfo").getString("UserToken");
+                        "PatronInfo").getString("PatronToken");
 
                 jsonResultTitleArray = new JSONObject(strLoginJSON)
                         .getJSONObject("PatronLoan").getJSONArray("Z13_TITLE");
@@ -112,59 +113,65 @@ public class JSONClass {
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
 
-        // 如果系統運作正常才繼續下去，並在回傳陣列寫入系統狀態
-        if (hmReturnResult.get("OpResult").equals("Success")) {
-            // 如果認證成功才執行
-            if (hmReturnResult.get("AuthResult").equals("Success")) {
+        try {
+            // 如果系統運作正常才繼續下去，並在回傳陣列寫入系統狀態
+            if (hmReturnResult.get("OpResult").equals("Success")) {
+                // 如果認證成功才執行
+                if (hmReturnResult.get("AuthResult").equals("Success")) {
 
-                // 判斷所得JSON是否有內容
-                if (jsonResultTitleArray == null
-                        || jsonResultEndDateArray == null) {
-                    // 寫log
-                    logclass.setLOGtoDB(context, logJobType,
-                            new java.text.SimpleDateFormat(
-                                    "yyyy-MM-dd HH:mm:ss")
-                                    .format(new java.util.Date()),
-                            "借閱資料為空的");
-                } else {
-                    // 寫log
-                    logclass.setLOGtoDB(context, logJobType,
-                            new java.text.SimpleDateFormat(
-                                    "yyyy-MM-dd HH:mm:ss")
-                                    .format(new java.util.Date()),
-                            "借閱資料寫入DB");
+                    // 判斷所得JSON是否有內容
+                    if (jsonResultTitleArray == null
+                            || jsonResultEndDateArray == null) {
+                        // 寫log
+                        logclass.setLOGtoDB(context, logJobType,
+                                new java.text.SimpleDateFormat(
+                                        "yyyy-MM-dd HH:mm:ss")
+                                        .format(new java.util.Date()), "借閱資料為空的");
+                    } else {
+                        // 寫log
+                        logclass.setLOGtoDB(context, logJobType,
+                                new java.text.SimpleDateFormat(
+                                        "yyyy-MM-dd HH:mm:ss")
+                                        .format(new java.util.Date()), "借閱資料寫入DB");
 
-                    // 先清空讀者資料表
-                    dbHelper.doEmptyPartonTable();
+                        // 先清空讀者資料表
+                        dbHelper.doEmptyPartonTable();
 
-                    // 先清空讀者借閱資料表
-                    dbHelper.doEmptyPartonLoanTable();
+                        // 先清空讀者借閱資料表
+                        dbHelper.doEmptyPartonLoanTable();
 
-                    // 寫入讀者資料
-                    dbHelper.doInsertPartonTable(strPID, strPatronBarCode,
-                            strPatronName, strPatronToken);
+                        // 寫入讀者資料
+                        dbHelper.doInsertPartonTable(strPID, strPatronBarCode,
+                                strPatronName, strPatronToken);
 
-                    // 取出讀者借閱資料JSON陣列內所有內容
-                    for (int i = 0; i < jsonResultTitleArray.length(); i++) {
-                        try {
+                        // 取出讀者借閱資料JSON陣列內所有內容
+                        for (int i = 0; i < jsonResultTitleArray.length(); i++) {
+                            try {
 
-                            // 寫入讀者借閱資料
-                            dbHelper.doInsertPartonLoanTable(
-                                    jsonResultTitleArray.get(i).toString(),
-                                    jsonResultBarcodeArray.get(i).toString(),
-                                    jsonResultDataTypeArray.get(i).toString(),
-                                    jsonResultEndDateArray.get(i).toString());
-                        } catch (JSONException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                                // 寫入讀者借閱資料
+                                dbHelper.doInsertPartonLoanTable(
+                                        jsonResultTitleArray.get(i).toString(),
+                                        jsonResultBarcodeArray.get(i).toString(),
+                                        jsonResultDataTypeArray.get(i).toString(),
+                                        jsonResultEndDateArray.get(i).toString());
+                            } catch (JSONException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+
                         }
 
                     }
-
                 }
             }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
         return hmReturnResult;
     }

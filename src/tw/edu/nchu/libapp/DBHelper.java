@@ -3,7 +3,9 @@ package tw.edu.nchu.libapp;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import android.content.ContentValues;
@@ -352,12 +354,19 @@ public class DBHelper extends SQLiteOpenHelper {
     /**
      * 取得 PartonLoan 表格中的借閱內容
      * 
+     * @param context
+     *            活動
+     * 
+     * @param type
+     *            用於控制要回傳的是0全部、1倒數或2過期的書目
+     * 
      * @return aryRec 回傳借閱資料的陣列
      * 
      * @throws exceptions
      *             No exceptions thrown
      */
-    public ArrayList<HashMap<String, String>> getPartonLoanTable(Context context) {
+    public ArrayList<HashMap<String, String>> getPartonLoanTable(
+            Context context, Integer partonloantype) {
 
         // 宣告列表所需的格式
         ArrayList<HashMap<String, String>> mylist = new ArrayList<HashMap<String, String>>();
@@ -366,12 +375,52 @@ public class DBHelper extends SQLiteOpenHelper {
         try {
             // SQLiteDatabase對象
             SQLiteDatabase db_PatronLoanHelper = getReadableDatabase();
-            String strSql = "Select Title,EndDate from patronloan where DataType='LOAN'"
-                    + " ORDER BY EndDate DESC";
-            Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
-            
+            String strSql = null;
+
             // 利用判斷天數來控制清單的內容
             SimpleDateFormat smdf = new SimpleDateFormat("yyyyMMdd");
+
+            // 取得今天日期
+            Calendar cal = new GregorianCalendar();
+            cal.set(Calendar.HOUR_OF_DAY, 0); // anything 0 - 23
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            Date dateToday = cal.getTime();
+
+            // 將到期日轉成特定格式
+            String strToday = smdf.format(dateToday);
+
+            switch (partonloantype) {
+            case 0:
+                strSql = "Select Title,EndDate from patronloan where DataType='LOAN'"
+                        + " ORDER BY EndDate DESC";
+                break;
+            case 1:
+                // 往前回推X天
+                long longDueDay = dateToday.getTime()
+                        + (7 * 24 * 60 * 60 * 1000);
+                Date dateDueDay = new Date(longDueDay);
+
+                // 將到期日轉成特定格式
+                String strDueDay = smdf.format(dateDueDay);
+
+                strSql = "Select Title,EndDate from patronloan where DataType='LOAN'"
+                        + " and EndDate >= "
+                        + strToday
+                        + " and EndDate <= "
+                        + strDueDay + " ORDER BY EndDate DESC";
+                break;
+            case 2:
+                strSql = "Select Title,EndDate from patronloan where DataType='LOAN'"
+                        + " and EndDate < "
+                        + strToday
+                        + " ORDER BY EndDate DESC";
+                break;
+            default:
+                break;
+            }
+
+            Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
 
             // 先把表頭帶入
             map.put("Title",
@@ -389,7 +438,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
                 // 把借閱內容帶入hash
                 map.put("Title", recSet.getString(0));
-                
+
                 map.put("Time", recSet.getString(1));
 
                 mylist.add(map);
@@ -427,11 +476,6 @@ public class DBHelper extends SQLiteOpenHelper {
                     + "where DataType='REQUEST' ORDER BY EndDate DESC";
             // 建立查詢元件
             Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
-            
-            // 利用判斷天數來控制清單的內容
-            SimpleDateFormat smdf = new SimpleDateFormat("yyyyMMdd");
-            
-            
 
             // 先把表頭帶入
             map.put("Title",
@@ -447,12 +491,11 @@ public class DBHelper extends SQLiteOpenHelper {
                     .moveToNext()) {
                 map = new HashMap<String, String>();
 
-                // 把Log內容帶入hash
+                // 把題名內容帶入hash
                 map.put("Title", recSet.getString(0));
-                
-                // 將到館日轉成特定格式
-                Date dateRequest = smdf.parse(recSet.getString(1));
-                map.put("Time", dateRequest.toString());
+
+                // 將到館日帶入hash
+                map.put("Time", recSet.getString(1));
 
                 mylist.add(map);
             }
