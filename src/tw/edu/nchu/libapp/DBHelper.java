@@ -483,7 +483,7 @@ public class DBHelper extends SQLiteOpenHelper {
                             R.string.ActivityCirculationLog_lvTitle));
             map.put("Time",
                     (String) context.getResources().getText(
-                            R.string.ActivityCirculationLog_lvArrivalDate));
+                            R.string.ActivityCirculationLog_lvRequestHoldUntilDate));
             mylist.add(map);
 
             // 把表格內的每一筆資料都寫入hashmap中
