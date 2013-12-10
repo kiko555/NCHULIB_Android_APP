@@ -135,9 +135,9 @@ public class LoginActivity extends ActionBarActivity {
             // 設定HTTP Post 帳密參數
             httpTaskClass.nameValuePairs.add(new BasicNameValuePair("op",
                     "AccAuth"));
-            httpTaskClass.nameValuePairs.add(new BasicNameValuePair("sid", txID
+            httpTaskClass.nameValuePairs.add(new BasicNameValuePair("SID", txID
                     .getEditableText().toString()));
-            httpTaskClass.nameValuePairs.add(new BasicNameValuePair("pwd",
+            httpTaskClass.nameValuePairs.add(new BasicNameValuePair("PWD",
                     txPassword.getEditableText().toString()));
 
             // 設定 HTTP Post 設備資訊參數
@@ -165,7 +165,7 @@ public class LoginActivity extends ActionBarActivity {
 
                 // 將該JSON置為POST參數
                 httpTaskClass.nameValuePairs.add(new BasicNameValuePair(
-                        "deviceinfo", deviceinfo.toString()));
+                        "DeviceInfo", deviceinfo.toString()));
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
