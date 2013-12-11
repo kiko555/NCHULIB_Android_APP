@@ -143,7 +143,7 @@ public class LoginActivity extends ActionBarActivity {
             // 設定 HTTP Post 設備資訊參數
             JSONObject deviceinfo = null;
             try {
-                // 產生DeviceID
+                // 產生DeviceToken
                 DeviceClass deviceclass = new DeviceClass();
                 String strDeviceToken = deviceclass.doMakeDeviceToken(txID
                         .getEditableText().toString());
