@@ -64,7 +64,7 @@ public class AuthClass {
 
 		// 產生DeviceToken
 		DeviceClass deviceclass = new DeviceClass();
-		String strDeviceToken = deviceclass.doMakeDeviceToken(aryPatron[0]
+		String strDeviceToken = deviceclass.doMakeDeviceToken(aryPatron[1]
 				.toString());
 
 		// 呼叫http連線物件，並填入所需相關資料
