@@ -72,6 +72,8 @@ public class HTTPTaskClass extends AsyncTask<String, Void, String> {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -95,6 +97,8 @@ public class HTTPTaskClass extends AsyncTask<String, Void, String> {
         } catch (UnsupportedEncodingException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         try {

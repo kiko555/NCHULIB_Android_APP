@@ -120,28 +120,11 @@ public class LoginActivity extends ActionBarActivity {
             // Toast.makeText(MainActivity.this,
             // R.string.JSON_DataLoading,Toast.LENGTH_SHORT).show();
 
-            // 寫log
-            logclass.setLOGtoDB(LoginActivity.this, logJobType,
-                    new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                            .format(new java.util.Date()), "1.開始認證程序");
-
             // 資料開始抓取讀取鈕可見
             setSupportProgressBarIndeterminateVisibility(true);
 
-            // 呼叫http連線物件，並填入所需相關資料
-            HTTPTaskClass httpTaskClass = new HTTPTaskClass();
-            httpTaskClass.instream = getResources().openRawResource(R.raw.api);
-
-            // 設定HTTP Post 帳密參數
-            httpTaskClass.nameValuePairs.add(new BasicNameValuePair("op",
-                    "AccAuth"));
-            httpTaskClass.nameValuePairs.add(new BasicNameValuePair("SID", txID
-                    .getEditableText().toString()));
-            httpTaskClass.nameValuePairs.add(new BasicNameValuePair("PWD",
-                    txPassword.getEditableText().toString()));
-
             // 設定 HTTP Post 設備資訊參數
-            JSONObject deviceinfo = null;
+            JSONObject jsonDeviceInfo = null;
             try {
                 // 產生DeviceToken
                 DeviceClass deviceclass = new DeviceClass();
@@ -158,64 +141,25 @@ public class LoginActivity extends ActionBarActivity {
                 String strSdkVersion = Build.VERSION.SDK;
 
                 // 將前三項用JSON的格式串在一起
-                deviceinfo = new JSONObject();
-                deviceinfo.put("DeviceToken", strDeviceToken);
-                deviceinfo.put("AndroidVersion", strSdkVersion);
-                deviceinfo.put("Resolution", strDisplayMetrics);
+                jsonDeviceInfo = new JSONObject();
+                jsonDeviceInfo.put("DeviceToken", strDeviceToken);
+                jsonDeviceInfo.put("AndroidVersion", strSdkVersion);
+                jsonDeviceInfo.put("Resolution", strDisplayMetrics);
 
-                // 將該JSON置為POST參數
-                httpTaskClass.nameValuePairs.add(new BasicNameValuePair(
-                        "DeviceInfo", deviceinfo.toString()));
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
-            // 寫log
-            logclass.setLOGtoDB(LoginActivity.this, logJobType,
-                    new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                            .format(new java.util.Date()), "2.開始連線");
+            // 呼叫帳密認證程序
+            AuthClass authclass = new AuthClass();
+            String strReturnContent = authclass.doPasswordAuth(
+                    LoginActivity.this, txID.getEditableText().toString(),
+                    txPassword.getEditableText().toString(),
+                    jsonDeviceInfo.toString());
 
-            String strReturnContent = null;
-            try {
-                // 進行連線
-                AsyncTask<String, Void, String> asyncTask = httpTaskClass
-                        .execute("https://api.lib.nchu.edu.tw/php/appagent/");
-
-                strReturnContent = asyncTask.get();
-            } catch (InterruptedException e) {
-                // 寫log
-                logclass.setLOGtoDB(LoginActivity.this, logJobType,
-                        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                                .format(new java.util.Date()), "3.連線抓取資料中斷");
-                Toast.makeText(LoginActivity.this, "連線抓取資料中斷",
-                        Toast.LENGTH_LONG).show();
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                // 寫log
-                logclass.setLOGtoDB(LoginActivity.this, logJobType,
-                        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                                .format(new java.util.Date()), "3.連線抓取資料異常");
-                Toast.makeText(LoginActivity.this, "連線抓取資料異常",
-                        Toast.LENGTH_LONG).show();
-                e.printStackTrace();
-            } catch (Exception e) {
-                // 寫log
-                logclass.setLOGtoDB(LoginActivity.this, logJobType,
-                        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                                .format(new java.util.Date()), "3.連線抓取資料其它異常，請確認網路連線是否正常。");
-                Toast.makeText(LoginActivity.this, "連線抓取資料其它異常，請確認網路連線是否正常。",
-                        Toast.LENGTH_LONG).show();
-                e.printStackTrace();
-
-            }
             // 資料抓取完畢將讀取鈕移除
             setSupportProgressBarIndeterminateVisibility(false);
-
-            // 寫log
-            logclass.setLOGtoDB(LoginActivity.this, logJobType,
-                    new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                            .format(new java.util.Date()), "4.連線結束");
 
             if (strReturnContent != null) {
                 // 呼叫jsonClass處理JSON並寫入資料庫，會回傳交易狀態的各項值
@@ -231,7 +175,8 @@ public class LoginActivity extends ActionBarActivity {
                             logclass.setLOGtoDB(LoginActivity.this, logJobType,
                                     new java.text.SimpleDateFormat(
                                             "yyyy-MM-dd HH:mm:ss")
-                                            .format(new java.util.Date()), "5.認證成功");
+                                            .format(new java.util.Date()),
+                                    "5.認證成功");
 
                             // 登入成功，立刻跳轉到借閱紀錄畫面
                             Intent intent = new Intent();

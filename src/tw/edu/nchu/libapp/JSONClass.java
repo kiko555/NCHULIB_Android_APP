@@ -72,7 +72,7 @@ public class JSONClass {
             // 寫log
             logclass.setLOGtoDB(context, logJobType,
                     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                            .format(new java.util.Date()), "帳密認證JSON解析");
+                            .format(new java.util.Date()), "1.JSON解析");
 
             hmReturnResult.put("OpResult", new JSONObject(strLoginJSON)
                     .getJSONObject("Status").getString("OpResult"));
@@ -91,6 +91,11 @@ public class JSONClass {
 
             // 如果認證有過才去解析它的資料
             if (hmReturnResult.get("AuthResult").equals("Success")) {
+                // 寫log
+                logclass.setLOGtoDB(context, logJobType,
+                        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .format(new java.util.Date()), "2.認證成功進一步解析");
+
                 strPatronName = new JSONObject(strLoginJSON).getJSONObject(
                         "PatronInfo").getString("PatronName");
                 strPID = new JSONObject(strLoginJSON).getJSONObject(
@@ -131,13 +136,15 @@ public class JSONClass {
                         logclass.setLOGtoDB(context, logJobType,
                                 new java.text.SimpleDateFormat(
                                         "yyyy-MM-dd HH:mm:ss")
-                                        .format(new java.util.Date()), "借閱資料為空的");
+                                        .format(new java.util.Date()),
+                                "3.借閱資料為空的");
                     } else {
                         // 寫log
                         logclass.setLOGtoDB(context, logJobType,
                                 new java.text.SimpleDateFormat(
                                         "yyyy-MM-dd HH:mm:ss")
-                                        .format(new java.util.Date()), "借閱資料寫入DB");
+                                        .format(new java.util.Date()),
+                                "3.借閱資料寫入DB");
 
                         // 先清空讀者資料表
                         dbHelper.doEmptyPartonTable();
@@ -156,9 +163,12 @@ public class JSONClass {
                                 // 寫入讀者借閱資料
                                 dbHelper.doInsertPartonLoanTable(
                                         jsonResultTitleArray.get(i).toString(),
-                                        jsonResultBarcodeArray.get(i).toString(),
-                                        jsonResultDataTypeArray.get(i).toString(),
-                                        jsonResultEndDateArray.get(i).toString());
+                                        jsonResultBarcodeArray.get(i)
+                                                .toString(),
+                                        jsonResultDataTypeArray.get(i)
+                                                .toString(),
+                                        jsonResultEndDateArray.get(i)
+                                                .toString());
                             } catch (JSONException e) {
                                 // TODO Auto-generated catch block
                                 e.printStackTrace();
