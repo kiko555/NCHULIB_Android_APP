@@ -30,10 +30,7 @@ public class AuthClass {
     /**
      * 帳密認證
      * 
-     * @param PartonToken
-     *            使用者的PID
-     * 
-     * @return blAuthResult 認證結果
+     * @return strReturnContent Server回傳的內容
      * 
      * @throws exceptions
      *             No exceptions thrown

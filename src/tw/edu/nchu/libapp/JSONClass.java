@@ -114,6 +114,11 @@ public class JSONClass {
                         .getJSONObject("PatronLoan").getJSONArray("DATA_TYPE");
                 jsonResultEndDateArray = new JSONObject(strLoginJSON)
                         .getJSONObject("PatronLoan").getJSONArray("END_DATE");
+            } else {
+                // 寫log
+                logclass.setLOGtoDB(context, logJobType,
+                        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .format(new java.util.Date()), "2.認證失敗不進行解析");
             }
         } catch (JSONException e) {
             // TODO Auto-generated catch block
