@@ -8,6 +8,7 @@
     <string name="action_refresh">更新頁面</string>
     <string name="action_systemlog">系統紀錄</string>
     <string name="action_exit">離開</string>
+    <string name="action_LoginNotice">你必需先同意使用條款</string>
     <string name="JSON_DataLoading">JSON 資料讀取中</string>
     <string name="JSON_Data_downlaod_fail">JSON 資料讀取失敗</string>
     <string name="JSON_Data_error">JSON 資料錯誤</string>
@@ -15,6 +16,11 @@
     <string name="ActivityLogin_tvTitle">中興大學圖書館登入系統</string>
     <string name="ActivityLogin_txID">帳號</string>
     <string name="ActivityLogin_txPassword">密碼</string>
+    <string name="ActivityLogin_cbNotice">同意使用條款</string>
+    <string name="ActivityLogin_adNotice_Title">中興大學圖書館 App 使用條款</string>
+    <string name="ActivityLogin_adNotice_Message">Bla bla bla bla....</string>
+    <string name="ActivityLogin_adNotice_btAgree">同意</string>
+    <string name="ActivityLogin_adNotice_btNoAgree">不</string>
     <string name="ActivityLogin_btLogin">登入</string>
     <string name="ActivityLogin_toastLoginFail">帳號或密碼錯誤!!</string>
     <string name="ActivityCirculationLog_lvLoanList">借閱清單</string>
