@@ -37,6 +37,7 @@
     <string name="ActivityCirculationLog_lvDay">days</string>
     <string name="ActivityCirculationLog_lvComma">,</string>
     <string name="ActivityCirculationLog_lvColon">:</string>
+    <string name="ActivityCirculationLog_toastTokenFail">Patron token or device token error!!</string>
     <string name="ActivitySettings_btLogout">Logout</string>
     <string name="ActivitySystemLog_tvJobType">Job Type</string>
     <string name="ActivitySystemLog_tvTime">Time</string>

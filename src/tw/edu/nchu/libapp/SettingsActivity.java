@@ -2,13 +2,17 @@
 package tw.edu.nchu.libapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.Button;
 
 /**
@@ -17,30 +21,64 @@ import android.widget.Button;
  * @author kiko
  * @version 1.0
  */
-public class SettingsActivity extends ActionBarActivity {
+public class SettingsActivity extends PreferenceActivity implements
+        OnPreferenceClickListener {
     /**
-     *  btLogout 登出按鈕
+     * btLogout 登出按鈕
      */
     private Button btLogout;
+    SharedPreferences mPreferences;
+    Boolean frequency;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 設定讀取圖示
-        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) { // Build.VERSION_CODES.ICE_CREAM_SANDWICH
+            addPreferencesFromResource(R.xml.mypreferences);
+        } else {
+            setContentView(R.layout.activity_settings);
+            addPreferencesFromResource(R.xml.mypreferences);
+            // ListView v = getListView();
+            // v.addFooterView(new Button(this));
+        }
 
-        setContentView(R.layout.activity_settings);
-        
-        // 隱藏讀取鈕
-        setSupportProgressBarIndeterminateVisibility(false);
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Preference mPreferences = (Preference) findPreference("logoutKey");
+        mPreferences.setOnPreferenceClickListener(this);
 
-        // 登出鈕鈕
-        btLogout = (Button) findViewById(R.id.button1);
+    }
 
-        // 監聽登出鈕的動作
-        btLogout.setOnClickListener(btListener);
+    @Override
+    public boolean onPreferenceClick(Preference preference) {
+        frequency = mPreferences.getBoolean("logoutKey", true);
 
+        if (frequency) {
+            // 宣告LOG物件，並決定工作類型
+            LOGClass logclass = new LOGClass();
+            String logJobType = "帳密登出";
+
+            // 寫log
+            logclass.setLOGtoDB(SettingsActivity.this, logJobType,
+                    new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            .format(new java.util.Date()), "清空讀者檔及借閱資料");
+
+            // 建立取用資料庫的物件
+            DBHelper dbHelper = new DBHelper(SettingsActivity.this);
+
+            // 先清空讀者及借閱資料表
+            dbHelper.doEmptyPartonLoanTable();
+            dbHelper.doEmptyPartonTable();
+
+            // 清空後直接跳轉到登入畫面
+            Intent intent = new Intent();
+            intent.setClass(SettingsActivity.this, LoginActivity.class);
+            startActivity(intent);
+
+            // 關掉這個活動
+            finish();
+        }
+        return false;
     }
 
     @Override
@@ -65,6 +103,11 @@ public class SettingsActivity extends ActionBarActivity {
                 e.printStackTrace();
             }
             return true;
+        case R.id.action_systemlog:
+            Intent intent1 = new Intent();
+            intent1.setClass(SettingsActivity.this, SystemLogActivity.class);
+            startActivity(intent1);
+            return true;
         default:
             return false;
         }
@@ -79,15 +122,15 @@ public class SettingsActivity extends ActionBarActivity {
      */
     private OnClickListener btListener = new OnClickListener() {
         public void onClick(View v) {
-             // 宣告LOG物件，並決定工作類型
+            // 宣告LOG物件，並決定工作類型
             LOGClass logclass = new LOGClass();
             String logJobType = "帳密登出";
-            
+
             // 寫log
             logclass.setLOGtoDB(SettingsActivity.this, logJobType,
                     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             .format(new java.util.Date()), "清空讀者檔及借閱資料");
-            
+
             // 建立取用資料庫的物件
             DBHelper dbHelper = new DBHelper(SettingsActivity.this);
 
@@ -99,11 +142,12 @@ public class SettingsActivity extends ActionBarActivity {
             Intent intent = new Intent();
             intent.setClass(SettingsActivity.this, LoginActivity.class);
             startActivity(intent);
-            
+
             // 關掉這個活動
             finish();
 
         }
     };
+
 }
 // /:~

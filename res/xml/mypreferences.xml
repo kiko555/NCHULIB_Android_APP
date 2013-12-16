@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="sync"
+        android:title="Auto sync your data" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="notification"
+        android:title="notice to notification bar" />
+    <PreferenceScreen
+        android:summary="intent_preference"
+        android:title="intent_preference" >
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="http://www.lib.nchu.edu.tw" />
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:summary="bla bla bla"
+        android:title="關於我們" >
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetPackage="tw.edu.nchu.libapp"  
+            android:targetClass="tw.edu.nchu.libapp.MainActivity" />
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:summary="bla bla bla"
+        android:title="登出" 
+        android:key="logoutKey">
+    </PreferenceScreen>
+
+</PreferenceScreen>

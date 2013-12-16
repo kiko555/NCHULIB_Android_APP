@@ -18,7 +18,7 @@
     <string name="ActivityLogin_txPassword">密碼</string>
     <string name="ActivityLogin_cbNotice">同意使用條款</string>
     <string name="ActivityLogin_adNotice_Title">中興大學圖書館 App 使用條款</string>
-    <string name="ActivityLogin_adNotice_Message">Bla bla bla bla....</string>
+    <string name="ActivityLogin_adNotice_Message">Bla bla bla bla....本應用程式所提供之到期、過期及預約到館通知僅供參考，詳細借閱及預約資訊仍以圖書館館藏目錄為主。</string>
     <string name="ActivityLogin_adNotice_btAgree">同意</string>
     <string name="ActivityLogin_adNotice_btNoAgree">不</string>
     <string name="ActivityLogin_btLogin">登入</string>
@@ -36,6 +36,7 @@
     <string name="ActivityCirculationLog_lvDay">日</string>
     <string name="ActivityCirculationLog_lvComma">，</string>
     <string name="ActivityCirculationLog_lvColon">：</string>
+    <string name="ActivityCirculationLog_toastTokenFail">讀者或設備金鑰錯誤!!</string>
     <string name="ActivitySystemLog_tvJobType">工作類型</string>
     <string name="ActivitySystemLog_tvTime">時間</string>
     <string name="ActivitySystemLog_tvNote">說明</string>

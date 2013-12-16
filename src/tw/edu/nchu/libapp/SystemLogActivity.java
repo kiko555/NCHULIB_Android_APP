@@ -114,14 +114,6 @@ public class SystemLogActivity extends ActionBarActivity {
         list.setAdapter(mSystemLogAdapter);
 
         dbHelper.close();
-
-        // Cursor percentages = dbHelper.getPercentage(db);
-        // ... // do something with the Cursors
-        // ..
-        // finally
-
-        // percentages.close();
-        // dbHelper.closeDb(db);
     }
 
 }

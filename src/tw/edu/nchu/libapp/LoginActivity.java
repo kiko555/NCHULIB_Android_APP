@@ -164,9 +164,6 @@ public class LoginActivity extends ActionBarActivity {
                         txPassword.getEditableText().toString(),
                         jsonDeviceInfo.toString());
 
-                // 資料抓取完畢將讀取鈕移除
-                setSupportProgressBarIndeterminateVisibility(false);
-
                 if (strReturnContent != null) {
                     // 呼叫jsonClass處理JSON並寫入資料庫，會回傳交易狀態的各項值
                     HashMap<String, String> hmOpResult = jsonClass
@@ -212,6 +209,9 @@ public class LoginActivity extends ActionBarActivity {
                         e.printStackTrace();
                     }
                 }
+
+                // 資料抓取完畢將讀取鈕移除
+                setSupportProgressBarIndeterminateVisibility(false);
             } else {
                 // 警告要同意條款
                 Toast.makeText(LoginActivity.this, R.string.action_LoginNotice,
@@ -236,22 +236,25 @@ public class LoginActivity extends ActionBarActivity {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(
                         LoginActivity.this);
 
-                dialog.setTitle(R.string.ActivityLogin_adNotice_Title); // 設定dialog 的title顯示內容
+                dialog.setTitle(R.string.ActivityLogin_adNotice_Title); // 設定dialog
+                                                                        // 的title顯示內容
                 dialog.setMessage(R.string.ActivityLogin_adNotice_Message);
                 dialog.setIcon(android.R.drawable.ic_menu_info_details);// 設定dialog
-                                                                  // 的ICON
+                // 的ICON
                 dialog.setCancelable(false); // 關閉 Android
                                              // 系統的主要功能鍵(menu,home等...)
 
-                dialog.setPositiveButton(R.string.ActivityLogin_adNotice_btAgree,
+                dialog.setPositiveButton(
+                        R.string.ActivityLogin_adNotice_btAgree,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                     int which) {
                                 // 按下"同意"以後要做的事情
                             }
                         });
-                
-                dialog.setNegativeButton(R.string.ActivityLogin_adNotice_btNoAgree,
+
+                dialog.setNegativeButton(
+                        R.string.ActivityLogin_adNotice_btNoAgree,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                     int which) {

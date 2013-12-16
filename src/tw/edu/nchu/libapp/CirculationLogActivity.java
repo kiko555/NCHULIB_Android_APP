@@ -109,7 +109,7 @@ public class CirculationLogActivity extends ActionBarActivity {
             if (strReturnContent != null) {
                 // 呼叫jsonClass處理JSON並寫入資料庫，會回傳交易狀態的各項值
                 HashMap<String, String> hmOpResult = jsonClass
-                        .setLoginJSONtoDB(strReturnContent,
+                        .setTokenResultJSONtoDB(strReturnContent,
                                 CirculationLogActivity.this);
 
                 try {
@@ -132,7 +132,7 @@ public class CirculationLogActivity extends ActionBarActivity {
                                     "5.認證失敗-Patron或Device Token錯誤");
                             // 認證失敗就丟個警告
                             Toast.makeText(CirculationLogActivity.this,
-                                    R.string.ActivityLogin_toastLoginFail,
+                                    R.string.ActivityCirculationLog_toastTokenFail,
                                     Toast.LENGTH_SHORT).show();
                         }
                     } else {
