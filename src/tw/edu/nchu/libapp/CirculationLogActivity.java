@@ -10,7 +10,9 @@ import android.content.Intent;
 import android.content.res.Resources.NotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,32 +42,64 @@ public class CirculationLogActivity extends ActionBarActivity {
     private List<String> GroupData;
     private List<List<String>> ChildrenData;
     SimpleAdapter saPartonLoan_RequestAdapter;
-    SimpleExpandableListAdapter mySimpleExpandableListAdapter = null;
+    protected SimpleExpandableListAdapter mySimpleExpandableListAdapter = null;
     ExpandableListView myExpandableListView;
 
     // private TaskServiceClass service = new TaskServiceClass();
 
-    // 使用時間操作市必須搭配handler才能更新畫面
-    private Handler handler = new Handler();
-    
-    // 定時進行的動作內容
-    private Runnable task = new Runnable() {
+    // 找到UI工人的經紀人，這樣才能派遣工作 (找到顯示畫面的UI Thread上的Handler)
+    private Handler mUI_Handler = new Handler();
+
+    // 宣告特約工人的經紀人
+    private Handler mThreadHandler;
+
+    // 宣告特約工人
+    private HandlerThread mThread;
+
+    // 執行緒工作-借閱資料更新多次
+    private Runnable runUpdateCirLogMulti = new Runnable() {
         public void run() {
             // TODO 補上抓系統設定的排程更新參數
             // if (run) {
-            handler.postDelayed(this, 30000);
-            UpdateCirLogData("排程更新");
-            LoadListDate();
 
+            mThreadHandler.postDelayed(this, 30000);
+            UpdateCirLogData("排程更新");
+
+            // 請經紀人指派工作名稱 r，給工人做
+            mUI_Handler.post(runRefreshListView);
+
+            // }
+            Log.i("TestAsyncTask", "1-runUpdateCirLogMulti");
+        }
+    };
+
+    // 執行緒工作-借閱資料更新一次
+    private Runnable runUpdateCirLogOnce = new Runnable() {
+        public void run() {
+            UpdateCirLogData("Token登入");
+
+            // 請經紀人指派工作名稱 r，給工人做
+            mUI_Handler.post(runRefreshListView);
+
+            Log.i("TestAsyncTask", "3-runUpdateCirLogOnce");
+        }
+    };
+
+    // 執行緒工作-借閱畫面更新
+    private Runnable runRefreshListView = new Runnable() {
+        public void run() {
             try {
+                LoadListDate();
+
                 // 把清單附加上去
                 myExpandableListView.setAdapter(mySimpleExpandableListAdapter);
+
+                setSupportProgressBarIndeterminateVisibility(false);
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            // }
-
+            Log.i("TestAsyncTask", "2-runRefreshListView");
         }
     };
 
@@ -98,7 +132,19 @@ public class CirculationLogActivity extends ActionBarActivity {
         }
 
         // 建立一個每30秒更新一次畫面的動作
-        handler.postDelayed(task, 30000);
+        // handler.postDelayed(task, 30000);
+
+        // 聘請一個特約工人，有其經紀人派遣其工人做事 (另起一個有Handler的Thread)
+        mThread = new HandlerThread("name");
+
+        // 讓Worker待命，等待其工作 (開啟Thread)
+        mThread.start();
+
+        // 找到特約工人的經紀人，這樣才能派遣工作 (找到Thread上的Handler)
+        mThreadHandler = new Handler(mThread.getLooper());
+
+        // 請經紀人指派工作名稱 ，給工人做
+        mThreadHandler.postDelayed(runUpdateCirLogMulti, 30000);
 
     }
 
@@ -108,6 +154,17 @@ public class CirculationLogActivity extends ActionBarActivity {
 
         // 確認資料庫是否有資料，如無跳轉到登入畫面
         CheckIfDBEmpty();
+
+        // 載入資料庫的內容
+        LoadListDate();
+
+        try {
+            // 把清單附加上去
+            myExpandableListView.setAdapter(mySimpleExpandableListAdapter);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -122,16 +179,10 @@ public class CirculationLogActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem Item) {
         switch (Item.getItemId()) {
         case R.id.action_refresh:
-            UpdateCirLogData("Token登入");
-            LoadListDate();
+            setSupportProgressBarIndeterminateVisibility(true);
+            // 請經紀人指派工作名稱 ，給工人做
+            mThreadHandler.post(runUpdateCirLogOnce);
 
-            try {
-                // 把清單附加上去
-                myExpandableListView.setAdapter(mySimpleExpandableListAdapter);
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
             return true;
         case R.id.action_settings:
             Intent intent = new Intent();
@@ -284,9 +335,6 @@ public class CirculationLogActivity extends ActionBarActivity {
      */
     private void UpdateCirLogData(String JobType) {
         try {
-            // 資料抓取讀取鈕顯示
-            setSupportProgressBarIndeterminateVisibility(true);
-
             // 宣告LOG物件，並決定工作類型
             LOGClass logclass = new LOGClass();
             String logJobType = JobType;
@@ -337,10 +385,6 @@ public class CirculationLogActivity extends ActionBarActivity {
                     e.printStackTrace();
                 }
             }
-
-            // 資料抓取完畢將讀取鈕移除
-            setSupportProgressBarIndeterminateVisibility(false);
-
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
