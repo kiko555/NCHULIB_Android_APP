@@ -86,10 +86,14 @@ public class AuthClass {
         String strReturnContent = null;
         try {
             // 進行連線
-            AsyncTask<String, Void, String> asyncTask = httpTaskClass
+            AsyncTask<String, Void, String> asyncTask;
+            asyncTask = httpTaskClass
                     .execute("https://api.lib.nchu.edu.tw/php/appagent/");
 
             strReturnContent = asyncTask.get();
+
+            // TODO:停止執行緒未作用，待完成
+            // asyncTask.cancel(true);
         } catch (Exception e) {
             // 寫log
             logclass.setLOGtoDB(context, logJobType,
@@ -117,13 +121,13 @@ public class AuthClass {
      * @throws exceptions
      *             No exceptions thrown
      */
-    public String doTokenAuth(Context context) {
+    public String doTokenAuth(Context context, String JobType) {
         /**
          * strPid 讀者證號 m_szUniqueID 設備唯一辨識碼
          */
         // 宣告LOG物件，並決定工作類型
         LOGClass logclass = new LOGClass();
-        String logJobType = "Token登入";
+        String logJobType = JobType;
 
         // 宣告處理JSON的物件
         JSONClass jsonClass = new JSONClass();

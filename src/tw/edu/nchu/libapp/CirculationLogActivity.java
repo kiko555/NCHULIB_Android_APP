@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources.NotFoundException;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Gravity;
 import android.view.Menu;
@@ -40,6 +41,33 @@ public class CirculationLogActivity extends ActionBarActivity {
     private List<List<String>> ChildrenData;
     SimpleAdapter saPartonLoan_RequestAdapter;
     SimpleExpandableListAdapter mySimpleExpandableListAdapter = null;
+    ExpandableListView myExpandableListView;
+
+    // private TaskServiceClass service = new TaskServiceClass();
+
+    // 使用時間操作市必須搭配handler才能更新畫面
+    private Handler handler = new Handler();
+    
+    // 定時進行的動作內容
+    private Runnable task = new Runnable() {
+        public void run() {
+            // TODO 補上抓系統設定的排程更新參數
+            // if (run) {
+            handler.postDelayed(this, 30000);
+            UpdateCirLogData("排程更新");
+            LoadListDate();
+
+            try {
+                // 把清單附加上去
+                myExpandableListView.setAdapter(mySimpleExpandableListAdapter);
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            // }
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,18 +84,21 @@ public class CirculationLogActivity extends ActionBarActivity {
         CheckIfDBEmpty();
 
         // 使用擴展選單來呈現流通資料
-        ExpandableListView myExpandableListView = (ExpandableListView) findViewById(R.id.expandableCirLogListView1);
+        myExpandableListView = (ExpandableListView) findViewById(R.id.expandableCirLogListView1);
 
         // 載入資料庫的內容
         LoadListDate();
 
         try {
-
+            // 把清單附加上去
             myExpandableListView.setAdapter(mySimpleExpandableListAdapter);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        // 建立一個每30秒更新一次畫面的動作
+        handler.postDelayed(task, 30000);
 
     }
 
@@ -91,64 +122,16 @@ public class CirculationLogActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem Item) {
         switch (Item.getItemId()) {
         case R.id.action_refresh:
-            // 資料抓取讀取鈕顯示
-            setSupportProgressBarIndeterminateVisibility(true);
+            UpdateCirLogData("Token登入");
+            LoadListDate();
 
-            // 宣告LOG物件，並決定工作類型
-            LOGClass logclass = new LOGClass();
-            String logJobType = "Token登入";
-
-            // 宣告處理JSON的物件
-            JSONClass jsonClass = new JSONClass();
-
-            // 呼叫Token認證程序
-            AuthClass authclass = new AuthClass();
-            String strReturnContent = authclass
-                    .doTokenAuth(CirculationLogActivity.this);
-
-            if (strReturnContent != null) {
-                // 呼叫jsonClass處理JSON並寫入資料庫，會回傳交易狀態的各項值
-                HashMap<String, String> hmOpResult = jsonClass
-                        .setTokenResultJSONtoDB(strReturnContent,
-                                CirculationLogActivity.this);
-
-                try {
-                    // 如果系統運作正常才繼續下去
-                    if (hmOpResult.get("OpResult").equals("Success")) {
-                        // 如果認證成功才執行
-                        if (hmOpResult.get("AuthResult").equals("Success")) {
-                            // 寫log
-                            logclass.setLOGtoDB(CirculationLogActivity.this,
-                                    logJobType, new java.text.SimpleDateFormat(
-                                            "yyyy-MM-dd HH:mm:ss")
-                                            .format(new java.util.Date()),
-                                    "5.認證成功");
-                        } else {
-                            // 寫log
-                            logclass.setLOGtoDB(CirculationLogActivity.this,
-                                    logJobType, new java.text.SimpleDateFormat(
-                                            "yyyy-MM-dd HH:mm:ss")
-                                            .format(new java.util.Date()),
-                                    "5.認證失敗-Patron或Device Token錯誤");
-                            // 認證失敗就丟個警告
-                            Toast.makeText(CirculationLogActivity.this,
-                                    R.string.ActivityCirculationLog_toastTokenFail,
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        // TODO: 增加系統狀態的判斷
-                    }
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+            try {
+                // 把清單附加上去
+                myExpandableListView.setAdapter(mySimpleExpandableListAdapter);
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
-
-            // 資料抓取完畢將讀取鈕移除
-            setSupportProgressBarIndeterminateVisibility(false);
-
-            finish();
-            startActivity(getIntent());
             return true;
         case R.id.action_settings:
             Intent intent = new Intent();
@@ -206,7 +189,6 @@ public class CirculationLogActivity extends ActionBarActivity {
      * @throws exceptions
      *             No exceptions thrown
      */
-    @SuppressWarnings("unchecked")
     @SuppressLint("SimpleDateFormat")
     private void LoadListDate() {
         try {
@@ -288,6 +270,77 @@ public class CirculationLogActivity extends ActionBarActivity {
         } catch (NotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 更新借閱資料
+     * 
+     * @throws exceptions
+     *             No exceptions thrown
+     */
+    private void UpdateCirLogData(String JobType) {
+        try {
+            // 資料抓取讀取鈕顯示
+            setSupportProgressBarIndeterminateVisibility(true);
+
+            // 宣告LOG物件，並決定工作類型
+            LOGClass logclass = new LOGClass();
+            String logJobType = JobType;
+
+            // 宣告處理JSON的物件
+            JSONClass jsonClass = new JSONClass();
+
+            // 呼叫Token認證程序
+            AuthClass authclass = new AuthClass();
+            String strReturnContent = authclass.doTokenAuth(
+                    CirculationLogActivity.this, logJobType);
+
+            if (strReturnContent != null) {
+                // 呼叫jsonClass處理JSON並寫入資料庫，會回傳交易狀態的各項值
+                HashMap<String, String> hmOpResult = jsonClass
+                        .setTokenResultJSONtoDB(strReturnContent,
+                                CirculationLogActivity.this);
+
+                try {
+                    // 如果系統運作正常才繼續下去
+                    if (hmOpResult.get("OpResult").equals("Success")) {
+                        // 如果認證成功才執行
+                        if (hmOpResult.get("AuthResult").equals("Success")) {
+                            // 寫log
+                            logclass.setLOGtoDB(CirculationLogActivity.this,
+                                    logJobType, new java.text.SimpleDateFormat(
+                                            "yyyy-MM-dd HH:mm:ss")
+                                            .format(new java.util.Date()),
+                                    "5.認證成功");
+                        } else {
+                            // 寫log
+                            logclass.setLOGtoDB(CirculationLogActivity.this,
+                                    logJobType, new java.text.SimpleDateFormat(
+                                            "yyyy-MM-dd HH:mm:ss")
+                                            .format(new java.util.Date()),
+                                    "5.認證失敗-Patron或Device Token錯誤");
+                            // 認證失敗就丟個警告
+                            Toast.makeText(
+                                    CirculationLogActivity.this,
+                                    R.string.ActivityCirculationLog_toastTokenFail,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        // TODO: 增加系統狀態的判斷
+                    }
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+
+            // 資料抓取完畢將讀取鈕移除
+            setSupportProgressBarIndeterminateVisibility(false);
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
