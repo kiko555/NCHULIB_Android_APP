@@ -183,10 +183,10 @@ public class LoginActivity extends ActionBarActivity {
                                                 .format(new java.util.Date()),
                                         "5.認證成功");
 
-                                // 登入成功，立刻跳轉到借閱紀錄畫面
+                                // 登入成功，立刻Main來帶出排程功能
                                 Intent intent = new Intent();
                                 intent.setClass(LoginActivity.this,
-                                        CirculationLogActivity.class);
+                                        MainActivity.class);
                                 startActivity(intent);
                             } else {
                                 // 寫log

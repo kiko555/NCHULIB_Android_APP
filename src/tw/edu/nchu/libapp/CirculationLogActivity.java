@@ -131,9 +131,6 @@ public class CirculationLogActivity extends ActionBarActivity {
             e.printStackTrace();
         }
 
-        // 建立一個每30秒更新一次畫面的動作
-        // handler.postDelayed(task, 30000);
-
         // 聘請一個特約工人，有其經紀人派遣其工人做事 (另起一個有Handler的Thread)
         mThread = new HandlerThread("name");
 
@@ -143,8 +140,9 @@ public class CirculationLogActivity extends ActionBarActivity {
         // 找到特約工人的經紀人，這樣才能派遣工作 (找到Thread上的Handler)
         mThreadHandler = new Handler(mThread.getLooper());
 
-        // 請經紀人指派工作名稱 ，給工人做
-        mThreadHandler.postDelayed(runUpdateCirLogMulti, 30000);
+        //
+        // // 請經紀人指派工作名稱 ，給工人做
+        // mThreadHandler.postDelayed(runUpdateCirLogMulti, 30000);
 
     }
 

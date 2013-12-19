@@ -601,7 +601,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             // select query
             String selectQuery = "SELECT JobType,Time,ExecuteStatus FROM SystemLog"
-                    + " ORDER BY Time DESC,JobType,ExecuteStatus Desc";
+                    + " ORDER BY Time DESC,JobType,ExecuteStatus Desc limit 300";
 
             // 先把表頭帶入
             map.put("JobType",

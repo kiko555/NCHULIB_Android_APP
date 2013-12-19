@@ -72,7 +72,7 @@ public class SettingsActivity extends PreferenceActivity implements
 
             // 清空後直接跳轉到登入畫面
             Intent intent = new Intent();
-            intent.setClass(SettingsActivity.this, LoginActivity.class);
+            intent.setClass(SettingsActivity.this, MainActivity.class);
             startActivity(intent);
 
             // 關掉這個活動
