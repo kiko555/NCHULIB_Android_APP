@@ -51,6 +51,7 @@ public class SettingsActivity extends PreferenceActivity implements
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
+        //TODO 實作同步資料的功能
         frequency = mPreferences.getBoolean("logoutKey", true);
 
         if (frequency) {

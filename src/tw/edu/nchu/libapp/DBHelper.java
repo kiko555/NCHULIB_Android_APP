@@ -251,8 +251,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
             if (recSet.moveToFirst()) {
                 for (int i = recSet.getColumnCount(); i > 0; i--) {
-                    String strData = recSet.getString(i-1);
-                    aryReturn[i-1] = strData;
+                    String strData = recSet.getString(i - 1);
+                    aryReturn[i - 1] = strData;
                 }
             }
 
