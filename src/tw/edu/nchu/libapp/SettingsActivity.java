@@ -3,6 +3,7 @@ package tw.edu.nchu.libapp;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -22,39 +23,74 @@ import android.widget.Button;
  * @version 1.0
  */
 public class SettingsActivity extends PreferenceActivity implements
-        OnPreferenceClickListener {
+        OnSharedPreferenceChangeListener, OnPreferenceClickListener {
     /**
      * btLogout 登出按鈕
+     * 
+     * mPreferences 設定的選單
+     * 
+     * 
      */
     private Button btLogout;
     SharedPreferences mPreferences;
-    Boolean frequency;
+    Boolean blnLogoutClicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // 不同版本的android應用不同的畫面結構，因為Honeycomb前，畫面多了一個回前頁的按鈕，
+        // 為何要這樣做是因為ActionBar沒有實作PreferenceActivity，為了怕使用者手機沒有回上一頁的按鈕，所以先實作一個
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) { // Build.VERSION_CODES.ICE_CREAM_SANDWICH
             addPreferencesFromResource(R.xml.mypreferences);
         } else {
             setContentView(R.layout.activity_settings);
             addPreferencesFromResource(R.xml.mypreferences);
-            // ListView v = getListView();
-            // v.addFooterView(new Button(this));
         }
 
+        // 實作設定的登出欄監聽功能
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         Preference mPreferences = (Preference) findPreference("logoutKey");
         mPreferences.setOnPreferenceClickListener(this);
-
     }
 
+    // 註冊設定選單變動實的監聽器
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Set up a listener whenever a key changes
+        getPreferenceScreen().getSharedPreferences()
+                .registerOnSharedPreferenceChangeListener(this);
+    }
+
+    // 反註冊設定選單變動實的監聽器
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Unregister the listener whenever a key changes
+        getPreferenceScreen().getSharedPreferences()
+                .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    // 當設定選單有所變動時，針對不同欄有不同的動作
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+            String key) {
+        // Let's do something a preference value changes
+        if (key.equals("autosync")) {
+            // TODO 寫入關掉同步功能
+        } else if (key.equals("notification")) {
+            // TODO 寫入關掉通知功能
+        }
+    }
+
+    // 設定選單被點選時，過濾是否是點選登出，如果是就做登出動作
     @Override
     public boolean onPreferenceClick(Preference preference) {
-        //TODO 實作同步資料的功能
-        frequency = mPreferences.getBoolean("logoutKey", true);
+        // 取得是選單是否點選
+        blnLogoutClicked = mPreferences.getBoolean("logoutKey", true);
 
-        if (frequency) {
+        if (blnLogoutClicked) {
             // 宣告LOG物件，並決定工作類型
             LOGClass logclass = new LOGClass();
             String logJobType = "帳密登出";
@@ -149,6 +185,5 @@ public class SettingsActivity extends PreferenceActivity implements
 
         }
     };
-
 }
 // /:~

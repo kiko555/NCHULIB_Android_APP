@@ -3,7 +3,7 @@
 
     <CheckBoxPreference
         android:defaultValue="true"
-        android:key="sync"
+        android:key="autosync"
         android:title="Auto sync your data" />
     <CheckBoxPreference
         android:defaultValue="true"

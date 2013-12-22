@@ -5,9 +5,11 @@ import java.util.HashMap;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -46,20 +48,25 @@ public class TaskServiceClass extends Service {
     public void onDestroy() {
         mThreadHandler.removeCallbacks(runUpdateCirLogMulti);
         super.onDestroy();
-        Log.e("TaskServeice","onDestroy");
+        Log.e("TaskServeice", "onDestroy");
     }
 
     // 執行緒工作-借閱資料更新多次
     private Runnable runUpdateCirLogMulti = new Runnable() {
         public void run() {
             // TODO 補上抓系統設定的排程更新參數
-            // if (run) {
+            SharedPreferences mPerferences = PreferenceManager
+                    .getDefaultSharedPreferences(getBaseContext());
 
-            mThreadHandler.postDelayed(this, 30000);
-            UpdateCirLogData("排程更新", getBaseContext());
+            if (mPerferences.getBoolean("autosync", true)) {
+                mThreadHandler.postDelayed(this, 30000);
+                UpdateCirLogData("排程更新", getBaseContext());
+                Log.i("TestAsyncTask", "1-runUpdateCirLogMulti");
+            } else {
+                mThreadHandler.postDelayed(this, 30000);
+                Log.i("TestAsyncTask", "1-noUpdateCirLogMulti");
+            }
 
-            // }
-            Log.i("TestAsyncTask", "1-runUpdateCirLogMulti");
         }
     };
 
