@@ -35,6 +35,10 @@ public class SettingsActivity extends PreferenceActivity implements
     SharedPreferences mPreferences;
     Boolean blnLogoutClicked;
 
+    // 宣告LOG物件，並決定工作類型
+    LOGClass logclass = new LOGClass();
+    String logJobType = "設定操作";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,11 +80,38 @@ public class SettingsActivity extends PreferenceActivity implements
     // 當設定選單有所變動時，針對不同欄有不同的動作
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
+
+        // 實作選單物件，供後續取用
+        SharedPreferences mPerferences = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext());
+
         // Let's do something a preference value changes
         if (key.equals("autosync")) {
-            // TODO 寫入關掉同步功能
+            // 判斷同步設定產生對應內容
+            if (mPerferences.getBoolean("autosync", true)) {
+                // 寫log
+                logclass.setLOGtoDB(SettingsActivity.this, logJobType,
+                        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .format(new java.util.Date()), "同步功能打開");
+            } else {
+                // 寫log
+                logclass.setLOGtoDB(SettingsActivity.this, logJobType,
+                        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .format(new java.util.Date()), "同步功能關閉");
+            }
         } else if (key.equals("notification")) {
-            // TODO 寫入關掉通知功能
+            // 判斷通知設定產生對應內容
+            if (mPerferences.getBoolean("autosync", true)) {
+                // 寫log
+                logclass.setLOGtoDB(SettingsActivity.this, logJobType,
+                        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .format(new java.util.Date()), "通知功能打開");
+            } else {
+                // 寫log
+                logclass.setLOGtoDB(SettingsActivity.this, logJobType,
+                        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .format(new java.util.Date()), "通知功能關閉");
+            }
         }
     }
 
