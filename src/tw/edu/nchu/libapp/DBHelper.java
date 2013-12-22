@@ -28,7 +28,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * 
      * strDBName 準備取用的資料庫名
      */
-    private final static int intDBVersion = 2;
+    private final static int intDBVersion = 3;
     private final static String strDBName = "nchulib.db";
 
     public DBHelper(Context context, String DBname, CursorFactory factory,
@@ -83,12 +83,19 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "ExecuteStatus TEXT NOT NULL );";
         db.execSQL(strTB_SystemLog_sql);
 
-        // 建立系統設定紀錄表
+        // 建立系統設定資料表
         String strTB_SystemSet_sql = "CREATE TABLE IF NOT EXISTS SystemSet( "
                 + "SysStatusDes TEXT NOT NULL, "
                 + "SysStatus INTEGER NOT NULL );";
         db.execSQL(strTB_SystemSet_sql);
 
+        // 建立通知紀錄資料表
+        String strTB_NoticationLog_sql = "CREATE TABLE IF NOT EXISTS NoticationLog( "
+                + "ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
+                + "Barcode TEXT NOT NULL, "
+                + "NoticeDate TEXT NOT NULL, "
+                + "NoticeStatus INTEGER NOT NULL );";
+        db.execSQL(strTB_NoticationLog_sql);
     }
 
     @Override
@@ -115,6 +122,17 @@ public class DBHelper extends SQLiteOpenHelper {
                         + "ExecuteStatus TEXT NOT NULL );");
                 db.execSQL("INSERT INTO SystemLog SELECT ID,JobType,Time,ExecuteStatus FROM SystemLog_backup;");
                 db.execSQL("DROP TABLE SystemLog_backup;");
+                oldVersion++;
+
+                success = true;
+                break;
+            case 2:
+                // 因log紀錄方式變動，所以欄位變動，刪除StartTime及EndTime改成一個Time
+                db.execSQL("CREATE TABLE IF NOT EXISTS NoticationLog( "
+                        + "ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
+                        + "Barcode TEXT NOT NULL, "
+                        + "NoticeDate TEXT NOT NULL, "
+                        + "NoticeStatus INTEGER NOT NULL );");
                 oldVersion++;
 
                 success = true;
