@@ -442,10 +442,12 @@ public class DBHelper extends SQLiteOpenHelper {
             String strToday = smdf.format(dateToday);
 
             switch (partonloantype) {
+            // 取得全部借閱清單
             case 0:
-                strSql = "Select Title,EndDate from patronloan where DataType='LOAN'"
+                strSql = "Select Title,EndDate,Barcode from patronloan where DataType='LOAN'"
                         + " ORDER BY EndDate DESC";
                 break;
+            // 取得即將到期清單
             case 1:
                 // 往前回推X天
                 long longDueDay = dateToday.getTime()
@@ -455,14 +457,15 @@ public class DBHelper extends SQLiteOpenHelper {
                 // 將到期日轉成特定格式
                 String strDueDay = smdf.format(dateDueDay);
 
-                strSql = "Select Title,EndDate from patronloan where DataType='LOAN'"
+                strSql = "Select Title,EndDate,Barcode from patronloan where DataType='LOAN'"
                         + " and EndDate >= "
                         + strToday
                         + " and EndDate <= "
                         + strDueDay + " ORDER BY EndDate DESC";
                 break;
+            // 取得已過期借閱清單
             case 2:
-                strSql = "Select Title,EndDate from patronloan where DataType='LOAN'"
+                strSql = "Select Title,EndDate,Barcode from patronloan where DataType='LOAN'"
                         + " and EndDate < "
                         + strToday
                         + " ORDER BY EndDate DESC";
@@ -480,6 +483,7 @@ public class DBHelper extends SQLiteOpenHelper {
             map.put("Time",
                     (String) context.getResources().getText(
                             R.string.ActivityCirculationLog_lvDuedate));
+            map.put("Barcode", "BarCode");
             mylist.add(map);
 
             // 把表格內的每一筆資料都寫入hashmap中
@@ -491,6 +495,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 map.put("Title", recSet.getString(0));
 
                 map.put("Time", recSet.getString(1));
+                
+                map.put("Barcode", recSet.getString(2));
 
                 mylist.add(map);
             }

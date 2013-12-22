@@ -89,7 +89,7 @@ public class CirculationLogActivity extends ActionBarActivity {
     private Runnable runRefreshListView = new Runnable() {
         public void run() {
             try {
-                LoadListDate();
+                LoadListData();
 
                 // 把清單附加上去
                 myExpandableListView.setAdapter(mySimpleExpandableListAdapter);
@@ -121,7 +121,7 @@ public class CirculationLogActivity extends ActionBarActivity {
         myExpandableListView = (ExpandableListView) findViewById(R.id.expandableCirLogListView1);
 
         // 載入資料庫的內容
-        LoadListDate();
+        LoadListData();
 
         try {
             // 把清單附加上去
@@ -154,7 +154,7 @@ public class CirculationLogActivity extends ActionBarActivity {
         CheckIfDBEmpty();
 
         // 載入資料庫的內容
-        LoadListDate();
+        LoadListData();
 
         try {
             // 把清單附加上去
@@ -239,7 +239,7 @@ public class CirculationLogActivity extends ActionBarActivity {
      *             No exceptions thrown
      */
     @SuppressLint("SimpleDateFormat")
-    private void LoadListDate() {
+    private void LoadListData() {
         try {
             // 建立取用資料庫的物件
             DBHelper dbHelper = new DBHelper(CirculationLogActivity.this);

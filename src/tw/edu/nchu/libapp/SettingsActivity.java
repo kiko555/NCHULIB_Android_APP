@@ -45,12 +45,10 @@ public class SettingsActivity extends PreferenceActivity implements
 
         // 不同版本的android應用不同的畫面結構，因為Honeycomb前，畫面多了一個回前頁的按鈕，
         // 為何要這樣做是因為ActionBar沒有實作PreferenceActivity，為了怕使用者手機沒有回上一頁的按鈕，所以先實作一個
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) { // Build.VERSION_CODES.ICE_CREAM_SANDWICH
-            addPreferencesFromResource(R.xml.mypreferences);
-        } else {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             setContentView(R.layout.activity_settings);
-            addPreferencesFromResource(R.xml.mypreferences);
         }
+        addPreferencesFromResource(R.xml.mypreferences);
 
         // 實作設定的登出欄監聽功能
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
