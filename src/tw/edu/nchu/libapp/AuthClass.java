@@ -86,14 +86,8 @@ public class AuthClass {
         String strReturnContent = null;
         try {
             // 進行連線
-            AsyncTask<String, Void, String> asyncTask;
-            asyncTask = httpTaskClass
-                    .execute("https://api.lib.nchu.edu.tw/php/appagent/");
-
-            strReturnContent = asyncTask.get();
-
-            // TODO:停止執行緒未作用，待完成
-            // asyncTask.cancel(true);
+            strReturnContent = httpTaskClass
+                    .doPostWork("https://api.lib.nchu.edu.tw/php/appagent/");
         } catch (Exception e) {
             // 寫log
             logclass.setLOGtoDB(context, logJobType,
@@ -171,10 +165,9 @@ public class AuthClass {
         String strReturnContent = null;
         try {
             // 進行連線
-            AsyncTask<String, Void, String> asyncTask = httpTaskClass
-                    .execute("https://api.lib.nchu.edu.tw/php/appagent/");
+            strReturnContent = httpTaskClass
+                    .doPostWork("https://api.lib.nchu.edu.tw/php/appagent/");
 
-            strReturnContent = asyncTask.get();
         } catch (Exception e) {
             // 寫log
             logclass.setLOGtoDB(context, logJobType,

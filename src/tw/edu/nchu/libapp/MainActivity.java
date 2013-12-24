@@ -15,7 +15,8 @@ import android.widget.Toast;
  * @version 1.0
  */
 public class MainActivity extends ActionBarActivity {
-
+    // 用來判斷服務是否已被帶起來了
+    static long longCheckService = 0;
     // 建立取用資料庫的物件
     DBHelper dbHelper = new DBHelper(MainActivity.this);
 
@@ -27,23 +28,26 @@ public class MainActivity extends ActionBarActivity {
 
         int intCountPartonTable = dbHelper.doCountPartonTable();
         if (intCountPartonTable == 1) {
-            // 建背景更新程式
-            Intent serviceIntent = new Intent(getApplicationContext(),
-                    TaskServiceClass.class);
-            startService(serviceIntent);
+            if (longCheckService == 0) {
+                // 建背景更新程式
+                Intent serviceIntent = new Intent(getApplicationContext(),
+                        TaskServiceClass.class);
+                startService(serviceIntent);
+                longCheckService++;
+            }
 
             // 在資料庫中有登入紀錄，立刻跳轉到借閱紀錄畫面
             Intent intent = new Intent();
             intent.setClass(MainActivity.this, CirculationLogActivity.class);
 
             startActivity(intent);
-            // finish();
+            finish();
         } else {
             // 在資料庫中無登入紀錄，立刻跳轉到登入畫面
             Intent intent = new Intent();
             intent.setClass(MainActivity.this, LoginActivity.class);
             startActivity(intent);
-            // finish();
+            finish();
         }
     }
 
@@ -63,6 +67,7 @@ public class MainActivity extends ActionBarActivity {
                 Intent intent = new Intent();
                 intent.setClass(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
+                finish();
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -73,6 +78,7 @@ public class MainActivity extends ActionBarActivity {
                 Intent intent = new Intent();
                 intent.setClass(MainActivity.this, CirculationLogActivity.class);
                 startActivity(intent);
+                finish();
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -81,6 +87,7 @@ public class MainActivity extends ActionBarActivity {
         case R.id.action_settings:
             Toast.makeText(MainActivity.this, Item.getTitle(),
                     Toast.LENGTH_LONG).show();
+            finish();
             return true;
         case R.id.action_exit:
             finish();
@@ -97,21 +104,21 @@ public class MainActivity extends ActionBarActivity {
             dbHelper.close();
         }
     }
-    
+
     @Override
     protected void onStart() {
         super.onStart();
         // 確認資料庫是否有資料，如無跳轉到登入畫面
         CheckIfDBEmpty();
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
         // 確認資料庫是否有資料，如無跳轉到登入畫面
         CheckIfDBEmpty();
     }
-    
+
     /**
      * 確認是否資料庫是空的，如果有資料就跳轉到流通紀錄畫面
      * 

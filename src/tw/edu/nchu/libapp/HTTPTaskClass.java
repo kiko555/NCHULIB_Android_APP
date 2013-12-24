@@ -26,7 +26,8 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import android.os.AsyncTask;
+import android.content.Context;
+import android.util.Log;
 
 /**
  * 供程式http傳輸使用
@@ -34,13 +35,21 @@ import android.os.AsyncTask;
  * @author kiko
  * @version 1.0
  */
-public class HTTPTaskClass extends AsyncTask<String, Void, String> {
+public class HTTPTaskClass  {
     InputStream instream;
     Scheme sch;
     List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+    String TAG="HTTPTaskClass-AsyncTask";
 
-    @Override
-    protected void onPreExecute() {
+    /**
+     * 帳密認證
+     * 
+     * @return strReturnContent Server回傳的內容
+     * 
+     * @throws exceptions
+     *             No exceptions thrown
+     */
+    public String doPostWork(String url) {
         try {
             // 透過keystore來解SSL
             KeyStore trustStore = KeyStore.getInstance(KeyStore
@@ -75,10 +84,9 @@ public class HTTPTaskClass extends AsyncTask<String, Void, String> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    
 
-    @Override
-    protected String doInBackground(String... urls) {
+
         // HTTP 連線回傳的內容
         String strAllLine = "";
 
@@ -89,7 +97,7 @@ public class HTTPTaskClass extends AsyncTask<String, Void, String> {
         client.getConnectionManager().getSchemeRegistry().register(sch);
 
         // 給予連線的網址
-        HttpPost httppost = new HttpPost(urls[0].toString());
+        HttpPost httppost = new HttpPost(url);
 
         // 給予POST所需傳遞的參數
         try {
@@ -101,47 +109,65 @@ public class HTTPTaskClass extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
 
-        try {
+        //while (!isCancelled()) {
+            try {
 
-            // Execute HTTP Post Request
-            HttpResponse response = client.execute(httppost);
+                // Execute HTTP Post Request
+                HttpResponse response = client.execute(httppost);
 
-            // 確認回傳是否異常
-            StatusLine status = response.getStatusLine();
+                // 確認回傳是否異常
+                StatusLine status = response.getStatusLine();
 
-            if (status.getStatusCode() != 200) {
-                throw new IOException("Invalid response from server: "
-                        + status.toString());
-            } else {
-                // 將回傳值丟進buffer
-                BufferedReader rd = new BufferedReader(new InputStreamReader(
-                        response.getEntity().getContent()));
+                if (status.getStatusCode() != 200) {
+                    throw new IOException("Invalid response from server: "
+                            + status.toString());
+                } else {
+                    // 將回傳值丟進buffer
+                    BufferedReader rd = new BufferedReader(
+                            new InputStreamReader(response.getEntity()
+                                    .getContent()));
 
-                // 有值才將buffer內的值彙整起來
-                String strline = "";
+                    // 有值才將buffer內的值彙整起來
+                    String strline = "";
 
-                while ((strline = rd.readLine()) != null) {
-                    strAllLine += strline;
+                    while ((strline = rd.readLine()) != null) {
+                        strAllLine += strline;
+                    }
+                    
+                    Log.i("test",strAllLine);
+                    
+                    
+                    
+                    
+                    //super.cancel(true);
                 }
-
+            } catch (ClientProtocolException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            
+            
+            
+            
+            
+            
+        //}
 
+            //super.cancel(true);  
         // 確認是否沒有收到資料，如果是空的就丟訊息提醒，並停止後續處理
         if (strAllLine.equals("")) {
-            super.cancel(true);
+            
             return null;
         } else {
             return strAllLine;
+            
         }
-    }
+}
+
 }
 // /:~

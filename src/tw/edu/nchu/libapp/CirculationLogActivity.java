@@ -164,6 +164,13 @@ public class CirculationLogActivity extends ActionBarActivity {
             e.printStackTrace();
         }
     }
+    
+    @Override
+    public void onDestroy() {
+        mThreadHandler.removeCallbacks(runUpdateCirLogMulti);
+        super.onDestroy();
+        Log.e("TaskServeice", "onDestroy");
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -179,6 +186,7 @@ public class CirculationLogActivity extends ActionBarActivity {
         case R.id.action_refresh:
             setSupportProgressBarIndeterminateVisibility(true);
             // 請經紀人指派工作名稱 ，給工人做
+            mThreadHandler.removeCallbacks(runUpdateCirLogOnce);
             mThreadHandler.post(runUpdateCirLogOnce);
 
             return true;
@@ -186,12 +194,14 @@ public class CirculationLogActivity extends ActionBarActivity {
             Intent intent = new Intent();
             intent.setClass(CirculationLogActivity.this, SettingsActivity.class);
             startActivity(intent);
+            finish();
             return true;
         case R.id.action_systemlog:
             Intent intent1 = new Intent();
             intent1.setClass(CirculationLogActivity.this,
                     SystemLogActivity.class);
             startActivity(intent1);
+            finish();
             return true;
         case R.id.action_exit:
             finish();
