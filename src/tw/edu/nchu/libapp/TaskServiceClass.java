@@ -87,7 +87,7 @@ public class TaskServiceClass extends Service {
                     .getDefaultSharedPreferences(getBaseContext());
 
             // 30秒後再執行排程工作
-            mThreadHandler.postDelayed(this, 10800000); // 10800000 = 3小時
+            mThreadHandler.postDelayed(this, 5000); // 10800000 = 3小時
 
             // 讀取設定檔是否允許同步
             if (mPerferences.getBoolean("autosync", true)) {
@@ -182,23 +182,24 @@ public class TaskServiceClass extends Service {
             // 宣告處理JSON的物件
             JSONClass jsonClass = new JSONClass();
 
-            // 將回傳的全部的借閱資料陣列透過HashMap方式儲存， 最後轉入arylistPartonLoan 中
-            ArrayList<HashMap<String, String>> arylistPartonLoan = dbHelper
+            // 將回傳的全部的借閱到期資料陣列透過HashMap方式儲存， 最後轉入arylistPartonLoan 中
+            ArrayList<HashMap<String, String>> arylistPartonLoanDue = dbHelper
                     .getPartonLoanTable(context, 1);
 
-            String strContent = "";
-            // 匯整要通知的內容
-            for (int i = 1; i < arylistPartonLoan.size(); i++) {
-                strContent = strContent + arylistPartonLoan.get(i).get("Title")
-                        + "-" + arylistPartonLoan.get(i).get("Time") + "/r/n";
-            }
-            strContent = strContent + "即將到期";
+            // 將回傳的全部的借閱過期資料陣列透過HashMap方式儲存， 最後轉入arylistPartonLoan 中
+            ArrayList<HashMap<String, String>> arylistPartonLoanOverDue = dbHelper
+                    .getPartonLoanTable(context, 2);
+
+            // 將回傳的全部的預約資料陣列透過HashMap方式儲存， 最後轉入arylistPartonLoan 中
+            ArrayList<HashMap<String, String>> arylistPartonLoan_Request = dbHelper
+                    .getPartonLoanTable_Request(context);
 
             String strTitle = context.getString(R.string.app_name);
 
+            // 這邊的 setContentText 理論上只供 4.1 版以下的顯示
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
                     context).setSmallIcon(R.drawable.ic_launcher)
-                    .setContentTitle(strTitle).setContentText("你有到期書。")
+                    .setContentTitle(strTitle).setContentText("您有新的通訊息，請點選查閱。")
                     .setTicker("NCHU Library notification");
 
             // 通知的內文條列
@@ -210,14 +211,51 @@ public class TaskServiceClass extends Service {
                     | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            // Sets a title for the Inbox style big view
-            inboxStyle.setBigContentTitle("你有到期書:");
+            // 設定通知欄的標題
+            inboxStyle.setBigContentTitle("中興大學圖書館通知您");
+            
+            // 陣列大於一才代表有到期書
+            if (arylistPartonLoanDue.size() > 1) {
+                // Sets a title for the Inbox style big view
+                inboxStyle.addLine("你有到期書:");
 
-            // Moves events into the big view
-            for (int i = 1; i < arylistPartonLoan.size(); i++) {
-                inboxStyle.addLine(arylistPartonLoan.get(i).get("Title") + ","
-                        + arylistPartonLoan.get(i).get("Time"));
+                // Moves events into the big view
+                for (int i = 1; i < arylistPartonLoanDue.size(); i++) {
+                    inboxStyle.addLine(arylistPartonLoanDue.get(i).get("Title")
+                            + "," + arylistPartonLoanDue.get(i).get("Time"));
+                }
             }
+
+            // 陣列大於一才代表有過期書
+            if (arylistPartonLoanOverDue.size() > 1) {
+                // Sets a title for the Inbox style big view
+                inboxStyle.addLine("你有過期書:");
+
+                // Moves events into the big view
+                for (int i = 1; i < arylistPartonLoanOverDue.size(); i++) {
+                    inboxStyle
+                            .addLine(arylistPartonLoanOverDue.get(i).get(
+                                    "Title")
+                                    + ","
+                                    + arylistPartonLoanOverDue.get(i).get(
+                                            "Time"));
+                }
+            }
+
+            // 陣列大於一才代表有預約書
+            if (arylistPartonLoan_Request.size() > 1) {
+                // Sets a title for the Inbox style big view
+                inboxStyle.addLine("你有預約書:");
+
+                // Moves events into the big view
+                for (int i = 1; i < arylistPartonLoan_Request.size(); i++) {
+                    inboxStyle.addLine(arylistPartonLoan_Request.get(i).get(
+                            "Title")
+                            + ","
+                            + arylistPartonLoan_Request.get(i).get("Time"));
+                }
+            }
+
             // Moves the big view style object into the notification object.
             mBuilder.setStyle(inboxStyle);
 
@@ -225,17 +263,17 @@ public class TaskServiceClass extends Service {
             PendingIntent appIntent = PendingIntent.getActivity(context, 0,
                     notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            // 顯示在狀態列的文字
-            // mBuilder = "NCHU Library notification.";
-
             // 取得Notification服務
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+            // 控制通知的編號
+            int notifyID = 1;
 
             mBuilder.setContentIntent(appIntent);
             mBuilder.setAutoCancel(true);
 
             // 送出Notification
-            mNotificationManager.notify(0, mBuilder.build());
+            mNotificationManager.notify(notifyID, mBuilder.build());
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
