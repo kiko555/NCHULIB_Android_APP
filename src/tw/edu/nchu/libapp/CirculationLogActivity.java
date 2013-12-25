@@ -45,63 +45,7 @@ public class CirculationLogActivity extends ActionBarActivity {
     protected SimpleExpandableListAdapter mySimpleExpandableListAdapter = null;
     ExpandableListView myExpandableListView;
 
-    // private TaskServiceClass service = new TaskServiceClass();
-
-    // 找到UI工人的經紀人，這樣才能派遣工作 (找到顯示畫面的UI Thread上的Handler)
-    private Handler mUI_Handler = new Handler();
-
-    // 宣告特約工人的經紀人
-    private Handler mThreadHandler;
-
-    // 宣告特約工人
-    private HandlerThread mThread;
-
-    // 執行緒工作-借閱資料更新多次
-    private Runnable runUpdateCirLogMulti = new Runnable() {
-        public void run() {
-            // TODO 補上抓系統設定的排程更新參數
-            // if (run) {
-
-            mThreadHandler.postDelayed(this, 30000);
-            UpdateCirLogData("排程更新");
-
-            // 請經紀人指派工作名稱 r，給工人做
-            mUI_Handler.post(runRefreshListView);
-
-            // }
-            Log.i("TestAsyncTask", "1-runUpdateCirLogMulti");
-        }
-    };
-
-    // 執行緒工作-借閱資料更新一次
-    private Runnable runUpdateCirLogOnce = new Runnable() {
-        public void run() {
-            UpdateCirLogData("Token登入");
-
-            // 請經紀人指派工作名稱 r，給工人做
-            mUI_Handler.post(runRefreshListView);
-
-            Log.i("TestAsyncTask", "3-runUpdateCirLogOnce");
-        }
-    };
-
-    // 執行緒工作-借閱畫面更新
-    private Runnable runRefreshListView = new Runnable() {
-        public void run() {
-            try {
-                LoadListData();
-
-                // 把清單附加上去
-                myExpandableListView.setAdapter(mySimpleExpandableListAdapter);
-
-                setSupportProgressBarIndeterminateVisibility(false);
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            Log.i("TestAsyncTask", "2-runRefreshListView");
-        }
-    };
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,19 +75,7 @@ public class CirculationLogActivity extends ActionBarActivity {
             e.printStackTrace();
         }
 
-        // 聘請一個特約工人，有其經紀人派遣其工人做事 (另起一個有Handler的Thread)
-        mThread = new HandlerThread("name");
-
-        // 讓Worker待命，等待其工作 (開啟Thread)
-        mThread.start();
-
-        // 找到特約工人的經紀人，這樣才能派遣工作 (找到Thread上的Handler)
-        mThreadHandler = new Handler(mThread.getLooper());
-
-        //
-        // // 請經紀人指派工作名稱 ，給工人做
-        // mThreadHandler.postDelayed(runUpdateCirLogMulti, 30000);
-
+        
     }
 
     @Override
@@ -167,7 +99,6 @@ public class CirculationLogActivity extends ActionBarActivity {
     
     @Override
     public void onDestroy() {
-        mThreadHandler.removeCallbacks(runUpdateCirLogMulti);
         super.onDestroy();
         Log.e("TaskServeice", "onDestroy");
     }
@@ -185,10 +116,6 @@ public class CirculationLogActivity extends ActionBarActivity {
         switch (Item.getItemId()) {
         case R.id.action_refresh:
             setSupportProgressBarIndeterminateVisibility(true);
-            // 請經紀人指派工作名稱 ，給工人做
-            mThreadHandler.removeCallbacks(runUpdateCirLogOnce);
-            mThreadHandler.post(runUpdateCirLogOnce);
-
             return true;
         case R.id.action_settings:
             Intent intent = new Intent();

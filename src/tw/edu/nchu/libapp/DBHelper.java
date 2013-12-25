@@ -495,7 +495,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 map.put("Title", recSet.getString(0));
 
                 map.put("Time", recSet.getString(1));
-                
+
                 map.put("Barcode", recSet.getString(2));
 
                 mylist.add(map);
@@ -664,6 +664,131 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return mylist;
 
+    }
+
+    /**
+     * 將通知紀錄寫入 表格
+     * 
+     * @param Title
+     *            借閱資料的題名
+     * @param BarCode
+     *            借閱資料的登錄號
+     * @param DataType
+     *            借閱資料類型
+     * @param EndData
+     *            借閱資料到期日
+     * @throws exceptions
+     *             No exceptions thrown
+     */
+    public void doInsertNoticationLogTable(String Barcode, String NoticeDate,
+            Integer NoticeStatus) {
+        try {
+            // SQLiteDatabase對象
+            SQLiteDatabase db_PatronLoanHelper = getWritableDatabase();
+            // 寫入資料庫的內容
+            ContentValues rec = new ContentValues();
+
+            rec.put("Barcode", Barcode);
+            rec.put("NoticeDate", NoticeDate);
+            rec.put("NoticeStatus", NoticeStatus);
+            db_PatronLoanHelper.insert("NoticationLog", null, rec);
+
+            // 關閉資料庫
+            db_PatronLoanHelper.close();
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * 提供程式判斷是否需要發通知，依據某 BarCode 在某天是否有出現在 NoticationLog，
+     * 或者根本不在需要通知的天數內(非7,3,1 or 1,3,7)
+     * 
+     * @return mylist 操作紀錄透過HashMap方式儲存，最後再以arraylist的方式回傳
+     * 
+     * @throws exceptions
+     *             No exceptions thrown
+     */
+    public Boolean doCheckNoticationLog(Context context, String BarCode,
+            String EndDate, int CheckType) {
+        // 紀錄筆數用以判斷有值與否
+        int intRowNum = 0;
+        String strNoticeDate = "";
+
+        try {
+            // 利用判斷天數來控制清單的內容
+            SimpleDateFormat smdf = new SimpleDateFormat("yyyyMMdd");
+
+            // 取得今天日期
+            Calendar cal = new GregorianCalendar();
+            cal.set(Calendar.HOUR_OF_DAY, 0); // anything 0 - 23
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            Date dateToday = cal.getTime();
+            String strToday = smdf.format(dateToday);
+
+            // 到期日往前回推7,3,1天
+            long longDue7days = dateToday.getTime() - (7 * 24 * 60 * 60 * 1000);
+            String strDue7days = smdf.format(longDue7days);
+            long longDue3days = dateToday.getTime() - (3 * 24 * 60 * 60 * 1000);
+            String strDue3days = smdf.format(longDue3days);
+            long longDue1days = dateToday.getTime() - (1 * 24 * 60 * 60 * 1000);
+            String strDue1days = smdf.format(longDue1days);
+
+            // 到期日往後推7,3,1天
+            long longOverDue7days = dateToday.getTime()
+                    + (7 * 24 * 60 * 60 * 1000);
+            String strOverDue7days = smdf.format(longOverDue7days);
+            long longOverDue3days = dateToday.getTime()
+                    + (3 * 24 * 60 * 60 * 1000);
+            String strOverDue3days = smdf.format(longOverDue3days);
+            long longOverDue1days = dateToday.getTime()
+                    + (1 * 24 * 60 * 60 * 1000);
+            String strOverDue1days = smdf.format(longOverDue1days);
+
+            if (strToday.equals(strDue7days) || strToday.equals(strDue3days)
+                    || strToday.equals(strDue1days)
+                    || strToday.equals(strOverDue7days)
+                    || strToday.equals(strOverDue3days)
+                    || strToday.equals(strOverDue1days)) {
+                strNoticeDate = strToday;
+            } else {
+                // 如果不是這些天數中，直接回傳，讓通知不進行
+                return false;
+            }
+
+            // SQLiteDatabase對象
+            SQLiteDatabase db_SystemLogHelper = getReadableDatabase();
+
+            // select query
+            String selectQuery = "SELECT * FROM NoticationLog"
+                    + " WHERE  BarCode='" + BarCode + "' and NoticeDate='"
+                    + strNoticeDate + "'";
+
+            // 建立查詢元件
+            Cursor cursor = db_SystemLogHelper.rawQuery(selectQuery, null);
+            cursor.moveToFirst();
+
+            // 用以判斷有值與否
+            intRowNum = cursor.getCount();
+
+            // 關閉資料庫
+            db_SystemLogHelper.close();
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // 如果有值就代表已通知過，不需要再通知
+        if (intRowNum > 0) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
