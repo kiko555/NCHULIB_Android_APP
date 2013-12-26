@@ -54,6 +54,7 @@
             </intent-filter>
         </activity>
         <service android:name="TaskServiceClass"></service>
+        <service android:name="HTTPServiceClass"></service>
     </application>
 
 </manifest>

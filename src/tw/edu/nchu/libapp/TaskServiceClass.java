@@ -268,7 +268,7 @@ public class TaskServiceClass extends Service {
                         // 如果第一次遇到 blnSmallTitleFlag 是 false 就是代表要有小標題
                         if (!blnSmallTitleFlag) {
                             // Sets a title for the Inbox style big view
-                            inboxStyle.addLine("你有到期書:");
+                            inboxStyle.addLine("你有過期書:");
                             blnSmallTitleFlag = true;
                         }
 

@@ -1,18 +1,22 @@
 //: object/LoginActivity.java
 package tw.edu.nchu.libapp;
 
-import java.util.HashMap;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.telephony.SmsManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,6 +42,9 @@ public class LoginActivity extends ActionBarActivity {
     private EditText txID;
     private EditText txPassword;
     private CheckBox cbNotice;
+    
+    // 宣告自訂的廣播接受器
+    mServiceReceiver mServiceReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +73,10 @@ public class LoginActivity extends ActionBarActivity {
         // 帶入填寫的欄位
         txID = (EditText) findViewById(R.id.editText1);
         txPassword = (EditText) findViewById(R.id.editText2);
+        
+      //宣告一個自訂的BroadcastReceiver , 稍後我們會在onResume() 動態註冊
+        mServiceReceiver = new mServiceReceiver();
+        
     }
 
     @Override
@@ -73,6 +84,22 @@ public class LoginActivity extends ActionBarActivity {
         super.onResume();
         // 確認資料庫是否有資料，如無跳轉到登入畫面
         CheckIfDBEmpty();
+        
+      //宣告一個IntentFilter並使用我們之前自訂的action
+        IntentFilter IFilter = new IntentFilter();
+        IFilter.addAction("tw.edu.nchu.libapp.Auth_Message");
+        
+      //動態註冊BroadcastReceiver
+        registerReceiver(mServiceReceiver,IFilter);
+        
+    }
+    
+    @Override
+    protected void onPause() {
+        super.onPause();
+        
+      //動態註銷BroadcastReceiver
+        unregisterReceiver(mServiceReceiver);
     }
 
     @Override
@@ -157,7 +184,24 @@ public class LoginActivity extends ActionBarActivity {
                     e.printStackTrace();
                 }
 
-                // 呼叫帳密認證程序
+                // 建立連線服務完成認證工作
+                Intent HTTPServiceIntent = new Intent(LoginActivity.this,
+                        HTTPServiceClass.class);
+                
+            
+                
+                // HTTP服務所要送出的值
+                HTTPServiceIntent.putExtra("OP", "AccAuth");
+                HTTPServiceIntent.putExtra("txID", txID.getEditableText().toString());
+                HTTPServiceIntent.putExtra("txPassword", txPassword.getEditableText().toString());
+                HTTPServiceIntent.putExtra("jsonDeviceInfo", jsonDeviceInfo.toString());
+                // 啟動HTTP服務
+                startService(HTTPServiceIntent);
+                
+                
+                
+                
+ /*               // 呼叫帳密認證程序
                 AuthClass authclass = new AuthClass();
                 String strReturnContent = authclass.doPasswordAuth(
                         LoginActivity.this, txID.getEditableText().toString(),
@@ -209,9 +253,17 @@ public class LoginActivity extends ActionBarActivity {
                         e.printStackTrace();
                     }
                 }
-
-                // 資料抓取完畢將讀取鈕移除
-                setSupportProgressBarIndeterminateVisibility(false);
+ */
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
             } else {
                 // 警告要同意條款
                 Toast.makeText(LoginActivity.this, R.string.action_LoginNotice,
@@ -219,6 +271,7 @@ public class LoginActivity extends ActionBarActivity {
             }
 
         }
+       
     };
 
     /**
@@ -297,6 +350,44 @@ public class LoginActivity extends ActionBarActivity {
         dbHelper.close();
 
     }
-
+    
+    
+    /**
+     * 自訂的廣播接受器類別
+     * 
+     * @throws exceptions
+     *             No exceptions thrown
+     */
+    public class mServiceReceiver extends BroadcastReceiver
+    {
+      @Override
+      public void onReceive(Context context, Intent intent)
+      {
+        // TODO Auto-generated method stub
+        
+       Log.d("Test","Data:"+intent.getStringExtra("Data"));
+       //顯示之前擺入sentIntent的附加資訊
+        
+       if(intent.getAction().equals("tw.edu.nchu.libapp.Auth_Message"))
+       {
+        
+        // 資料抓取完畢將讀取鈕移除
+           setSupportProgressBarIndeterminateVisibility(false);
+           
+           if(intent.getStringExtra("AuthResult").equals("Success")){
+        // 登入成功，立刻Main來帶出排程功能
+           Intent intent1 = new Intent();
+           intent1.setClass(LoginActivity.this,
+                   MainActivity.class);
+           startActivity(intent1);
+           }else{
+            // 認證失敗就丟個警告
+               Toast.makeText(LoginActivity.this,
+                       R.string.ActivityLogin_toastLoginFail,
+                       Toast.LENGTH_SHORT).show();
+           }
+       }
+      }
+    }
 }
 // /:~

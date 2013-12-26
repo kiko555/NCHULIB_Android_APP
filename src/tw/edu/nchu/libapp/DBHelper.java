@@ -731,29 +731,29 @@ public class DBHelper extends SQLiteOpenHelper {
             String strToday = smdf.format(dateToday);
 
             // 到期日往前回推7,3,1天
-            long longDue7days = dateToday.getTime() - (7 * 24 * 60 * 60 * 1000);
+            long longDue7days = dateToday.getTime() + (7 * 24 * 60 * 60 * 1000);
             String strDue7days = smdf.format(longDue7days);
-            long longDue3days = dateToday.getTime() - (3 * 24 * 60 * 60 * 1000);
+            long longDue3days = dateToday.getTime() + (3 * 24 * 60 * 60 * 1000);
             String strDue3days = smdf.format(longDue3days);
-            long longDue1days = dateToday.getTime() - (1 * 24 * 60 * 60 * 1000);
+            long longDue1days = dateToday.getTime() + (1 * 24 * 60 * 60 * 1000);
             String strDue1days = smdf.format(longDue1days);
 
             // 到期日往後推7,3,1天
             long longOverDue7days = dateToday.getTime()
-                    + (7 * 24 * 60 * 60 * 1000);
+                    - (7 * 24 * 60 * 60 * 1000);
             String strOverDue7days = smdf.format(longOverDue7days);
             long longOverDue3days = dateToday.getTime()
-                    + (3 * 24 * 60 * 60 * 1000);
+                    - (3 * 24 * 60 * 60 * 1000);
             String strOverDue3days = smdf.format(longOverDue3days);
             long longOverDue1days = dateToday.getTime()
-                    + (1 * 24 * 60 * 60 * 1000);
+                    - (1 * 24 * 60 * 60 * 1000);
             String strOverDue1days = smdf.format(longOverDue1days);
 
-            if (strToday.equals(strDue7days) || strToday.equals(strDue3days)
-                    || strToday.equals(strDue1days)
-                    || strToday.equals(strOverDue7days)
-                    || strToday.equals(strOverDue3days)
-                    || strToday.equals(strOverDue1days)) {
+            if (EndDate.equals(strDue7days) || EndDate.equals(strDue3days)
+                    || EndDate.equals(strDue1days)
+                    || EndDate.equals(strOverDue7days)
+                    || EndDate.equals(strOverDue3days)
+                    || EndDate.equals(strOverDue1days)) {
                 strNoticeDate = strToday;
             } else {
                 // 如果不是這些天數中，直接回傳，讓通知不進行
@@ -789,6 +789,32 @@ public class DBHelper extends SQLiteOpenHelper {
         } else {
             return true;
         }
+    }
+    
+    /**
+     * 清空 Parton 表格
+     * 
+     * @throws exceptions
+     *             No exceptions thrown
+     */
+    public void doEmptyNotificationLog() {
+        try {
+            // SQLiteDatabase對象
+            SQLiteDatabase db_PatronHelper = getWritableDatabase();
+
+            db_PatronHelper.delete("NoticationLog", null, null);
+
+            // 關閉資料庫
+            db_PatronHelper.close();
+
+        } catch (SQLiteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
 
     /**

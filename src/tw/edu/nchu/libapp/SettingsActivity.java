@@ -135,6 +135,9 @@ public class SettingsActivity extends PreferenceActivity implements
             // 先清空讀者及借閱資料表
             dbHelper.doEmptyPartonLoanTable();
             dbHelper.doEmptyPartonTable();
+            
+            // 也清空通知紀錄表
+            dbHelper.doEmptyNotificationLog();
 
             // 清空後直接跳轉到登入畫面
             Intent intent = new Intent();

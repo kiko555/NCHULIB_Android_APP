@@ -30,9 +30,10 @@ public class MainActivity extends ActionBarActivity {
         if (intCountPartonTable == 1) {
             if (longCheckService == 0) {
                 // 建背景更新程式
-                Intent serviceIntent = new Intent(getApplicationContext(),
+                Intent TaskServiceIntent = new Intent(getApplicationContext(),
                         TaskServiceClass.class);
-                startService(serviceIntent);
+                startService(TaskServiceIntent);
+
                 longCheckService++;
             }
 
