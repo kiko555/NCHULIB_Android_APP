@@ -389,6 +389,10 @@ public class CirculationLogActivity extends ActionBarActivity {
                              "yyyy-MM-dd HH:mm:ss")
                              .format(new java.util.Date()),
                      "5.認證成功");
+          // 認證成功就丟通知
+             Toast.makeText(CirculationLogActivity.this,
+                     R.string.ActivityCirculationLog_toastTokenSuccess,
+                     Toast.LENGTH_SHORT).show();
            }else{
             // 寫log
              logclass.setLOGtoDB(CirculationLogActivity.this,
@@ -399,7 +403,7 @@ public class CirculationLogActivity extends ActionBarActivity {
              
             // 認證失敗就丟個警告
                Toast.makeText(CirculationLogActivity.this,
-                       R.string.ActivityLogin_toastLoginFail,
+                       R.string.ActivityCirculationLog_toastTokenFail,
                        Toast.LENGTH_SHORT).show();
            }
        }

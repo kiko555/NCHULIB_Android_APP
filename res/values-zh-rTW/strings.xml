@@ -36,6 +36,7 @@
     <string name="ActivityCirculationLog_lvDay">日</string>
     <string name="ActivityCirculationLog_lvComma">，</string>
     <string name="ActivityCirculationLog_lvColon">：</string>
+    <string name="ActivityCirculationLog_toastTokenSuccess">資料更新完畢!!</string>
     <string name="ActivityCirculationLog_toastTokenFail">讀者或設備金鑰錯誤!!</string>
     <string name="ActivitySystemLog_tvJobType">工作類型</string>
     <string name="ActivitySystemLog_tvTime">時間</string>
