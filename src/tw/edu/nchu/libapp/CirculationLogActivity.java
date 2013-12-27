@@ -76,8 +76,8 @@ public class CirculationLogActivity extends ActionBarActivity {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
-      //宣告一個自訂的BroadcastReceiver , 稍後我們會在onResume() 動態註冊
+
+        // 宣告一個自訂的BroadcastReceiver , 稍後我們會在onResume() 動態註冊
         mServiceReceiver = new mServiceReceiver();
 
     }
@@ -99,20 +99,20 @@ public class CirculationLogActivity extends ActionBarActivity {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
-      //宣告一個IntentFilter並使用我們之前自訂的action
+
+        // 宣告一個IntentFilter並使用我們之前自訂的action
         IntentFilter IFilter = new IntentFilter();
         IFilter.addAction("tw.edu.nchu.libapp.Auth_Message");
-        
-      //動態註冊BroadcastReceiver
-        registerReceiver(mServiceReceiver,IFilter);
+
+        // 動態註冊BroadcastReceiver
+        registerReceiver(mServiceReceiver, IFilter);
     }
-    
+
     @Override
     protected void onPause() {
         super.onPause();
-        
-      //動態註銷BroadcastReceiver
+
+        // 動態註銷BroadcastReceiver
         unregisterReceiver(mServiceReceiver);
     }
 
@@ -297,117 +297,66 @@ public class CirculationLogActivity extends ActionBarActivity {
             // 宣告處理JSON的物件
             JSONClass jsonClass = new JSONClass();
 
-            
-            
-         // 建立連線服務完成認證工作
+            // 建立連線服務完成認證工作
             Intent HTTPServiceIntent = new Intent(CirculationLogActivity.this,
                     HTTPServiceClass.class);
-            
-            
+
             // HTTP服務所要送出的值
             HTTPServiceIntent.putExtra("OP", "TokenAuth");
             // 啟動HTTP服務
             startService(HTTPServiceIntent);
-            
-            
-//            // 呼叫Token認證程序
-//            AuthClass authclass = new AuthClass();
-//            String strReturnContent = authclass.doTokenAuth(
-//                    CirculationLogActivity.this, logJobType);
-//
-//            if (strReturnContent != null) {
-//                // 呼叫jsonClass處理JSON並寫入資料庫，會回傳交易狀態的各項值
-//                HashMap<String, String> hmOpResult = jsonClass
-//                        .setTokenResultJSONtoDB(strReturnContent,
-//                                CirculationLogActivity.this);
-//
-//                try {
-//                    // 如果系統運作正常才繼續下去
-//                    if (hmOpResult.get("OpResult").equals("Success")) {
-//                        // 如果認證成功才執行
-//                        if (hmOpResult.get("AuthResult").equals("Success")) {
-//                            // 寫log
-//                            logclass.setLOGtoDB(CirculationLogActivity.this,
-//                                    logJobType, new java.text.SimpleDateFormat(
-//                                            "yyyy-MM-dd HH:mm:ss")
-//                                            .format(new java.util.Date()),
-//                                    "5.認證成功");
-//                        } else {
-//                            // 寫log
-//                            logclass.setLOGtoDB(CirculationLogActivity.this,
-//                                    logJobType, new java.text.SimpleDateFormat(
-//                                            "yyyy-MM-dd HH:mm:ss")
-//                                            .format(new java.util.Date()),
-//                                    "5.認證失敗-Patron或Device Token錯誤");
-//                            // 認證失敗就丟個警告
-//                            Toast.makeText(
-//                                    CirculationLogActivity.this,
-//                                    R.string.ActivityCirculationLog_toastTokenFail,
-//                                    Toast.LENGTH_SHORT).show();
-//                        }
-//                    } else {
-//                        // TODO: 增加系統狀態的判斷
-//                    }
-//                } catch (Exception e) {
-//                    // TODO Auto-generated catch block
-//                    e.printStackTrace();
-//                }
-//            }
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
-    
+
     /**
      * 自訂的廣播接受器類別
      * 
      * @throws exceptions
      *             No exceptions thrown
      */
-    public class mServiceReceiver extends BroadcastReceiver
-    {
-      @Override
-      public void onReceive(Context context, Intent intent)
-      {
-       
-       if(intent.getAction().equals("tw.edu.nchu.libapp.Auth_Message"))
-       {
-           LOGClass logclass = new LOGClass();
-           String logJobType = "Token登入";
+    public class mServiceReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
 
-        // 資料抓取完畢將讀取鈕移除
-           setSupportProgressBarIndeterminateVisibility(false);
-           
-           if(intent.getStringExtra("AuthResult").equals("Success")){
-               // 更新畫面
-               LoadListData();
-               
-               // 寫log
-             logclass.setLOGtoDB(CirculationLogActivity.this,
-                     logJobType, new java.text.SimpleDateFormat(
-                             "yyyy-MM-dd HH:mm:ss")
-                             .format(new java.util.Date()),
-                     "5.認證成功");
-          // 認證成功就丟通知
-             Toast.makeText(CirculationLogActivity.this,
-                     R.string.ActivityCirculationLog_toastTokenSuccess,
-                     Toast.LENGTH_SHORT).show();
-           }else{
-            // 寫log
-             logclass.setLOGtoDB(CirculationLogActivity.this,
-                     logJobType, new java.text.SimpleDateFormat(
-                             "yyyy-MM-dd HH:mm:ss")
-                             .format(new java.util.Date()),
-                     "5.認證失敗-Patron或Device Token錯誤");
-             
-            // 認證失敗就丟個警告
-               Toast.makeText(CirculationLogActivity.this,
-                       R.string.ActivityCirculationLog_toastTokenFail,
-                       Toast.LENGTH_SHORT).show();
-           }
-       }
-      }
+            if (intent.getAction().equals("tw.edu.nchu.libapp.Auth_Message")) {
+                LOGClass logclass = new LOGClass();
+                String logJobType = "Token登入";
+
+                // 資料抓取完畢將讀取鈕移除
+                setSupportProgressBarIndeterminateVisibility(false);
+
+                if (intent.getStringExtra("AuthResult").equals("Success")) {
+                    // 更新畫面
+                    LoadListData();
+
+                    // 寫log
+                    logclass.setLOGtoDB(CirculationLogActivity.this,
+                            logJobType, new java.text.SimpleDateFormat(
+                                    "yyyy-MM-dd HH:mm:ss")
+                                    .format(new java.util.Date()), "5.認證成功");
+                    // 認證成功就丟通知
+                    Toast.makeText(CirculationLogActivity.this,
+                            R.string.ActivityCirculationLog_toastTokenSuccess,
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    // 寫log
+                    logclass.setLOGtoDB(CirculationLogActivity.this,
+                            logJobType, new java.text.SimpleDateFormat(
+                                    "yyyy-MM-dd HH:mm:ss")
+                                    .format(new java.util.Date()),
+                            "5.認證失敗-Patron或Device Token錯誤");
+
+                    // 認證失敗就丟個警告
+                    Toast.makeText(CirculationLogActivity.this,
+                            R.string.ActivityCirculationLog_toastTokenFail,
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 
     private class ExpandableAdapter extends BaseExpandableListAdapter {

@@ -445,7 +445,7 @@ public class DBHelper extends SQLiteOpenHelper {
             // 取得全部借閱清單
             case 0:
                 strSql = "Select Title,EndDate,Barcode from patronloan where DataType='LOAN'"
-                        + " ORDER BY EndDate DESC";
+                        + " ORDER BY EndDate";
                 break;
             // 取得即將到期清單
             case 1:
@@ -461,14 +461,14 @@ public class DBHelper extends SQLiteOpenHelper {
                         + " and EndDate >= "
                         + strToday
                         + " and EndDate <= "
-                        + strDueDay + " ORDER BY EndDate DESC";
+                        + strDueDay + " ORDER BY EndDate";
                 break;
             // 取得已過期借閱清單
             case 2:
                 strSql = "Select Title,EndDate,Barcode from patronloan where DataType='LOAN'"
                         + " and EndDate < "
                         + strToday
-                        + " ORDER BY EndDate DESC";
+                        + " ORDER BY EndDate";
                 break;
             default:
                 break;
@@ -530,7 +530,7 @@ public class DBHelper extends SQLiteOpenHelper {
             // SQLiteDatabase對象
             SQLiteDatabase db_PatronLoanHelper = getReadableDatabase();
             String strSql = "Select Title,EndDate from patronloan "
-                    + "where DataType='REQUEST' ORDER BY EndDate DESC";
+                    + "where DataType='REQUEST' ORDER BY EndDate";
             // 建立查詢元件
             Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
 
@@ -625,7 +625,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             // select query
             String selectQuery = "SELECT JobType,Time,ExecuteStatus FROM SystemLog"
-                    + " ORDER BY Time DESC,JobType,ExecuteStatus Desc limit 300";
+                    + " ORDER BY ID DESC limit 100";//Time DESC,JobType,ExecuteStatus Desc limit 300";
 
             // 先把表頭帶入
             map.put("JobType",
