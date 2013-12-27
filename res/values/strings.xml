@@ -43,6 +43,14 @@
     <string name="ActivitySystemLog_tvJobType">Job Type</string>
     <string name="ActivitySystemLog_tvTime">Time</string>
     <string name="ActivitySystemLog_tvNote">Note</string>
+    <string name="ActivitySetting_autosync">Autosync</string>
+    <string name="ActivitySetting_autosync_detail">Update data from server</string>
+    <string name="ActivitySetting_notification">Notification</string>
+    <string name="ActivitySetting_notification_detail">Allow send notice for you</string>
+    <string name="ActivitySetting_library_homepage">Library homepage</string>
+    <string name="ActivitySetting_about">About</string>
+    <string name="ActivitySetting_logout">Logout</string>
+    <string name="ActivitySetting_logout_detail">It will clear your account, but keep the system log.</string>
     <string name="LogType001">Login</string>
 
 </resources>

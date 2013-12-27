@@ -4,29 +4,29 @@
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="autosync"
-        android:title="Auto sync your data" />
+        android:title="@string/ActivitySetting_autosync" 
+        android:summary="@string/ActivitySetting_autosync_detail"/>
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="notification"
-        android:title="notice to notification bar" />
+        android:title="@string/ActivitySetting_notification"
+        android:summary="@string/ActivitySetting_notification_detail" />
     <PreferenceScreen
-        android:summary="intent_preference"
-        android:title="intent_preference" >
+        android:title="@string/ActivitySetting_library_homepage" >
         <intent
             android:action="android.intent.action.VIEW"
             android:data="http://www.lib.nchu.edu.tw" />
     </PreferenceScreen>
     <PreferenceScreen
-        android:summary="bla bla bla"
-        android:title="關於我們" >
+        android:title="@string/ActivitySetting_about" >
         <intent
             android:action="android.intent.action.MAIN"
             android:targetPackage="tw.edu.nchu.libapp"  
             android:targetClass="tw.edu.nchu.libapp.MainActivity" />
     </PreferenceScreen>
     <PreferenceScreen
-        android:summary="bla bla bla"
-        android:title="登出" 
+        android:summary="@string/ActivitySetting_logout_detail"
+        android:title="@string/ActivitySetting_logout" 
         android:key="logoutKey">
     </PreferenceScreen>
 
