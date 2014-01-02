@@ -1,6 +1,7 @@
 //: object/SettingsActivity.java
 package tw.edu.nchu.libapp;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -22,6 +23,8 @@ import android.widget.Button;
  * @author kiko
  * @version 1.0
  */
+
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class SettingsActivity extends PreferenceActivity implements
         OnSharedPreferenceChangeListener, OnPreferenceClickListener {
     /**
@@ -47,6 +50,9 @@ public class SettingsActivity extends PreferenceActivity implements
         // 為何要這樣做是因為ActionBar沒有實作PreferenceActivity，為了怕使用者手機沒有回上一頁的按鈕，所以先實作一個
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             setContentView(R.layout.activity_settings);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            // for > 4.1 (API level 16)
+            getActionBar().setDisplayHomeAsUpEnabled(true);
         }
         addPreferencesFromResource(R.xml.mypreferences);
 
@@ -54,6 +60,7 @@ public class SettingsActivity extends PreferenceActivity implements
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         Preference mPreferences = (Preference) findPreference("logoutKey");
         mPreferences.setOnPreferenceClickListener(this);
+
     }
 
     // 註冊設定選單變動實的監聽器
@@ -135,7 +142,7 @@ public class SettingsActivity extends PreferenceActivity implements
             // 先清空讀者及借閱資料表
             dbHelper.doEmptyPartonLoanTable();
             dbHelper.doEmptyPartonTable();
-            
+
             // 也清空通知紀錄表
             dbHelper.doEmptyNotificationLog();
 
