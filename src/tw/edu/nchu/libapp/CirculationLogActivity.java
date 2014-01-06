@@ -141,14 +141,12 @@ public class CirculationLogActivity extends ActionBarActivity {
             Intent intent = new Intent();
             intent.setClass(CirculationLogActivity.this, SettingsActivity.class);
             startActivity(intent);
-            finish();
             return true;
         case R.id.action_systemlog:
             Intent intent1 = new Intent();
             intent1.setClass(CirculationLogActivity.this,
                     SystemLogActivity.class);
             startActivity(intent1);
-            finish();
             return true;
         case R.id.action_exit:
             finish();

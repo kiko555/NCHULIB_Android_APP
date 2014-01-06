@@ -4,8 +4,12 @@ package tw.edu.nchu.libapp;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +23,7 @@ import android.widget.SimpleAdapter;
  * @author kiko
  * @version 1.0
  */
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class SystemLogActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +34,14 @@ public class SystemLogActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_systemlog);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            // 此外為了有ActionBar的頁面，再多補上一個快速回到首頁的功能鈕 for > 4.1 (API level 16)
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         // 隱藏讀取鈕
         setSupportProgressBarIndeterminateVisibility(false);
-        
+
         // 帶入系統紀錄
         drawTable();
 
@@ -90,9 +100,27 @@ public class SystemLogActivity extends ActionBarActivity {
             intent1.setClass(SystemLogActivity.this, LoginActivity.class);
             startActivity(intent1);
             return true;
-        default:
-            return false;
+        case android.R.id.home:
+
+            Intent upIntent = NavUtils.getParentActivityIntent(this);
+            if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
+                // This activity is NOT part of this app's task, so create a new
+                // task
+                // when navigating up, with a synthesized back stack.
+                TaskStackBuilder.create(this)
+                // Add all of this activity's parents to the back stack
+                        .addNextIntentWithParentStack(upIntent)
+                        // Navigate up to the closest parent
+                        .startActivities();
+            } else {
+                // This activity is part of this app's task, so simply
+                // navigate up to the logical parent activity.
+                NavUtils.navigateUpTo(this, upIntent);
+            }
+
+            return true;
         }
+        return super.onOptionsItemSelected(Item);
     }
 
     public void drawTable() {

@@ -11,6 +11,8 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NavUtils;
+import android.support.v4.app.TaskStackBuilder;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,7 +53,7 @@ public class SettingsActivity extends PreferenceActivity implements
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             setContentView(R.layout.activity_settings);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            // for > 4.1 (API level 16)
+            // 此外為了有ActionBar的頁面，再多補上一個快速回到首頁的功能鈕 for > 4.1 (API level 16)
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
         addPreferencesFromResource(R.xml.mypreferences);
@@ -184,9 +186,30 @@ public class SettingsActivity extends PreferenceActivity implements
             intent1.setClass(SettingsActivity.this, SystemLogActivity.class);
             startActivity(intent1);
             return true;
-        default:
-            return false;
+        case android.R.id.home:
+
+            Intent upIntent = NavUtils.getParentActivityIntent(this);
+            if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
+                // This activity is NOT part of this app's task, so create a new
+                // task
+                // when navigating up, with a synthesized back stack.
+                TaskStackBuilder.create(this)
+                // Add all of this activity's parents to the back stack
+                        .addNextIntentWithParentStack(upIntent)
+                        // Navigate up to the closest parent
+                        .startActivities();
+            } else {
+                // This activity is part of this app's task, so simply
+                // navigate up to the logical parent activity.
+                NavUtils.navigateUpTo(this, upIntent);
+            }
+
+            return true;
+            // default:
+            // return false;
         }
+        return super.onOptionsItemSelected(Item);
+
     }
 
     /**
