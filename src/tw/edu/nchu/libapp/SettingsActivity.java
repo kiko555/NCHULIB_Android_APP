@@ -108,7 +108,7 @@ public class SettingsActivity extends PreferenceActivity implements
             }
         } else if (key.equals("notification")) {
             // 判斷通知設定產生對應內容
-            if (mPerferences.getBoolean("autosync", true)) {
+            if (mPerferences.getBoolean("notification", true)) {
                 // 寫log
                 logclass.setLOGtoDB(SettingsActivity.this, logJobType,
                         new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
