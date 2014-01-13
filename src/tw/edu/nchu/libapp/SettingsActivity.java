@@ -48,11 +48,11 @@ public class SettingsActivity extends PreferenceActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_settings);
+
         // 不同版本的android應用不同的畫面結構，因為Honeycomb前，畫面多了一個回前頁的按鈕，
         // 為何要這樣做是因為ActionBar沒有實作PreferenceActivity，為了怕使用者手機沒有回上一頁的按鈕，所以先實作一個
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            setContentView(R.layout.activity_settings);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             // 此外為了有ActionBar的頁面，再多補上一個快速回到首頁的功能鈕 for > 4.1 (API level 16)
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }

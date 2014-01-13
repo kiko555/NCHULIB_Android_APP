@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@drawable/aligned_background" >
 
     <TableLayout
         android:layout_width="wrap_content"
@@ -22,7 +23,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/ActivityLogin_tvTitle" />
-
         </TableRow>
 
         <TableRow
@@ -41,7 +41,6 @@
 
                 <requestFocus />
             </EditText>
-
         </TableRow>
 
         <TableRow
@@ -58,13 +57,12 @@
                 android:hint="@string/ActivityLogin_txPassword"
                 android:inputType="textPassword"
                 android:singleLine="true" />
-
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow5"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" 
+            android:layout_height="wrap_content"
             android:gravity="center_horizontal" >
 
             <CheckBox
@@ -72,7 +70,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/ActivityLogin_cbNotice" />
-
         </TableRow>
 
         <TableRow
@@ -86,7 +83,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/ActivityLogin_btLogin" />
-
         </TableRow>
     </TableLayout>
 

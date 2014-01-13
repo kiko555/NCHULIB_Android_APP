@@ -4,6 +4,7 @@
     android:id="@+id/SystemLogListView1"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/aligned_background"
     tools:context=".SystemLogActivity" >
 
 </ListView>

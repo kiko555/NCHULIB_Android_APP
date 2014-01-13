@@ -26,28 +26,8 @@
         android:id="@+id/android:list"
         android:layout_width="match_parent"
         android:layout_height="0.0dp"
-        android:layout_weight="1" >
+        android:layout_weight="1"
+        android:background="@drawable/aligned_background" >
     </ListView>
 
-    <!-- Footer 暫時移除，應該可以不需要了
-
-    <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Footer"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Button" />
-    </LinearLayout>
--->
 </LinearLayout>
