@@ -58,7 +58,7 @@ public class HTTPServiceClass extends Service {
                         strJsonDeviceInfo);
 
                 // 如果真的有回傳值
-                if (strReturnContent != "") {
+                if (strReturnContent != null) {
                     // 呼叫jsonClass處理JSON並寫入資料庫，會回傳交易狀態的各項值
                     hmOpResult = jsonClass.setLoginJSONtoDB(strReturnContent,
                             getApplicationContext());
@@ -72,7 +72,7 @@ public class HTTPServiceClass extends Service {
                         getApplicationContext(), logJobType, strJsonDeviceInfo);
 
                 // 如果真的有回傳值
-                if (strReturnContent != "") {
+                if (strReturnContent != null) {
                     // 呼叫jsonClass處理JSON並寫入資料庫，會回傳交易狀態的各項值
                     hmOpResult = jsonClass.setTokenResultJSONtoDB(
                             strReturnContent, getApplicationContext());
@@ -80,12 +80,12 @@ public class HTTPServiceClass extends Service {
 
             }
 
-            if (strReturnContent != "") {
-                try {
-                    // 建立廣播所需辨識碼
-                    Intent intent = new Intent(
-                            "tw.edu.nchu.libapp.Auth_Message");
+            // 建立廣播所需辨識碼
+            Intent intent = new Intent("tw.edu.nchu.libapp.Auth_Message");
 
+            // 判斷是否為空，如果是空的代表連線有問題，根本沒收到值，反之則要去判斷值的內容
+            if (strReturnContent != null) {
+                try {
                     // 如果系統運作正常才繼續下去
                     if (hmOpResult.get("OpResult").equals("Success")) {
                         // 如果認證成功才執行
@@ -124,6 +124,18 @@ public class HTTPServiceClass extends Service {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
+            } else {
+                // 寫log
+                logclass.setLOGtoDB(getApplicationContext(), logJobType,
+                        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .format(new java.util.Date()),
+                        "5.認證失敗-連線異常");
+
+                // 登入失敗，廣播登入失敗
+                intent.putExtra("OP", "AccAuth");
+                intent.putExtra("OpResult", "Fail");
+                intent.putExtra("AuthResult", "Fail");
+                sendBroadcast(intent);
             }
 
             // Stop the service using the startId, so that we don't stop

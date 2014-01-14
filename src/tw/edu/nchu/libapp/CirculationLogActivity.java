@@ -331,20 +331,29 @@ public class CirculationLogActivity extends ActionBarActivity {
                 // 資料抓取完畢將讀取鈕移除
                 setSupportProgressBarIndeterminateVisibility(false);
 
-                if (intent.getStringExtra("AuthResult").equals("Success")) {
-                    // 更新畫面
-                    LoadListData();
+                // 操作成功與否的判斷，但認證失敗
+                if (intent.getStringExtra("OpResult").equals("Success")) {
+                    if (intent.getStringExtra("AuthResult").equals("Success")) {
+                        // 更新畫面
+                        LoadListData();
+                        // 認證成功就丟通知
+                        Toast.makeText(
+                                CirculationLogActivity.this,
+                                R.string.ActivityCirculationLog_toastTokenSuccess,
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        // 認證失敗就丟個警告
+                        Toast.makeText(CirculationLogActivity.this,
+                                R.string.ActivityCirculationLog_toastTokenFail,
+                                Toast.LENGTH_SHORT).show();
 
-                    // 認證成功就丟通知
-                    Toast.makeText(CirculationLogActivity.this,
-                            R.string.ActivityCirculationLog_toastTokenSuccess,
-                            Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    // 認證失敗就丟個警告
+                    // 操作失敗就丟個連線警告
                     Toast.makeText(CirculationLogActivity.this,
-                            R.string.ActivityCirculationLog_toastTokenFail,
-                            Toast.LENGTH_SHORT).show();
+                            R.string.Check_Network, Toast.LENGTH_SHORT).show();
                 }
+
             }
         }
     }

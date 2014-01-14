@@ -12,7 +12,7 @@
     <string name="JSON_DataLoading">JSON data loading</string>
     <string name="JSON_Data_downlaod_fail">JSON data load fail</string>
     <string name="JSON_Data_error">JSON data error</string>
-    <string name="Check_Network">Check 3G or Wifi Network</string>
+    <string name="Check_Network">Connection Fail. Check 3G or Wifi Network.</string>
     <string name="hello_world">Hello world!</string>
     <string name="ActivityLogin_tvTitle">NCHU Library App Login System</string>
     <string name="ActivityLogin_txID">ID</string>

@@ -12,7 +12,7 @@
     <string name="JSON_DataLoading">JSON 資料讀取中</string>
     <string name="JSON_Data_downlaod_fail">JSON 資料讀取失敗</string>
     <string name="JSON_Data_error">JSON 資料錯誤</string>
-    <string name="Check_Network">確認3G或WIFI正常運作</string>
+    <string name="Check_Network">連線異常！確認3G或WIFI正常運作。</string>
     <string name="ActivityLogin_tvTitle">中興大學圖書館登入系統</string>
     <string name="ActivityLogin_txID">帳號</string>
     <string name="ActivityLogin_txPassword">密碼</string>
