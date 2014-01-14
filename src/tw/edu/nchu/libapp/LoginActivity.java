@@ -1,22 +1,14 @@
 //: object/LoginActivity.java
 package tw.edu.nchu.libapp;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.text.Editable;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -292,15 +284,22 @@ public class LoginActivity extends ActionBarActivity {
                 // 資料抓取完畢將讀取鈕移除
                 setSupportProgressBarIndeterminateVisibility(false);
 
-                if (intent.getStringExtra("AuthResult").equals("Success")) {
-                    // 登入成功，立刻Main來帶出排程功能
-                    Intent intent1 = new Intent();
-                    intent1.setClass(LoginActivity.this, MainActivity.class);
-                    startActivity(intent1);
+                // 操作成功與否的判斷，如果成功之後才判斷認證結果
+                if (intent.getStringExtra("OpResult").equals("Success")) {
+                    if (intent.getStringExtra("AuthResult").equals("Success")) {
+                        // 登入成功，立刻Main來帶出排程功能
+                        Intent intent1 = new Intent();
+                        intent1.setClass(LoginActivity.this, MainActivity.class);
+                        startActivity(intent1);
+                    } else {
+                        // 認證失敗就丟個警告
+                        Toast.makeText(LoginActivity.this,
+                                R.string.ActivityLogin_toastLoginFail,
+                                Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    // 認證失敗就丟個警告
-                    Toast.makeText(LoginActivity.this,
-                            R.string.ActivityLogin_toastLoginFail,
+                    // 操作失敗就丟個連線警告
+                    Toast.makeText(LoginActivity.this, R.string.Check_Network,
                             Toast.LENGTH_SHORT).show();
                 }
             }

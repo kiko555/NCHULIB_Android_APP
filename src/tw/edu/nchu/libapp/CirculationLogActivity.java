@@ -331,7 +331,7 @@ public class CirculationLogActivity extends ActionBarActivity {
                 // 資料抓取完畢將讀取鈕移除
                 setSupportProgressBarIndeterminateVisibility(false);
 
-                // 操作成功與否的判斷，但認證失敗
+                // 操作成功與否的判斷，如果成功之後才判斷認證結果
                 if (intent.getStringExtra("OpResult").equals("Success")) {
                     if (intent.getStringExtra("AuthResult").equals("Success")) {
                         // 更新畫面

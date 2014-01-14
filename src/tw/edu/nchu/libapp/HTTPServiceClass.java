@@ -1,9 +1,6 @@
 package tw.edu.nchu.libapp;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-
-import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Service;
 import android.content.Intent;
@@ -13,7 +10,6 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
-import android.widget.Toast;
 
 public class HTTPServiceClass extends Service {
 
