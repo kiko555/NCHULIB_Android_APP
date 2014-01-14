@@ -70,7 +70,7 @@ public class TaskServiceClass extends Service {
             // 取得設備資訊
             DeviceClass deviceclass = new DeviceClass();
             String strDeviceInfo = deviceclass
-                    .getDeviceInfoJSON(getApplicationContext());
+                    .getDeviceInfoJSON(getApplicationContext(),"");
 
             // 抓取系統設定值，用以後面判斷使用者是否同意更新或通知
             SharedPreferences mPerferences = PreferenceManager
@@ -109,7 +109,7 @@ public class TaskServiceClass extends Service {
             // 取得設備資訊
             DeviceClass deviceclass = new DeviceClass();
             String strDeviceInfo = deviceclass
-                    .getDeviceInfoJSON(context);
+                    .getDeviceInfoJSON(context,"");
 
             // 建立連線服務完成認證工作
             Intent HTTPServiceIntent = new Intent(context,

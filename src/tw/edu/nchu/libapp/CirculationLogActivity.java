@@ -295,7 +295,7 @@ public class CirculationLogActivity extends ActionBarActivity {
             // 取得設備資訊
             DeviceClass deviceclass = new DeviceClass();
             String strDeviceInfo = deviceclass
-                    .getDeviceInfoJSON(getApplicationContext());
+                    .getDeviceInfoJSON(getApplicationContext(),"");
 
             // 建立連線服務完成認證工作
             Intent HTTPServiceIntent = new Intent(CirculationLogActivity.this,

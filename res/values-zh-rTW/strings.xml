@@ -17,12 +17,13 @@
     <string name="ActivityLogin_txID">帳號</string>
     <string name="ActivityLogin_txPassword">密碼</string>
     <string name="ActivityLogin_cbNotice">同意使用條款</string>
-    <string name="ActivityLogin_adNotice_Title">中興大學圖書館 App 使用條款</string>
-    <string name="ActivityLogin_adNotice_Message">Bla bla bla bla....本應用程式所提供之到期、過期及預約到館通知僅供參考，詳細借閱及預約資訊仍以圖書館館藏目錄為主。</string>
+    <string name="ActivityLogin_adNotice_Title">中興大學圖書館 APP使用條款</string>
+    <string name="ActivityLogin_adNotice_Message">1.借閱通知推播服務：本服務系以APP推播通知方式「提醒」讀者有關借還資料作業的相關通知，包括即將到期通知(到期前第7、3、1天)、逾期通知(逾期第1、3、7天)及預約書到館通知。提醒您 APP推播通知係為圖書館之提醒服務，讀者仍應經常查詢個人借閱狀況，以維護個人借書權益；並不得以未接獲推播通知作為減免逾期滯還金之理由。</string>
     <string name="ActivityLogin_adNotice_btAgree">同意</string>
     <string name="ActivityLogin_adNotice_btNoAgree">不</string>
     <string name="ActivityLogin_btLogin">登入</string>
     <string name="ActivityLogin_toastLoginFail">帳號或密碼錯誤!!</string>
+    <string name="ActivityLogin_toastFieldEmpty">帳號或密碼欄位不能是空白!!</string>
     <string name="ActivityCirculationLog_lvLoanList">借閱清單</string>
     <string name="ActivityCirculationLog_lvTitle">題名</string>
     <string name="ActivityCirculationLog_lvDueList">借閱到期通知</string>

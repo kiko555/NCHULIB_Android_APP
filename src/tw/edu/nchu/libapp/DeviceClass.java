@@ -119,7 +119,7 @@ public class DeviceClass {
      * @throws exceptions
      *             No exceptions thrown
      */
-    public String getDeviceInfoJSON(Context context) {
+    public String getDeviceInfoJSON(Context context, String ID) {
         /**
          * jsonDeviceInfo 設備解析度
          */
@@ -128,13 +128,22 @@ public class DeviceClass {
             // 產生DeviceToken
             DeviceClass deviceclass = new DeviceClass();
 
-            // 建立取用資料庫的物件
-            DBHelper dbHelper = new DBHelper(context);
-            String aryPatron[] = dbHelper.getPartonTable();
+            // 宣告並初始化strDeviceToken
+            String strDeviceToken = "";
 
-            // 混入使用者帳號
-            String strDeviceToken = deviceclass.doMakeDeviceToken(aryPatron[1]
-                    .toString());
+            // 如果ID傳進來的是空白的，就代表是已有使用者帳號的，反之則是用傳進來的ID來建Token
+            if (!ID.matches("")) {
+                // 混入使用者帳號產生DeviceToken
+                strDeviceToken = deviceclass.doMakeDeviceToken(ID);
+            } else {
+                // 建立取用資料庫的物件
+                DBHelper dbHelper = new DBHelper(context);
+                String aryPatron[] = dbHelper.getPartonTable();
+
+                // 混入使用者帳號產生DeviceToken
+                strDeviceToken = deviceclass.doMakeDeviceToken(aryPatron[1]
+                        .toString());
+            }
 
             // 取得設備解析度
             String strDisplayMetrics;

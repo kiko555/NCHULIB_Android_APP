@@ -15,6 +15,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -141,43 +142,53 @@ public class LoginActivity extends ActionBarActivity {
              * logExecuteStatus 工作執行狀態
              */
 
-            if (cbNotice.isChecked()) {
-                // 宣告LOG物件，並決定工作類型
-                LOGClass logclass = new LOGClass();
-                String logJobType = "帳密登入";
+            if (!txID.getEditableText().toString().matches("")
+                    && !txPassword.getEditableText().toString().matches("")) {
+                if (cbNotice.isChecked()) {
+                    // 宣告LOG物件，並決定工作類型
+                    LOGClass logclass = new LOGClass();
+                    String logJobType = "帳密登入";
 
-                // 宣告處理JSON的物件
-                JSONClass jsonClass = new JSONClass();
+                    // 宣告處理JSON的物件
+                    JSONClass jsonClass = new JSONClass();
 
-                // Toast.makeText(MainActivity.this,
-                // R.string.JSON_DataLoading,Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(MainActivity.this,
+                    // R.string.JSON_DataLoading,Toast.LENGTH_SHORT).show();
 
-                // 資料開始抓取讀取鈕可見
-                setSupportProgressBarIndeterminateVisibility(true);
+                    // 資料開始抓取讀取鈕可見
+                    setSupportProgressBarIndeterminateVisibility(true);
 
-                // 取得設備資訊
-                DeviceClass deviceclass = new DeviceClass();
-                String strDeviceInfo = deviceclass
-                        .getDeviceInfoJSON(getApplicationContext());
+                    // 取得設備資訊
+                    DeviceClass deviceclass = new DeviceClass();
+                    String strDeviceInfo = deviceclass.getDeviceInfoJSON(
+                            getApplicationContext(), txID.getEditableText()
+                                    .toString());
 
-                // 建立連線服務完成認證工作
-                Intent HTTPServiceIntent = new Intent(LoginActivity.this,
-                        HTTPServiceClass.class);
+                    // 建立連線服務完成認證工作
+                    Intent HTTPServiceIntent = new Intent(LoginActivity.this,
+                            HTTPServiceClass.class);
 
-                // HTTP服務所要送出的值
-                HTTPServiceIntent.putExtra("OP", "AccAuth");
-                HTTPServiceIntent.putExtra("txID", txID.getEditableText()
-                        .toString());
-                HTTPServiceIntent.putExtra("txPassword", txPassword
-                        .getEditableText().toString());
-                HTTPServiceIntent.putExtra("jsonDeviceInfo", strDeviceInfo);
+                    // HTTP服務所要送出的值
+                    HTTPServiceIntent.putExtra("OP", "AccAuth");
+                    HTTPServiceIntent.putExtra("txID", txID.getEditableText()
+                            .toString());
+                    HTTPServiceIntent.putExtra("txPassword", txPassword
+                            .getEditableText().toString());
+                    HTTPServiceIntent.putExtra("jsonDeviceInfo", strDeviceInfo);
 
-                // 啟動HTTP服務
-                startService(HTTPServiceIntent);
+                    // 啟動HTTP服務
+                    startService(HTTPServiceIntent);
 
+                } else {
+                    // 警告要同意條款
+                    Toast.makeText(LoginActivity.this,
+                            R.string.action_LoginNotice, Toast.LENGTH_SHORT)
+                            .show();
+                }
             } else {
-                // 警告要同意條款
-                Toast.makeText(LoginActivity.this, R.string.action_LoginNotice,
+                // 警告帳號跟密碼不能留空
+                Toast.makeText(LoginActivity.this,
+                        R.string.ActivityLogin_toastFieldEmpty,
                         Toast.LENGTH_SHORT).show();
             }
 
