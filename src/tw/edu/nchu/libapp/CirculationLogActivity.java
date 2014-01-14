@@ -292,8 +292,10 @@ public class CirculationLogActivity extends ActionBarActivity {
             LOGClass logclass = new LOGClass();
             String logJobType = JobType;
 
-            // 宣告處理JSON的物件
-            JSONClass jsonClass = new JSONClass();
+            // 取得設備資訊
+            DeviceClass deviceclass = new DeviceClass();
+            String strDeviceInfo = deviceclass
+                    .getDeviceInfoJSON(getApplicationContext());
 
             // 建立連線服務完成認證工作
             Intent HTTPServiceIntent = new Intent(CirculationLogActivity.this,
@@ -301,6 +303,8 @@ public class CirculationLogActivity extends ActionBarActivity {
 
             // HTTP服務所要送出的值
             HTTPServiceIntent.putExtra("OP", "TokenAuth");
+            HTTPServiceIntent.putExtra("jsonDeviceInfo", strDeviceInfo);
+
             // 啟動HTTP服務
             startService(HTTPServiceIntent);
 
@@ -331,23 +335,11 @@ public class CirculationLogActivity extends ActionBarActivity {
                     // 更新畫面
                     LoadListData();
 
-                    // 寫log
-                    logclass.setLOGtoDB(CirculationLogActivity.this,
-                            logJobType, new java.text.SimpleDateFormat(
-                                    "yyyy-MM-dd HH:mm:ss")
-                                    .format(new java.util.Date()), "5.認證成功");
                     // 認證成功就丟通知
                     Toast.makeText(CirculationLogActivity.this,
                             R.string.ActivityCirculationLog_toastTokenSuccess,
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    // 寫log
-                    logclass.setLOGtoDB(CirculationLogActivity.this,
-                            logJobType, new java.text.SimpleDateFormat(
-                                    "yyyy-MM-dd HH:mm:ss")
-                                    .format(new java.util.Date()),
-                            "5.認證失敗-Patron或Device Token錯誤");
-
                     // 認證失敗就丟個警告
                     Toast.makeText(CirculationLogActivity.this,
                             R.string.ActivityCirculationLog_toastTokenFail,

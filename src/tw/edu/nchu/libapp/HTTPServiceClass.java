@@ -43,7 +43,7 @@ public class HTTPServiceClass extends Service {
 
         // 宣告認證狀態所要用的hashmap
         HashMap<String, String> hmOpResult;
-        
+
         @Override
         public void handleMessage(Message msg) {
             // Normally we would do some work here, like download a file.
@@ -60,9 +60,8 @@ public class HTTPServiceClass extends Service {
                 // 如果真的有回傳值
                 if (strReturnContent != "") {
                     // 呼叫jsonClass處理JSON並寫入資料庫，會回傳交易狀態的各項值
-                    hmOpResult = jsonClass
-                            .setLoginJSONtoDB(strReturnContent,
-                                    getApplicationContext());
+                    hmOpResult = jsonClass.setLoginJSONtoDB(strReturnContent,
+                            getApplicationContext());
                 }
             } else if (strOP.equals("TokenAuth")) {
                 logJobType = "Token登入";
@@ -70,14 +69,13 @@ public class HTTPServiceClass extends Service {
                 // 呼叫Token認證程序
                 AuthClass authclass = new AuthClass();
                 strReturnContent = authclass.doTokenAuth(
-                        getApplicationContext(), logJobType);
+                        getApplicationContext(), logJobType, strJsonDeviceInfo);
 
                 // 如果真的有回傳值
                 if (strReturnContent != "") {
                     // 呼叫jsonClass處理JSON並寫入資料庫，會回傳交易狀態的各項值
-                    hmOpResult = jsonClass
-                            .setTokenResultJSONtoDB(strReturnContent,
-                                    getApplicationContext());
+                    hmOpResult = jsonClass.setTokenResultJSONtoDB(
+                            strReturnContent, getApplicationContext());
                 }
 
             }
@@ -111,7 +109,7 @@ public class HTTPServiceClass extends Service {
                                     logJobType, new java.text.SimpleDateFormat(
                                             "yyyy-MM-dd HH:mm:ss")
                                             .format(new java.util.Date()),
-                                    "5.認證失敗-帳密錯誤");
+                                    "5.認證失敗-帳密或Token錯誤");
 
                             // 登入失敗，廣播登入失敗
                             intent.putExtra("OP", "AccAuth");
@@ -153,11 +151,12 @@ public class HTTPServiceClass extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
 
+        // 帶入呼叫所傳的參數
         strOP = intent.getStringExtra("OP");
+        strJsonDeviceInfo = intent.getStringExtra("jsonDeviceInfo");
         if (strOP.equals("AccAuth")) {
             strID = intent.getStringExtra("txID");
             strPassword = intent.getStringExtra("txPassword");
-            strJsonDeviceInfo = intent.getStringExtra("jsonDeviceInfo");
         } else if (strOP.equals("TokenAuth")) {
             // 目前不需先做額外處理
         }

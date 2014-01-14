@@ -35,11 +35,11 @@ import android.util.Log;
  * @author kiko
  * @version 1.0
  */
-public class HTTPTaskClass  {
+public class HTTPTaskClass {
     InputStream instream;
     Scheme sch;
     List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-    String TAG="HTTPTaskClass-AsyncTask";
+    String TAG = "HTTPTaskClass-AsyncTask";
 
     /**
      * 帳密認證
@@ -84,8 +84,6 @@ public class HTTPTaskClass  {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    
-
 
         // HTTP 連線回傳的內容
         String strAllLine = "";
@@ -109,65 +107,56 @@ public class HTTPTaskClass  {
             e.printStackTrace();
         }
 
-        //while (!isCancelled()) {
-            try {
+        // while (!isCancelled()) {
+        try {
 
-                // Execute HTTP Post Request
-                HttpResponse response = client.execute(httppost);
+            // Execute HTTP Post Request
+            HttpResponse response = client.execute(httppost);
 
-                // 確認回傳是否異常
-                StatusLine status = response.getStatusLine();
+            // 確認回傳是否異常
+            StatusLine status = response.getStatusLine();
 
-                if (status.getStatusCode() != 200) {
-                    throw new IOException("Invalid response from server: "
-                            + status.toString());
-                } else {
-                    // 將回傳值丟進buffer
-                    BufferedReader rd = new BufferedReader(
-                            new InputStreamReader(response.getEntity()
-                                    .getContent()));
+            if (status.getStatusCode() != 200) {
+                throw new IOException("Invalid response from server: "
+                        + status.toString());
+            } else {
+                // 將回傳值丟進buffer
+                BufferedReader rd = new BufferedReader(new InputStreamReader(
+                        response.getEntity().getContent()));
 
-                    // 有值才將buffer內的值彙整起來
-                    String strline = "";
+                // 有值才將buffer內的值彙整起來
+                String strline = "";
 
-                    while ((strline = rd.readLine()) != null) {
-                        strAllLine += strline;
-                    }
-                    
-                    Log.i("test",strAllLine);
-                    
-                    
-                    
-                    
-                    //super.cancel(true);
+                while ((strline = rd.readLine()) != null) {
+                    strAllLine += strline;
                 }
-            } catch (ClientProtocolException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            
-            
-            
-            
-            
-            
-        //}
 
-            //super.cancel(true);  
+                Log.i("test", strAllLine);
+
+                // super.cancel(true);
+            }
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // }
+
+        // super.cancel(true);
         // 確認是否沒有收到資料，如果是空的就丟訊息提醒，並停止後續處理
         if (strAllLine.equals("")) {
-            
+
             return null;
         } else {
             return strAllLine;
-            
+
         }
-}
+    }
 
 }
 // /:~

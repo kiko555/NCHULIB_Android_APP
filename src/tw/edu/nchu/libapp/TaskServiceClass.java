@@ -67,7 +67,12 @@ public class TaskServiceClass extends Service {
     // 執行緒工作-借閱資料更新多次
     private Runnable runUpdateCirLogMulti = new Runnable() {
         public void run() {
-            // TODO 補上抓系統設定的排程更新參數
+            // 取得設備資訊
+            DeviceClass deviceclass = new DeviceClass();
+            String strDeviceInfo = deviceclass
+                    .getDeviceInfoJSON(getApplicationContext());
+
+            // 抓取系統設定值，用以後面判斷使用者是否同意更新或通知
             SharedPreferences mPerferences = PreferenceManager
                     .getDefaultSharedPreferences(getBaseContext());
 
@@ -100,51 +105,26 @@ public class TaskServiceClass extends Service {
      *             No exceptions thrown
      */
     private void UpdateCirLogData(String JobType, Context context) {
-        // 宣告LOG物件，並決定工作類型
-        LOGClass logclass = new LOGClass();
-        String logJobType = JobType;
+        try {
+            // 取得設備資訊
+            DeviceClass deviceclass = new DeviceClass();
+            String strDeviceInfo = deviceclass
+                    .getDeviceInfoJSON(context);
 
-        // 宣告處理JSON的物件
-        JSONClass jsonClass = new JSONClass();
+            // 建立連線服務完成認證工作
+            Intent HTTPServiceIntent = new Intent(context,
+                    HTTPServiceClass.class);
 
-        // 呼叫Token認證程序
-        AuthClass authclass = new AuthClass();
-        String strReturnContent = authclass.doTokenAuth(context, logJobType);
+            // HTTP服務所要送出的值
+            HTTPServiceIntent.putExtra("OP", "TokenAuth");
+            HTTPServiceIntent.putExtra("jsonDeviceInfo", strDeviceInfo);
 
-        if (strReturnContent != null) {
-            // 呼叫jsonClass處理JSON並寫入資料庫，會回傳交易狀態的各項值
-            HashMap<String, String> hmOpResult = jsonClass
-                    .setTokenResultJSONtoDB(strReturnContent, context);
+            // 啟動HTTP服務
+            startService(HTTPServiceIntent);
 
-            try {
-                // 如果系統運作正常才繼續下去
-                if (hmOpResult.get("OpResult").equals("Success")) {
-                    // 如果認證成功才執行
-                    if (hmOpResult.get("AuthResult").equals("Success")) {
-                        // 寫log
-                        logclass.setLOGtoDB(context, logJobType,
-                                new java.text.SimpleDateFormat(
-                                        "yyyy-MM-dd HH:mm:ss")
-                                        .format(new java.util.Date()), "5.認證成功");
-                    } else {
-                        // 寫log
-                        logclass.setLOGtoDB(context, logJobType,
-                                new java.text.SimpleDateFormat(
-                                        "yyyy-MM-dd HH:mm:ss")
-                                        .format(new java.util.Date()),
-                                "5.認證失敗-Patron或Device Token錯誤");
-                        // 認證失敗就丟個警告
-                        Toast.makeText(context,
-                                R.string.ActivityCirculationLog_toastTokenFail,
-                                Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    // TODO: 增加系統狀態的判斷
-                }
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
 
     }
@@ -355,5 +335,4 @@ public class TaskServiceClass extends Service {
         }
     }
 
-    
 }

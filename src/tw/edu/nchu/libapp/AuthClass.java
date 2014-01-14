@@ -1,16 +1,9 @@
 //: object/AuthClass.java
 package tw.edu.nchu.libapp;
 
-import java.util.concurrent.ExecutionException;
-
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.util.DisplayMetrics;
 import android.widget.Toast;
 
 /**
@@ -38,7 +31,7 @@ public class AuthClass {
     public String doPasswordAuth(Context context, String strSID,
             String strPassword, String strDeviceInfo) {
         /**
-         * strPid 讀者證號 m_szUniqueID 設備唯一辨識碼
+         * 
          */
         // 宣告LOG物件，並決定工作類型
         LOGClass logclass = new LOGClass();
@@ -115,9 +108,10 @@ public class AuthClass {
      * @throws exceptions
      *             No exceptions thrown
      */
-    public String doTokenAuth(Context context, String JobType) {
+    public String doTokenAuth(Context context, String JobType,
+            String strDeviceInfo) {
         /**
-         * strPid 讀者證號 m_szUniqueID 設備唯一辨識碼
+         * 
          */
         // 宣告LOG物件，並決定工作類型
         LOGClass logclass = new LOGClass();
