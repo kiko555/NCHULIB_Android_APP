@@ -26,14 +26,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="tw.edu.nchu.libapp.CirculationLogActivity"
-            android:label="@string/app_name" >
+            android:name=".CirculationLogActivity"
+            android:label="@string/action_cirlog" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
         <activity
-            android:name="tw.edu.nchu.libapp.LoginActivity"
+            android:name=".LoginActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +41,7 @@
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/app_name"
+            android:label="@string/action_settings"
             android:parentActivityName="tw.edu.nchu.libapp.MainActivity" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
@@ -55,7 +55,7 @@
         </activity>
         <activity
             android:name=".SystemLogActivity"
-            android:label="@string/app_name" >
+            android:label="@string/action_systemlog" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
