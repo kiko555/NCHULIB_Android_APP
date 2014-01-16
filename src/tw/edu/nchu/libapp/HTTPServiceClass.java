@@ -64,8 +64,14 @@ public class HTTPServiceClass extends Service {
 
                 // 呼叫Token認證程序
                 AuthClass authclass = new AuthClass();
-                strReturnContent = authclass.doTokenAuth(
-                        getApplicationContext(), logJobType, strJsonDeviceInfo);
+                try {
+                    strReturnContent = authclass.doTokenAuth(
+                            getApplicationContext(), logJobType,
+                            strJsonDeviceInfo);
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
 
                 // 如果真的有回傳值
                 if (strReturnContent != null) {
@@ -91,30 +97,23 @@ public class HTTPServiceClass extends Service {
                                     logJobType, new java.text.SimpleDateFormat(
                                             "yyyy-MM-dd HH:mm:ss")
                                             .format(new java.util.Date()),
-                                    "5.認證成功");
-
-                            // 登入成功，廣播登入成功
-                            intent.putExtra("OP", "AccAuth");
-                            intent.putExtra("OpResult", "Success");
-                            intent.putExtra("AuthResult", "Success");
-                            sendBroadcast(intent);
-
+                                    "5.連線完成及認證成功");
                         } else {
                             // 寫log
                             logclass.setLOGtoDB(getApplicationContext(),
                                     logJobType, new java.text.SimpleDateFormat(
                                             "yyyy-MM-dd HH:mm:ss")
                                             .format(new java.util.Date()),
-                                    "5.認證失敗-帳密或Token錯誤");
-
-                            // 登入失敗，廣播登入失敗
-                            intent.putExtra("OP", "AccAuth");
-                            intent.putExtra("OpResult", "Success");
-                            intent.putExtra("AuthResult", "Fail");
-                            sendBroadcast(intent);
+                                    "5.連線完成但認證失敗-帳密或Token錯誤");
                         }
                     } else {
-                        // TODO: 增加系統狀態的判斷
+                        // 處理回傳是異常的
+                        // 寫log
+                        logclass.setLOGtoDB(getApplicationContext(),
+                                logJobType, new java.text.SimpleDateFormat(
+                                        "yyyy-MM-dd HH:mm:ss")
+                                        .format(new java.util.Date()),
+                                "5.連線成功，但伺服器有錯：" + hmOpResult.get("OpInfo"));
                     }
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
@@ -124,14 +123,20 @@ public class HTTPServiceClass extends Service {
                 // 寫log
                 logclass.setLOGtoDB(getApplicationContext(), logJobType,
                         new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                                .format(new java.util.Date()),
-                        "5.認證失敗-連線異常");
+                                .format(new java.util.Date()), "5.連線異常");
+            }
 
-                // 登入失敗，廣播登入失敗
-                intent.putExtra("OP", "AccAuth");
-                intent.putExtra("OpResult", "Fail");
-                intent.putExtra("AuthResult", "Fail");
+            try {
+                // 廣播登入結果
+                intent.putExtra("OP", strOP);
+                intent.putExtra("OpResult", hmOpResult.get("OpResult"));
+                intent.putExtra("OpInfo", hmOpResult.get("OpInfo"));
+                intent.putExtra("AuthResult", hmOpResult.get("AuthResult"));
+                intent.putExtra("AuthInfo", hmOpResult.get("AuthInfo"));
                 sendBroadcast(intent);
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
 
             // Stop the service using the startId, so that we don't stop

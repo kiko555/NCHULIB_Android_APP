@@ -298,9 +298,17 @@ public class LoginActivity extends ActionBarActivity {
                                 Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    // 操作失敗就丟個連線警告
-                    Toast.makeText(LoginActivity.this, R.string.Check_Network,
-                            Toast.LENGTH_SHORT).show();
+                    if (intent.getStringExtra("OpInfo").equals("")) {
+                        // 特別針對失敗中有丟OpInfo的警告
+                        Toast.makeText(LoginActivity.this,
+                                R.string.Check_Network, Toast.LENGTH_SHORT)
+                                .show();
+                    } else {
+                        // 操作失敗就丟個連線警告
+                        Toast.makeText(LoginActivity.this,
+                                intent.getStringExtra("OpInfo"),
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         }

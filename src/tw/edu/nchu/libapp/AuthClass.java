@@ -57,8 +57,10 @@ public class AuthClass {
         DeviceClass deviceclass = new DeviceClass();
         String strDeviceToken = deviceclass.doMakeDeviceToken(strSID);
 
-        // 呼叫http連線物件，並填入所需相關資料
+        // 呼叫http連線物件，後面並填入所需相關資料
         HTTPTaskClass httpTaskClass = new HTTPTaskClass();
+        
+        // 引入http SSl金鑰
         httpTaskClass.instream = context.getResources().openRawResource(
                 R.raw.api);
 
@@ -128,6 +130,7 @@ public class AuthClass {
         // 建立取用資料庫的物件
         DBHelper dbHelper = new DBHelper(context);
 
+        // 取的使用者資料陣列
         String[] aryPatron = dbHelper.getPartonTable();
 
         // 關閉資料庫
@@ -138,8 +141,10 @@ public class AuthClass {
         String strDeviceToken = deviceclass.doMakeDeviceToken(aryPatron[1]
                 .toString());
 
-        // 呼叫http連線物件，並填入所需相關資料
+        // 呼叫http連線物件，後面填入所需相關資料
         HTTPTaskClass httpTaskClass = new HTTPTaskClass();
+        
+        // 引入http SSl金鑰
         httpTaskClass.instream = context.getResources().openRawResource(
                 R.raw.api);
 

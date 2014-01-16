@@ -294,8 +294,8 @@ public class CirculationLogActivity extends ActionBarActivity {
 
             // 取得設備資訊
             DeviceClass deviceclass = new DeviceClass();
-            String strDeviceInfo = deviceclass
-                    .getDeviceInfoJSON(getApplicationContext(),"");
+            String strDeviceInfo = deviceclass.getDeviceInfoJSON(
+                    getApplicationContext(), "");
 
             // 建立連線服務完成認證工作
             Intent HTTPServiceIntent = new Intent(CirculationLogActivity.this,
@@ -343,15 +343,24 @@ public class CirculationLogActivity extends ActionBarActivity {
                                 Toast.LENGTH_SHORT).show();
                     } else {
                         // 認證失敗就丟個警告
-                        Toast.makeText(CirculationLogActivity.this,
-                                R.string.ActivityCirculationLog_toastTokenFail,
+                        Toast.makeText(
+                                CirculationLogActivity.this,
+                                R.string.ActivityCirculationLog_toastTokenFail
+                                        + intent.getStringExtra("AuthInfo"),
                                 Toast.LENGTH_SHORT).show();
-
                     }
                 } else {
-                    // 操作失敗就丟個連線警告
-                    Toast.makeText(CirculationLogActivity.this,
-                            R.string.Check_Network, Toast.LENGTH_SHORT).show();
+                    if (intent.getStringExtra("OpInfo").equals("")) {
+                        // 特別針對失敗中有丟OpInfo的警告
+                        Toast.makeText(CirculationLogActivity.this,
+                                R.string.Check_Network, Toast.LENGTH_SHORT)
+                                .show();
+                    } else {
+                        // 操作失敗就丟個連線警告
+                        Toast.makeText(CirculationLogActivity.this,
+                                intent.getStringExtra("OpInfo"),
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
 
             }

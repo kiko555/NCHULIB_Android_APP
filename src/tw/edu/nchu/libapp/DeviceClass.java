@@ -3,6 +3,7 @@ package tw.edu.nchu.libapp;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Locale;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -166,12 +167,16 @@ public class DeviceClass {
                 e.printStackTrace();
             }
 
-            // 將前四項用JSON的格式串在一起
+            // 取得系統使用語系
+            String strDeviceLocale = Locale.getDefault().toString();
+
+            // 將前面幾項用JSON的格式串在一起
             jsonDeviceInfo = new JSONObject();
             jsonDeviceInfo.put("DeviceToken", strDeviceToken);
             jsonDeviceInfo.put("AndroidVersion", strSdkVersion);
             jsonDeviceInfo.put("APPVersion", strAPPVersion);
             jsonDeviceInfo.put("Resolution", strDisplayMetrics);
+            jsonDeviceInfo.put("DeviceLocale", strDeviceLocale);
 
         } catch (JSONException e) {
             // TODO Auto-generated catch block

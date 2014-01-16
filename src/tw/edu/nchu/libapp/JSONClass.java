@@ -279,7 +279,7 @@ public class JSONClass {
         }
 
         try {
-            // 如果系統運作正常才繼續下去，並在回傳陣列寫入系統狀態
+            // 如果系統運作正常才繼續下去，並在回傳陣列寫借閱資料
             if (hmReturnResult.get("OpResult").equals("Success")) {
                 // 如果認證成功才執行
                 if (hmReturnResult.get("AuthResult").equals("Success")) {
