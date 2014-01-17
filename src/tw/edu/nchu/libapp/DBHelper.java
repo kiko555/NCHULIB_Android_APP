@@ -712,7 +712,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * @throws exceptions
      *             No exceptions thrown
      */
-    public Boolean doCheckNoticationLog(Context context, String BarCode,
+    public Boolean doCheckDueNoticationLog(Context context, String BarCode,
             String EndDate, int CheckType) {
         // 紀錄筆數用以判斷有值與否
         int intRowNum = 0;
@@ -738,7 +738,7 @@ public class DBHelper extends SQLiteOpenHelper {
             long longDue1days = dateToday.getTime() + (1 * 24 * 60 * 60 * 1000);
             String strDue1days = smdf.format(longDue1days);
 
-            // 到期日往後推7,3,1天
+            // 過期日往後推7,3,1天
             long longOverDue7days = dateToday.getTime()
                     - (7 * 24 * 60 * 60 * 1000);
             String strOverDue7days = smdf.format(longOverDue7days);
@@ -767,6 +767,62 @@ public class DBHelper extends SQLiteOpenHelper {
             String selectQuery = "SELECT * FROM NoticationLog"
                     + " WHERE  BarCode='" + BarCode + "' and NoticeDate='"
                     + strNoticeDate + "'";
+
+            // 建立查詢元件
+            Cursor cursor = db_SystemLogHelper.rawQuery(selectQuery, null);
+            cursor.moveToFirst();
+
+            // 用以判斷有值與否
+            intRowNum = cursor.getCount();
+
+            // 關閉資料庫
+            db_SystemLogHelper.close();
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // 如果有值就代表已通知過，不需要再通知
+        if (intRowNum > 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    /**
+     * 提供程式判斷是否需要發預約通知，依據某 BarCode 只要還未取書就通知，但每天只一次
+     * 
+     * @return mylist 操作紀錄透過HashMap方式儲存，最後再以arraylist的方式回傳
+     * 
+     * @throws exceptions
+     *             No exceptions thrown
+     */
+    public Boolean doCheckRequestNoticationLog(Context context, String BarCode,
+            String EndDate, int CheckType) {
+        // 紀錄筆數用以判斷有值與否
+        int intRowNum = 0;
+
+        try {
+            // 利用判斷天數來控制清單的內容
+            SimpleDateFormat smdf = new SimpleDateFormat("yyyyMMdd");
+
+            // 取得今天日期
+            Calendar cal = new GregorianCalendar();
+            cal.set(Calendar.HOUR_OF_DAY, 0); // anything 0 - 23
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            Date dateToday = cal.getTime();
+            String strToday = smdf.format(dateToday);
+
+            // SQLiteDatabase對象
+            SQLiteDatabase db_SystemLogHelper = getReadableDatabase();
+
+            // select query
+            String selectQuery = "SELECT * FROM NoticationLog"
+                    + " WHERE  BarCode='" + BarCode + "' and NoticeDate='"
+                    + strToday + "'";
 
             // 建立查詢元件
             Cursor cursor = db_SystemLogHelper.rawQuery(selectQuery, null);

@@ -66,8 +66,8 @@ public class TaskServiceClass extends Service {
         public void run() {
             // 取得設備資訊
             DeviceClass deviceclass = new DeviceClass();
-            String strDeviceInfo = deviceclass
-                    .getDeviceInfoJSON(getApplicationContext(),"");
+            String strDeviceInfo = deviceclass.getDeviceInfoJSON(
+                    getApplicationContext(), "");
 
             // 抓取系統設定值，用以後面判斷使用者是否同意更新或通知
             SharedPreferences mPerferences = PreferenceManager
@@ -105,8 +105,7 @@ public class TaskServiceClass extends Service {
         try {
             // 取得設備資訊
             DeviceClass deviceclass = new DeviceClass();
-            String strDeviceInfo = deviceclass
-                    .getDeviceInfoJSON(context,"");
+            String strDeviceInfo = deviceclass.getDeviceInfoJSON(context, "");
 
             // 建立連線服務完成認證工作
             Intent HTTPServiceIntent = new Intent(context,
@@ -165,7 +164,8 @@ public class TaskServiceClass extends Service {
             String strTitle = context.getString(R.string.app_name);
 
             // 設定當按下這個通知之後要執行的activity
-            Intent notifyIntent = new Intent(context, MainActivity.class);
+            Intent notifyIntent = new Intent(context,
+                    CirculationLogActivity.class);
             // notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
             // | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             // notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -173,12 +173,6 @@ public class TaskServiceClass extends Service {
             // 供4.1以下的使用，如未加會crash
             PendingIntent appIntent = PendingIntent.getActivity(context, 0,
                     notifyIntent, 0);
-
-            // 這邊的 setContentText 理論上只供 4.1 版以下的顯示
-            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-                    context).setSmallIcon(R.drawable.ic_launcher)
-                    .setContentTitle(strTitle).setContentText("您有新的通訊息，請點選查閱。")
-                    .setTicker("NCHU Library notification");
 
             // 通知的內文條列
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
@@ -194,7 +188,7 @@ public class TaskServiceClass extends Service {
                 // 將要通知的內容一條條塞入InBox
                 for (int i = 1; i < arylistPartonLoanDue.size(); i++) {
                     // 判斷是否通知過，通知過就不出現在通訊列表中
-                    if (dbHelper.doCheckNoticationLog(context,
+                    if (dbHelper.doCheckDueNoticationLog(context,
                             arylistPartonLoanDue.get(i).get("Barcode"),
                             arylistPartonLoanDue.get(i).get("Time"), 0)) {
                         // 如果第一次遇到 blnSmallTitleFlag 是 false 就是代表要有小標題
@@ -239,7 +233,7 @@ public class TaskServiceClass extends Service {
                 // Moves events into the big view
                 for (int i = 1; i < arylistPartonLoanOverDue.size(); i++) {
                     // 判斷是否通知過，通知過就不出現在通訊列表中
-                    if (dbHelper.doCheckNoticationLog(context,
+                    if (dbHelper.doCheckDueNoticationLog(context,
                             arylistPartonLoanOverDue.get(i).get("Barcode"),
                             arylistPartonLoanOverDue.get(i).get("Time"), 0)) {
                         // 如果第一次遇到 blnSmallTitleFlag 是 false 就是代表要有小標題
@@ -272,7 +266,6 @@ public class TaskServiceClass extends Service {
 
                         blnNoticeRequest = true;
                     }
-
                 }
             }
 
@@ -283,14 +276,24 @@ public class TaskServiceClass extends Service {
 
                 // Moves events into the big view
                 for (int i = 1; i < arylistPartonLoan_Request.size(); i++) {
-                    inboxStyle.addLine(arylistPartonLoan_Request.get(i).get(
-                            "Title")
-                            + ","
-                            + arylistPartonLoan_Request.get(i).get("Time"));
+                    if (dbHelper.doCheckRequestNoticationLog(context,
+                            arylistPartonLoanOverDue.get(i).get("Barcode"),
+                            arylistPartonLoanOverDue.get(i).get("Time"), 0)) {
+                        inboxStyle.addLine(arylistPartonLoan_Request.get(i)
+                                .get("Title")
+                                + ","
+                                + arylistPartonLoan_Request.get(i).get("Time"));
+                        blnNoticeRequest = true;
+                    }
                 }
-
-                blnNoticeRequest = true;
             }
+
+            // 這邊的 setContentText 理論上只供 4.1 版以下的顯示
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+                    context).setSmallIcon(R.drawable.ic_launcher)
+                    .setContentTitle(strTitle)
+                    .setContentText("您有新的通知訊息，請點選查閱。")
+                    .setTicker("NCHU Library notification");
 
             // Moves the big view style object into the notification object.
             mBuilder.setStyle(inboxStyle);
