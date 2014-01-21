@@ -84,13 +84,14 @@ public class TaskServiceClass extends Service {
                 Log.i("TestSchUpdateTask", "2-noRunSchUpdateCirLogMulti");
             }
 
-            // 讀取設定檔是否允許通知
-            if (mPerferences.getBoolean("notification", true)) {
-                doNoticeCheck("排程通知", getApplicationContext());
-                Log.i("TestNoticationTask", "1-RunNoticationTask");
-            } else {
-                Log.i("TestNoticationTask", "2-noRunNoticationTask");
-            }
+//            // 讀取設定檔是否允許通知
+//            if (mPerferences.getBoolean("notification", true)) {
+//                //doNoticeCheck("排程通知", getApplicationContext());
+//                
+//                Log.i("TestNoticationTask", "1-RunNoticationTask");
+//            } else {
+//                Log.i("TestNoticationTask", "2-noRunNoticationTask");
+//            }
 
         }
     };

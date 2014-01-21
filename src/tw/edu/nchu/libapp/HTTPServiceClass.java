@@ -4,12 +4,15 @@ import java.util.HashMap;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class HTTPServiceClass extends Service {
 
@@ -79,7 +82,6 @@ public class HTTPServiceClass extends Service {
                     hmOpResult = jsonClass.setTokenResultJSONtoDB(
                             strReturnContent, getApplicationContext());
                 }
-
             }
 
             // 建立廣播所需辨識碼
@@ -126,6 +128,36 @@ public class HTTPServiceClass extends Service {
                                 .format(new java.util.Date()), "5.連線異常");
             }
 
+            if (CheckIfDBEmpty()) {
+                // 抓取系統設定值，用以後面判斷使用者是否同意更新或通知
+                SharedPreferences mPerferences = PreferenceManager
+                        .getDefaultSharedPreferences(getBaseContext());
+
+                // 讀取設定檔是否允許通知
+                if (mPerferences.getBoolean("notification", true)) {
+                    // doNoticeCheck("排程通知", getApplicationContext());
+                    // 建立通知服務檢查是否需要送通知
+                    Intent NotificationServiceIntent = new Intent(
+                            getApplicationContext(),
+                            NotificationServiceClass.class);
+
+                    startService(NotificationServiceIntent);
+
+                    Log.i("TestNoticationTask", "1-RunNoticationTask");
+                } else {
+                    Log.i("TestNoticationTask", "2-noRunNoticationTask");
+                }
+
+                // HTTP服務所要送出的值
+                // NotificationServiceIntent.putExtra("OP",
+                // "TokenAuth");
+                // NotificationServiceIntent.putExtra("jsonDeviceInfo",
+                // strDeviceInfo);
+
+                // 啟動HTTP服務
+
+            }
+
             try {
                 // 廣播登入結果
                 intent.putExtra("OP", strOP);
@@ -133,6 +165,8 @@ public class HTTPServiceClass extends Service {
                 intent.putExtra("OpInfo", hmOpResult.get("OpInfo"));
                 intent.putExtra("AuthResult", hmOpResult.get("AuthResult"));
                 intent.putExtra("AuthInfo", hmOpResult.get("AuthInfo"));
+                intent.putExtra("AppStableVersion",
+                        hmOpResult.get("AppStableVersion"));
                 sendBroadcast(intent);
             } catch (Exception e) {
                 // TODO Auto-generated catch block
@@ -143,6 +177,37 @@ public class HTTPServiceClass extends Service {
             // the service in the middle of handling another job
             stopSelf(msg.arg1);
         }
+    }
+
+    /**
+     * 檢查資料是否沒有資料，如果是就跳轉到登入畫面
+     * 
+     * @throws exceptions
+     *             No exceptions thrown
+     */
+    private Boolean CheckIfDBEmpty() {
+        Boolean blnCheckIfDBEmpty = false;
+        try {
+            // 建立取用資料庫的物件
+            DBHelper dbHelper = new DBHelper(getApplicationContext());
+
+            int intCountPartonTable = dbHelper.doCountPartonTable();
+
+            // 關閉資料庫
+            dbHelper.close();
+
+            if (intCountPartonTable != 1) {
+                // 在資料庫中無登入紀錄，立刻跳轉到登入畫面
+                blnCheckIfDBEmpty = false;
+            } else {
+                blnCheckIfDBEmpty = true;
+            }
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return blnCheckIfDBEmpty;
     }
 
     @Override

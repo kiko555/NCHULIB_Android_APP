@@ -30,7 +30,7 @@
     <string name="ActivityCirculationLog_lvOverduesList">借閱逾期通知</string>
     <string name="ActivityCirculationLog_lvRequestList">預約到館通知</string>
     <string name="ActivityCirculationLog_lvDuedate">到期日</string>
-    <string name="ActivityCirculationLog_lvOverDue">過期</string>
+    <string name="ActivityCirculationLog_lvOverDue">逾期</string>
     <string name="ActivityCirculationLog_lvArrivalDate">到館日</string>
     <string name="ActivityCirculationLog_lvRequestHoldUntilDate">保留至</string>
     <string name="ActivityCirculationLog_lvCountdown">倒數</string>

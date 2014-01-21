@@ -71,6 +71,7 @@
         </service>
         <service android:name="HTTPServiceClass" >
         </service>
+        <service android:name="NotificationServiceClass"></service>
     </application>
 
 </manifest>

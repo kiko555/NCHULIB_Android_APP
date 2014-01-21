@@ -529,7 +529,7 @@ public class DBHelper extends SQLiteOpenHelper {
         try {
             // SQLiteDatabase對象
             SQLiteDatabase db_PatronLoanHelper = getReadableDatabase();
-            String strSql = "Select Title,EndDate from patronloan "
+            String strSql = "Select Title,EndDate,Barcode from patronloan "
                     + "where DataType='REQUEST' ORDER BY EndDate";
             // 建立查詢元件
             Cursor recSet = db_PatronLoanHelper.rawQuery(strSql, null);
@@ -543,6 +543,7 @@ public class DBHelper extends SQLiteOpenHelper {
                             .getResources()
                             .getText(
                                     R.string.ActivityCirculationLog_lvRequestHoldUntilDate));
+            map.put("Barcode", "BarCode");
             mylist.add(map);
 
             // 把表格內的每一筆資料都寫入hashmap中
@@ -555,6 +556,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
                 // 將到館日帶入hash
                 map.put("Time", recSet.getString(1));
+                
+                map.put("Barcode", recSet.getString(2));
 
                 mylist.add(map);
             }
