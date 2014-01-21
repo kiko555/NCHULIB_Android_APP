@@ -133,17 +133,26 @@ public class NotificationServiceClass extends Service {
                     }
                 }
 
-                // 陣列大於一才代表有過期書
+                // 陣列大於一才代表有逾期書
                 if (arylistPartonLoanOverDue.size() > 1) {
                     // 供後面判斷是否要帶出小標題
                     Boolean blnSmallTitleFlag = false;
 
                     // Moves events into the big view
                     for (int i = 1; i < arylistPartonLoanOverDue.size(); i++) {
-                        // 判斷是否通知過，通知過就不出現在通訊列表中
+                        // 判斷是否1,3,7通知過或已超過七天就天天通知，通知過就不出現在通訊列表中
                         if (dbHelper.doCheckDueNoticationLog(context,
                                 arylistPartonLoanOverDue.get(i).get("Barcode"),
-                                arylistPartonLoanOverDue.get(i).get("Time"), 0)) {
+                                arylistPartonLoanOverDue.get(i).get("Time"), 0)
+                                ) {
+                            
+                            /*|| dbHelper.doCheckDueNoticationLog(
+                                    context,
+                                    arylistPartonLoanOverDue.get(i).get(
+                                            "Barcode"),
+                                    arylistPartonLoanOverDue.get(i).get(
+                                            "Time"), 0)*/
+                            
                             // 如果第一次遇到 blnSmallTitleFlag 是 false 就是代表要有小標題
                             if (!blnSmallTitleFlag) {
                                 // Sets a title for the Inbox style big view
@@ -169,11 +178,17 @@ public class NotificationServiceClass extends Service {
 
                 // 陣列大於一才代表有預約書
                 if (arylistPartonLoan_Request.size() > 1) {
-                    // Sets a title for the Inbox style big view
-                    inboxStyle.addLine("你有預約書:");
+                    // 供後面判斷是否要帶出小標題
+                    Boolean blnSmallTitleFlag = false;
 
                     // Moves events into the big view
                     for (int i = 1; i < arylistPartonLoan_Request.size(); i++) {
+                        // 如果第一次遇到 blnSmallTitleFlag 是 false 就是代表要有小標題
+                        if (!blnSmallTitleFlag) {
+                            inboxStyle.addLine("你有預約書:");
+                            blnSmallTitleFlag = true;
+                        }
+
                         if (dbHelper
                                 .doCheckRequestNoticationLog(
                                         context,

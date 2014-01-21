@@ -136,6 +136,7 @@ public class CirculationLogActivity extends ActionBarActivity {
         case R.id.action_refresh:
             setSupportProgressBarIndeterminateVisibility(true);
             UpdateCirLogData("Token登入");
+            LoadListData();
             return true;
         case R.id.action_settings:
             Intent intent = new Intent();

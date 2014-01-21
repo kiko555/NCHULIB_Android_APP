@@ -1,6 +1,7 @@
 //: object/DBHelper.java
 package tw.edu.nchu.libapp;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -466,9 +467,7 @@ public class DBHelper extends SQLiteOpenHelper {
             // 取得已過期借閱清單
             case 2:
                 strSql = "Select Title,EndDate,Barcode from patronloan where DataType='LOAN'"
-                        + " and EndDate < "
-                        + strToday
-                        + " ORDER BY EndDate";
+                        + " and EndDate < " + strToday + " ORDER BY EndDate";
                 break;
             default:
                 break;
@@ -556,7 +555,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
                 // 將到館日帶入hash
                 map.put("Time", recSet.getString(1));
-                
+
                 map.put("Barcode", recSet.getString(2));
 
                 mylist.add(map);
@@ -628,7 +627,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
             // select query
             String selectQuery = "SELECT JobType,Time,ExecuteStatus FROM SystemLog"
-                    + " ORDER BY ID DESC limit 100";//Time DESC,JobType,ExecuteStatus Desc limit 300";
+                    + " ORDER BY ID DESC limit 100";// Time
+                                                    // DESC,JobType,ExecuteStatus
+                                                    // Desc limit 300";
 
             // 先把表頭帶入
             map.put("JobType",
@@ -707,8 +708,8 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * 提供程式判斷是否需要發通知，依據某 BarCode 在某天是否有出現在 NoticationLog，
-     * 或者根本不在需要通知的天數內(非7,3,1 or 1,3,7)
+     * 提供程式判斷是否需要發通知，依據某 BarCode 在某天是否有出現在 NoticationLog， 或者根本不在需要通知的天數內(非7,3,1
+     * or 1,3,7)
      * 
      * @return mylist 操作紀錄透過HashMap方式儲存，最後再以arraylist的方式回傳
      * 
@@ -741,7 +742,7 @@ public class DBHelper extends SQLiteOpenHelper {
             long longDue1days = dateToday.getTime() + (1 * 24 * 60 * 60 * 1000);
             String strDue1days = smdf.format(longDue1days);
 
-            // 過期日往後推7,3,1天
+            // 逾期日往後推7,3,1天
             long longOverDue7days = dateToday.getTime()
                     - (7 * 24 * 60 * 60 * 1000);
             String strOverDue7days = smdf.format(longOverDue7days);
@@ -752,11 +753,29 @@ public class DBHelper extends SQLiteOpenHelper {
                     - (1 * 24 * 60 * 60 * 1000);
             String strOverDue1days = smdf.format(longOverDue1days);
 
-            if (EndDate.equals(strDue7days) || EndDate.equals(strDue3days)
+            // 取得逾期超過8天的time
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+            Date dateEndDate = null;
+            try {
+                dateEndDate = format.parse(EndDate);
+            } catch (ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            long longOverDue8days = dateEndDate.getTime()
+                    + (8 * 24 * 60 * 60 * 1000);
+            String strOverDue8days = smdf.format(longOverDue8days);
+
+            // 針對到期、逾期及逾期超過8天的處理
+            if (EndDate.equals(strDue7days)
+                    || EndDate.equals(strDue3days)
                     || EndDate.equals(strDue1days)
                     || EndDate.equals(strOverDue7days)
                     || EndDate.equals(strOverDue3days)
-                    || EndDate.equals(strOverDue1days)) {
+                    || EndDate.equals(strOverDue1days)
+                    || (Integer.parseInt(strToday) >= Integer
+                            .parseInt(strOverDue8days))) {
                 strNoticeDate = strToday;
             } else {
                 // 如果不是這些天數中，直接回傳，讓通知不進行
@@ -793,7 +812,7 @@ public class DBHelper extends SQLiteOpenHelper {
             return true;
         }
     }
-    
+
     /**
      * 提供程式判斷是否需要發預約通知，依據某 BarCode 只要還未取書就通知，但每天只一次
      * 
@@ -849,7 +868,7 @@ public class DBHelper extends SQLiteOpenHelper {
             return true;
         }
     }
-    
+
     /**
      * 清空 Parton 表格
      * 
