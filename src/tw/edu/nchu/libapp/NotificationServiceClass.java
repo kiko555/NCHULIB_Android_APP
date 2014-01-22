@@ -55,6 +55,19 @@ public class NotificationServiceClass extends Service {
                 Date dateToday = cal.getTime();
                 String strToday = smdf.format(dateToday);
 
+                // 各種需通知類型的筆數
+                int intDueCount = 0;
+                int intOverDueCount = 0;
+                int intRequestCount = 0;
+
+                // 各種類型的短通知內容
+                String strDueContent = "";
+                String strOverDueContent = "";
+                String strRequestContent = "";
+
+                // 短通知的內容
+                String strShortNotification = "";
+
                 // 判斷是否真的需要通知的指標
                 Boolean blnNoticeRequest = false;
 
@@ -97,7 +110,8 @@ public class NotificationServiceClass extends Service {
                 NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
                 // 設定通知欄的標題
-                inboxStyle.setBigContentTitle("中興大學圖書館通知您");
+                inboxStyle.setBigContentTitle(context
+                        .getString(R.string.NotificationTitle));
 
                 // 陣列大於一才代表有到期書
                 if (arylistPartonLoanDue.size() > 1) {
@@ -113,7 +127,8 @@ public class NotificationServiceClass extends Service {
                             // 如果第一次遇到 blnSmallTitleFlag 是 false 就是代表要有小標題
                             if (!blnSmallTitleFlag) {
                                 // Sets a title for the Inbox style big view
-                                inboxStyle.addLine("你有到期書:");
+                                inboxStyle.addLine(context
+                                        .getString(R.string.NotificationDue));
                                 blnSmallTitleFlag = true;
                             }
 
@@ -127,6 +142,9 @@ public class NotificationServiceClass extends Service {
                             dbHelper.doInsertNoticationLogTable(
                                     arylistPartonLoanDue.get(i).get("Barcode"),
                                     strToday, 1);
+
+                            // 供簡短通知使用
+                            intDueCount = intDueCount + 1;
 
                             blnNoticeRequest = true;
                         }
@@ -143,20 +161,14 @@ public class NotificationServiceClass extends Service {
                         // 判斷是否1,3,7通知過或已超過七天就天天通知，通知過就不出現在通訊列表中
                         if (dbHelper.doCheckDueNoticationLog(context,
                                 arylistPartonLoanOverDue.get(i).get("Barcode"),
-                                arylistPartonLoanOverDue.get(i).get("Time"), 0)
-                                ) {
-                            
-                            /*|| dbHelper.doCheckDueNoticationLog(
-                                    context,
-                                    arylistPartonLoanOverDue.get(i).get(
-                                            "Barcode"),
-                                    arylistPartonLoanOverDue.get(i).get(
-                                            "Time"), 0)*/
-                            
+                                arylistPartonLoanOverDue.get(i).get("Time"), 0)) {
+
                             // 如果第一次遇到 blnSmallTitleFlag 是 false 就是代表要有小標題
                             if (!blnSmallTitleFlag) {
                                 // Sets a title for the Inbox style big view
-                                inboxStyle.addLine("你有逾期書:");
+                                inboxStyle
+                                        .addLine(context
+                                                .getString(R.string.NotificationOverDue));
                                 blnSmallTitleFlag = true;
                             }
 
@@ -170,6 +182,9 @@ public class NotificationServiceClass extends Service {
                             dbHelper.doInsertNoticationLogTable(
                                     arylistPartonLoanOverDue.get(i).get(
                                             "Barcode"), strToday, 1);
+
+                            // 供簡短通知使用
+                            intOverDueCount = intOverDueCount + 1;
 
                             blnNoticeRequest = true;
                         }
@@ -185,7 +200,8 @@ public class NotificationServiceClass extends Service {
                     for (int i = 1; i < arylistPartonLoan_Request.size(); i++) {
                         // 如果第一次遇到 blnSmallTitleFlag 是 false 就是代表要有小標題
                         if (!blnSmallTitleFlag) {
-                            inboxStyle.addLine("你有預約書:");
+                            inboxStyle.addLine(context
+                                    .getString(R.string.NotificationRequest));
                             blnSmallTitleFlag = true;
                         }
 
@@ -208,17 +224,49 @@ public class NotificationServiceClass extends Service {
                                     arylistPartonLoan_Request.get(i).get(
                                             "Barcode"), strToday, 1);
 
+                            // 供簡短通知使用
+                            intRequestCount = intRequestCount + 1;
+
                             blnNoticeRequest = true;
                         }
                     }
                 }
 
+                if (intDueCount > 0) {
+                    strDueContent = context.getString(R.string.NotificationDue)
+                            + intDueCount
+                            + context.getString(R.string.NotificationItem);
+                }
+                if (intOverDueCount > 0) {
+                    strOverDueContent = context
+                            .getString(R.string.NotificationOverDue)
+                            + intOverDueCount
+                            + context.getString(R.string.NotificationItem);
+                }
+                if (intRequestCount > 0) {
+                    strRequestContent = context
+                            .getString(R.string.NotificationRequest)
+                            + intRequestCount
+                            + context.getString(R.string.NotificationItem);
+                }
+
+                // 組合短通知的內容
+                strShortNotification = context
+                        .getString(R.string.NotificationShortContentHead)
+                        + strDueContent
+                        + strOverDueContent
+                        + strRequestContent
+                        + context
+                                .getString(R.string.NotificationShortContentTail);
+
                 // 這邊的 setContentText 理論上只供 4.1 版以下的顯示
                 NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-                        context).setSmallIcon(R.drawable.ic_launcher)
+                        context)
+                        .setSmallIcon(R.drawable.ic_launcher)
                         .setContentTitle(strTitle)
-                        .setContentText("您有新的通知訊息，請點選查閱。")
-                        .setTicker("NCHU Library notification");
+                        .setContentText(strShortNotification)
+                        .setTicker(
+                                context.getString(R.string.NotificationTitle));
 
                 // Moves the big view style object into the notification object.
                 mBuilder.setStyle(inboxStyle);
