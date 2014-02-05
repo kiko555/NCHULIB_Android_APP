@@ -1,3 +1,4 @@
+//: object/HTTPServiceClass.java
 package tw.edu.nchu.libapp;
 
 import java.util.HashMap;
@@ -14,6 +15,12 @@ import android.os.Process;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+/**
+ * Http連線服務
+ * 
+ * @author kiko
+ * @version 1.0
+ */
 public class HTTPServiceClass extends Service {
 
     private Looper mServiceLooper;
@@ -264,3 +271,4 @@ public class HTTPServiceClass extends Service {
     }
 
 }
+///:~

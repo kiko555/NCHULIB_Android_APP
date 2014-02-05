@@ -1,3 +1,4 @@
+//: object/TaskServiceClass.java
 package tw.edu.nchu.libapp;
 
 import java.text.SimpleDateFormat;
@@ -20,6 +21,12 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+/**
+ * 排程所需程式
+ * 
+ * @author kiko
+ * @version 1.0
+ */
 public class TaskServiceClass extends Service {
     // 控制通知的編號
     private static final int notifyID = 1;
@@ -50,7 +57,6 @@ public class TaskServiceClass extends Service {
         // 請經紀人指派工作名稱 ，給工人做
         mThreadHandler.postDelayed(runUpdateCirLogMulti, 3000);
         super.onStart(intent, startId);
-
     }
 
     // TODO 補上被外部呼叫停止時
@@ -64,10 +70,10 @@ public class TaskServiceClass extends Service {
     // 執行緒工作-借閱資料更新多次
     private Runnable runUpdateCirLogMulti = new Runnable() {
         public void run() {
-            // 取得設備資訊
-            DeviceClass deviceclass = new DeviceClass();
-            String strDeviceInfo = deviceclass.getDeviceInfoJSON(
-                    getApplicationContext(), "");
+            // // 取得設備資訊
+            // DeviceClass deviceclass = new DeviceClass();
+            // String strDeviceInfo = deviceclass.getDeviceInfoJSON(
+            // getApplicationContext(), "");
 
             // 抓取系統設定值，用以後面判斷使用者是否同意更新或通知
             SharedPreferences mPerferences = PreferenceManager
@@ -84,14 +90,14 @@ public class TaskServiceClass extends Service {
                 Log.i("TestSchUpdateTask", "2-noRunSchUpdateCirLogMulti");
             }
 
-//            // 讀取設定檔是否允許通知
-//            if (mPerferences.getBoolean("notification", true)) {
-//                //doNoticeCheck("排程通知", getApplicationContext());
-//                
-//                Log.i("TestNoticationTask", "1-RunNoticationTask");
-//            } else {
-//                Log.i("TestNoticationTask", "2-noRunNoticationTask");
-//            }
+            // // 讀取設定檔是否允許通知
+            // if (mPerferences.getBoolean("notification", true)) {
+            // //doNoticeCheck("排程通知", getApplicationContext());
+            //
+            // Log.i("TestNoticationTask", "1-RunNoticationTask");
+            // } else {
+            // Log.i("TestNoticationTask", "2-noRunNoticationTask");
+            // }
 
         }
     };
@@ -127,7 +133,7 @@ public class TaskServiceClass extends Service {
     }
 
     /**
-     * 更新借閱資料
+     * 檢查是否通知過
      * 
      * @throws exceptions
      *             No exceptions thrown
@@ -318,22 +324,20 @@ public class TaskServiceClass extends Service {
      * @throws exceptions
      *             No exceptions thrown
      */
-    private void doCheckIfNotice(Context context, String BarCode, int CheckType) {
-        try {
-            // 建立取用資料庫的物件
-            DBHelper dbHelper = new DBHelper(context);
-
-            // 宣告處理JSON的物件
-            JSONClass jsonClass = new JSONClass();
-
-            // 將回傳的全部的借閱到期資料陣列透過HashMap方式儲存， 最後轉入arylistPartonLoan 中
-            ArrayList<HashMap<String, String>> arylistPartonLoanDue = dbHelper
-                    .getPartonLoanTable(context, 1);
-
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
+    /*
+     * private void doCheckIfNotice(Context context, String BarCode, int
+     * CheckType) { try { // 建立取用資料庫的物件 DBHelper dbHelper = new
+     * DBHelper(context);
+     * 
+     * // 宣告處理JSON的物件 JSONClass jsonClass = new JSONClass();
+     * 
+     * // 將回傳的全部的借閱到期資料陣列透過HashMap方式儲存， 最後轉入arylistPartonLoan 中
+     * ArrayList<HashMap<String, String>> arylistPartonLoanDue = dbHelper
+     * .getPartonLoanTable(context, 1);
+     * 
+     * } catch (Exception e) { // TODO Auto-generated catch block
+     * e.printStackTrace(); } }
+     */
 
 }
+// /:~
