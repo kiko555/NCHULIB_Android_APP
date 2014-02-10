@@ -11,6 +11,11 @@
         android:key="notification"
         android:title="@string/ActivitySetting_notification"
         android:summary="@string/ActivitySetting_notification_detail" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="autostart"
+        android:title="@string/ActivitySetting_autostart"
+        android:summary="@string/ActivitySetting_autostart_detail" />
     <PreferenceScreen
         android:title="@string/ActivitySetting_library_homepage" >
         <intent

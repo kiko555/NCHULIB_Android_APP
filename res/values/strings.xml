@@ -47,6 +47,8 @@
     <string name="ActivitySetting_autosync_detail">Update data from server</string>
     <string name="ActivitySetting_notification">Notification</string>
     <string name="ActivitySetting_notification_detail">Allow send notice for you</string>
+    <string name="ActivitySetting_autostart">Auto start</string>
+    <string name="ActivitySetting_autostart_detail">Auto start, after reboot.</string>
     <string name="ActivitySetting_library_homepage">Library homepage</string>
     <string name="ActivitySetting_about">About</string>
     <string name="ActivitySetting_logout">Logout</string>

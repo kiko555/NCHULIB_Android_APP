@@ -120,6 +120,19 @@ public class SettingsActivity extends PreferenceActivity implements
                         new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                                 .format(new java.util.Date()), "通知功能關閉");
             }
+        } else if (key.equals("autostart")) {
+            // 判斷通知設定產生對應內容
+            if (mPerferences.getBoolean("autostart", true)) {
+                // 寫log
+                logclass.setLOGtoDB(SettingsActivity.this, logJobType,
+                        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .format(new java.util.Date()), "自動啟動功能打開");
+            } else {
+                // 寫log
+                logclass.setLOGtoDB(SettingsActivity.this, logJobType,
+                        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .format(new java.util.Date()), "自動啟動功能關閉");
+            }
         }
     }
 

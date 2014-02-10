@@ -46,6 +46,8 @@
     <string name="ActivitySetting_autosync_detail">更新您在圖書館的相關紀錄</string>
     <string name="ActivitySetting_notification">通知功能</string>
     <string name="ActivitySetting_notification_detail">允許通知您訊息</string>
+    <string name="ActivitySetting_autostart">自動啟動</string>
+    <string name="ActivitySetting_autostart_detail">重開機後程式自動啟動</string>
     <string name="ActivitySetting_library_homepage">圖書館首頁</string>
     <string name="ActivitySetting_about">關於本程式</string>
     <string name="ActivitySetting_logout">登出</string>
