@@ -53,6 +53,7 @@
     <string name="ActivitySetting_about">About</string>
     <string name="ActivitySetting_logout">Logout</string>
     <string name="ActivitySetting_logout_detail">Clear your account, but keep the system log.</string>
+    <string name="ActivityLock_tvInfo">Please update this APP version!!</string>
     <string name="NotificationTitle">NCHU Library Notification</string>
     <string name="NotificationDue">Due:</string>
     <string name="NotificationOverDue">OverDue:</string>

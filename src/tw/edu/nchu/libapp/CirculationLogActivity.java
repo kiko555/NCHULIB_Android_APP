@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources.NotFoundException;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -332,36 +333,63 @@ public class CirculationLogActivity extends ActionBarActivity {
                 // 資料抓取完畢將讀取鈕移除
                 setSupportProgressBarIndeterminateVisibility(false);
 
-                // 操作成功與否的判斷，如果成功之後才判斷認證結果
-                if (intent.getStringExtra("OpResult").equals("Success")) {
-                    if (intent.getStringExtra("AuthResult").equals("Success")) {
-                        // 更新畫面
-                        LoadListData();
-                        // 認證成功就丟通知
-                        Toast.makeText(
-                                CirculationLogActivity.this,
-                                R.string.ActivityCirculationLog_toastTokenSuccess,
-                                Toast.LENGTH_SHORT).show();
+                try {
+
+                    // 先判斷是否要強制更新版本
+                    if (Double.valueOf(intent
+                            .getStringExtra("AppStableVersion")) > Double
+                            .valueOf(context
+                                    .getPackageManager()
+                                    .getPackageInfo(context.getPackageName(), 0).versionName)) {
+                        // 如果版本過舊就強迫跳鎖定畫面
+                        Intent intent1 = new Intent();
+                        intent1.setClass(CirculationLogActivity.this,
+                                LockActivity.class);
+                        startActivity(intent1);
+                        finish();
                     } else {
-                        // 認證失敗就丟個警告
-                        Toast.makeText(
-                                CirculationLogActivity.this,
-                                R.string.ActivityCirculationLog_toastTokenFail
-                                        + intent.getStringExtra("AuthInfo"),
-                                Toast.LENGTH_SHORT).show();
+                        // 操作成功與否的判斷，如果成功之後才判斷認證結果
+                        if (intent.getStringExtra("OpResult").equals("Success")) {
+                            if (intent.getStringExtra("AuthResult").equals(
+                                    "Success")) {
+                                // 更新畫面
+                                LoadListData();
+                                // 認證成功就丟通知
+                                Toast.makeText(
+                                        CirculationLogActivity.this,
+                                        R.string.ActivityCirculationLog_toastTokenSuccess,
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                // 認證失敗就丟個警告
+                                Toast.makeText(
+                                        CirculationLogActivity.this,
+                                        R.string.ActivityCirculationLog_toastTokenFail
+                                                + intent.getStringExtra("AuthInfo"),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            if (intent.getStringExtra("OpInfo").equals("")) {
+                                // 特別針對失敗中有丟OpInfo的警告
+                                Toast.makeText(CirculationLogActivity.this,
+                                        R.string.Check_Network,
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                // 操作失敗就丟個連線警告
+                                Toast.makeText(CirculationLogActivity.this,
+                                        intent.getStringExtra("OpInfo"),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
                     }
-                } else {
-                    if (intent.getStringExtra("OpInfo").equals("")) {
-                        // 特別針對失敗中有丟OpInfo的警告
-                        Toast.makeText(CirculationLogActivity.this,
-                                R.string.Check_Network, Toast.LENGTH_SHORT)
-                                .show();
-                    } else {
-                        // 操作失敗就丟個連線警告
-                        Toast.makeText(CirculationLogActivity.this,
-                                intent.getStringExtra("OpInfo"),
-                                Toast.LENGTH_SHORT).show();
-                    }
+                } catch (NumberFormatException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (NotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (NameNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
 
             }
