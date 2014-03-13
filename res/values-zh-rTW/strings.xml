@@ -18,7 +18,9 @@
     <string name="ActivityLogin_txPassword">密碼</string>
     <string name="ActivityLogin_cbNotice">同意使用條款</string>
     <string name="ActivityLogin_adNotice_Title">中興大學圖書館 APP使用條款</string>
-    <string name="ActivityLogin_adNotice_Message">1.借閱通知推播服務：本服務系以APP推播通知方式「提醒」讀者有關借還資料作業的相關通知，包括即將到期通知(到期前第7、3、1天)、逾期通知(逾期第1、3、7天)及預約書到館通知。提醒您 APP推播通知係為圖書館之提醒服務，讀者仍應經常查詢個人借閱狀況，以維護個人借書權益；並不得以未接獲推播通知作為減免逾期滯還金之理由。</string>
+    <string name="ActivityLogin_adNotice_Message">一、  借閱通知推播服務:本服務係以APP推播通知方式「提醒」讀者有關借還資料作業的相關通知，包括即將到期通知(到期前7.3.1天)、逾期通知(逾期第1、3、7天及後每日)及預約書到館通知。
+
+二、  提醒您APP推播通知係為圖書館之提醒服務，讀者仍應經常查詢個人借閱狀況，以維護個人借書權益，並不得以未接獲推播通知作為減免逾期滯還金之理由。</string>
     <string name="ActivityLogin_adNotice_btAgree">同意</string>
     <string name="ActivityLogin_adNotice_btNoAgree">不</string>
     <string name="ActivityLogin_btLogin">登入</string>
@@ -42,6 +44,7 @@
     <string name="ActivitySystemLog_tvJobType">工作類型</string>
     <string name="ActivitySystemLog_tvTime">時間</string>
     <string name="ActivitySystemLog_tvNote">說明</string>
+    <string name="ActivitySetting_patronid">帳號</string>
     <string name="ActivitySetting_autosync">自動更新</string>
     <string name="ActivitySetting_autosync_detail">更新您在圖書館的相關紀錄</string>
     <string name="ActivitySetting_notification">通知功能</string>

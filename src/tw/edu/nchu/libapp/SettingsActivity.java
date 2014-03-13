@@ -59,8 +59,18 @@ public class SettingsActivity extends PreferenceActivity implements
         }
         addPreferencesFromResource(R.xml.mypreferences);
 
-        // 實作設定的登出欄監聽功能
+        // 宣告設定檔管理
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // 建立取用資料庫的物件，取得使用者barcode
+        DBHelper dbHelper = new DBHelper(SettingsActivity.this);
+        String aryPatron[] = dbHelper.getPartonTable();
+
+        // 寫入設定畫面中的使用者資訊
+        Preference pref = (Preference) findPreference("PatronBarCode");
+        pref.setSummary(aryPatron[1].toString());
+
+        // 實作設定的登出欄監聽功能
         Preference mPreferences = (Preference) findPreference("logoutKey");
         mPreferences.setOnPreferenceClickListener(this);
 

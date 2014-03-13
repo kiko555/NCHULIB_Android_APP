@@ -1,38 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <CheckBoxPreference
+    <PreferenceScreen
+        android:key="PatronBarCode"
+        android:defaultValue=""
+        android:summary=""
+        android:title="@string/ActivitySetting_patronid" >
+        
+    </PreferenceScreen>
+    <CheckBoxPreference
         android:defaultValue="true"
         android:key="autosync"
-        android:title="@string/ActivitySetting_autosync" 
-        android:summary="@string/ActivitySetting_autosync_detail"/>
+        android:summary="@string/ActivitySetting_autosync_detail"
+        android:title="@string/ActivitySetting_autosync" />
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="notification"
-        android:title="@string/ActivitySetting_notification"
-        android:summary="@string/ActivitySetting_notification_detail" />
+        android:summary="@string/ActivitySetting_notification_detail"
+        android:title="@string/ActivitySetting_notification" />
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="autostart"
-        android:title="@string/ActivitySetting_autostart"
-        android:summary="@string/ActivitySetting_autostart_detail" />
-    <PreferenceScreen
-        android:title="@string/ActivitySetting_library_homepage" >
+        android:summary="@string/ActivitySetting_autostart_detail"
+        android:title="@string/ActivitySetting_autostart" />
+
+    <PreferenceScreen android:title="@string/ActivitySetting_library_homepage" >
         <intent
             android:action="android.intent.action.VIEW"
             android:data="http://www.lib.nchu.edu.tw" />
     </PreferenceScreen>
-    <PreferenceScreen
-        android:title="@string/ActivitySetting_about" >
+    <PreferenceScreen android:title="@string/ActivitySetting_about" >
         <intent
             android:action="android.intent.action.MAIN"
-            android:targetPackage="tw.edu.nchu.libapp"  
-            android:targetClass="tw.edu.nchu.libapp.MainActivity" />
+            android:targetClass="tw.edu.nchu.libapp.MainActivity"
+            android:targetPackage="tw.edu.nchu.libapp" />
     </PreferenceScreen>
     <PreferenceScreen
+        android:key="logoutKey"
         android:summary="@string/ActivitySetting_logout_detail"
-        android:title="@string/ActivitySetting_logout" 
-        android:key="logoutKey">
+        android:title="@string/ActivitySetting_logout" >
     </PreferenceScreen>
 
 </PreferenceScreen>

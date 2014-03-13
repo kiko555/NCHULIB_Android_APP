@@ -43,6 +43,7 @@
     <string name="ActivitySystemLog_tvJobType">Job Type</string>
     <string name="ActivitySystemLog_tvTime">Time</string>
     <string name="ActivitySystemLog_tvNote">Note</string>
+    <string name="ActivitySetting_patronid">ID</string>
     <string name="ActivitySetting_autosync">Autosync</string>
     <string name="ActivitySetting_autosync_detail">Update data from server</string>
     <string name="ActivitySetting_notification">Notification</string>
