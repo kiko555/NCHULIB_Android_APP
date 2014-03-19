@@ -13,8 +13,8 @@
     <string name="JSON_Data_downlaod_fail">JSON data load fail</string>
     <string name="JSON_Data_error">JSON data error</string>
     <string name="Check_Network">Connection Fail. Check 3G or Wifi Network.</string>
-    <string name="ActivityLogin_tvTitle">NCHU Library App Login System</string>
-    <string name="ActivityLogin_txID">ID</string>
+    <string name="ActivityLogin_tvTitle">1.The username is Student ID number.\n2.The password is the same with Single Sign On. </string>
+    <string name="ActivityLogin_txID">Single Sign On System ID</string>
     <string name="ActivityLogin_txPassword">Password</string>
     <string name="ActivityLogin_cbNotice">Accept the terms</string>
     <string name="ActivityLogin_adNotice_Title">NCHU Library APP Terms</string>
@@ -51,9 +51,12 @@
     <string name="ActivitySetting_autostart">Auto start</string>
     <string name="ActivitySetting_autostart_detail">Auto start, after reboot.</string>
     <string name="ActivitySetting_library_homepage">Library homepage</string>
+    <string name="ActivitySetting_library_facebook">Library facebook</string>
     <string name="ActivitySetting_about">About</string>
     <string name="ActivitySetting_logout">Logout</string>
     <string name="ActivitySetting_logout_detail">Clear your account, but keep the system log.</string>
+    <string name="ActivitySettings_LogoutNotice_Title">NCHU Library APP</string>
+    <string name="ActivitySettings_LogoutNotice_Message">If you agree logout,then won\'t get any notice.</string>
     <string name="ActivityLock_tvInfo">Please update this APP version!!</string>
     <string name="NotificationTitle">NCHU Library Notification</string>
     <string name="NotificationDue">Due:</string>

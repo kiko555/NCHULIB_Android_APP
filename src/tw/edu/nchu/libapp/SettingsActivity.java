@@ -2,6 +2,8 @@
 package tw.edu.nchu.libapp;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -153,32 +155,64 @@ public class SettingsActivity extends PreferenceActivity implements
         blnLogoutClicked = mPreferences.getBoolean("logoutKey", true);
 
         if (blnLogoutClicked) {
-            // 宣告LOG物件，並決定工作類型
-            LOGClass logclass = new LOGClass();
-            String logJobType = "帳密登出";
 
-            // 寫log
-            logclass.setLOGtoDB(SettingsActivity.this, logJobType,
-                    new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                            .format(new java.util.Date()), "清空讀者檔及借閱資料");
+            AlertDialog.Builder dialog = new AlertDialog.Builder(
+                    SettingsActivity.this);
 
-            // 建立取用資料庫的物件
-            DBHelper dbHelper = new DBHelper(SettingsActivity.this);
+            dialog.setTitle(R.string.ActivitySettings_LogoutNotice_Title); // 設定dialog
+                                                                    // 的title顯示內容
+            dialog.setMessage(R.string.ActivitySettings_LogoutNotice_Message);
+            dialog.setIcon(android.R.drawable.ic_menu_info_details);// 設定dialog
+            // 的ICON
+            dialog.setCancelable(false); // 關閉 Android
+                                         // 系統的主要功能鍵(menu,home等...)
 
-            // 先清空讀者及借閱資料表
-            dbHelper.doEmptyPartonLoanTable();
-            dbHelper.doEmptyPartonTable();
+            dialog.setPositiveButton(R.string.ActivityLogin_adNotice_btAgree,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // 按下"同意"以後要做的事情
+                            // 宣告LOG物件，並決定工作類型
+                            LOGClass logclass = new LOGClass();
+                            String logJobType = "帳密登出";
 
-            // 也清空通知紀錄表
-            dbHelper.doEmptyNotificationLog();
+                            // 寫log
+                            logclass.setLOGtoDB(SettingsActivity.this,
+                                    logJobType, new java.text.SimpleDateFormat(
+                                            "yyyy-MM-dd HH:mm:ss")
+                                            .format(new java.util.Date()),
+                                    "清空讀者檔及借閱資料");
 
-            // 清空後直接跳轉到登入畫面
-            Intent intent = new Intent();
-            intent.setClass(SettingsActivity.this, MainActivity.class);
-            startActivity(intent);
+                            // 建立取用資料庫的物件
+                            DBHelper dbHelper = new DBHelper(
+                                    SettingsActivity.this);
 
-            // 關掉這個活動
-            finish();
+                            // 先清空讀者及借閱資料表
+                            dbHelper.doEmptyPartonLoanTable();
+                            dbHelper.doEmptyPartonTable();
+
+                            // 也清空通知紀錄表
+                            dbHelper.doEmptyNotificationLog();
+
+                            // 清空後直接跳轉到登入畫面
+                            Intent intent = new Intent();
+                            intent.setClass(SettingsActivity.this,
+                                    MainActivity.class);
+                            startActivity(intent);
+
+                            // 關掉這個活動
+                            finish();
+                        }
+                    });
+
+            dialog.setNegativeButton(R.string.ActivityLogin_adNotice_btNoAgree,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // cbNotice.setChecked(false);
+                        }
+                    });
+
+            dialog.show();
+
         }
         return false;
     }

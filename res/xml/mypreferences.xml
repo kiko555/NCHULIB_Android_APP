@@ -29,6 +29,12 @@
             android:action="android.intent.action.VIEW"
             android:data="http://www.lib.nchu.edu.tw" />
     </PreferenceScreen>
+    <PreferenceScreen android:title="@string/ActivitySetting_library_facebook" >
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://www.facebook.com/nchulib
+" />
+    </PreferenceScreen>
     <PreferenceScreen android:title="@string/ActivitySetting_about" >
         <intent
             android:action="android.intent.action.MAIN"

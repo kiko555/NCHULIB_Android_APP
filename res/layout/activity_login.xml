@@ -10,19 +10,18 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true" >
+        android:layout_centerVertical="false" >
 
         <TableRow
-            android:id="@+id/tableRow1"
+            android:id="@+id/tableRow2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal" >
 
             <TextView
-                android:id="@+id/textView1"
+                android:id="@+id/TextView01"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/ActivityLogin_tvTitle" />
+                android:layout_height="wrap_content" />
         </TableRow>
 
         <TableRow
@@ -36,6 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:gravity="top|center_vertical"
                 android:hint="@string/ActivityLogin_txID"
                 android:singleLine="true" >
 
@@ -57,6 +57,19 @@
                 android:hint="@string/ActivityLogin_txPassword"
                 android:inputType="textPassword"
                 android:singleLine="true" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal" >
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ActivityLogin_tvTitle" />
         </TableRow>
 
         <TableRow

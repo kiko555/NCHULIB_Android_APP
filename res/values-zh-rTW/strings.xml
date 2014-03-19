@@ -13,16 +13,17 @@
     <string name="JSON_Data_downlaod_fail">JSON 資料讀取失敗</string>
     <string name="JSON_Data_error">JSON 資料錯誤</string>
     <string name="Check_Network">連線異常！確認3G或WIFI正常運作。</string>
-    <string name="ActivityLogin_tvTitle">中興大學圖書館登入系統</string>
-    <string name="ActivityLogin_txID">帳號</string>
+    <string name="ActivityLogin_tvTitle">1.「帳號」為學生證(10碼)、服務證(職員編號) 或圖書館借書證的條碼號。\n2.「密碼」與學校單一簽入網站相同，系統預設為「身分證字號末4碼＋出生月日4碼」（預設密碼共8碼數字）。</string>
+    <string name="ActivityLogin_txID">單一簽入系統帳號</string>
     <string name="ActivityLogin_txPassword">密碼</string>
     <string name="ActivityLogin_cbNotice">同意使用條款</string>
     <string name="ActivityLogin_adNotice_Title">中興大學圖書館 APP使用條款</string>
-    <string name="ActivityLogin_adNotice_Message">一、  借閱通知推播服務:本服務係以APP推播通知方式「提醒」讀者有關借還資料作業的相關通知，包括即將到期通知(到期前7.3.1天)、逾期通知(逾期第1、3、7天及後每日)及預約書到館通知。
-
-二、  提醒您APP推播通知係為圖書館之提醒服務，讀者仍應經常查詢個人借閱狀況，以維護個人借書權益，並不得以未接獲推播通知作為減免逾期滯還金之理由。</string>
+    <string name="ActivityLogin_adNotice_Message">1.本服務係以APP通知方式「提醒」讀者有關借還書資料作業的相關通知，包括即將到期通知(到期前7.3.1天)、逾期通知(逾期第1.3.7天及後每日)及預約書到館通知。\n
+2.提醒您APP通知係為圖書館之提醒服務，讀者仍應經常查詢個人借閱狀況，以維護個人借書權益，並不得以未接獲推播通知作為減免逾期滯還金之理由。\n
+3.若登出將無法接收到推播通知的各項訊息。
+</string>
     <string name="ActivityLogin_adNotice_btAgree">同意</string>
-    <string name="ActivityLogin_adNotice_btNoAgree">不</string>
+    <string name="ActivityLogin_adNotice_btNoAgree">不同意</string>
     <string name="ActivityLogin_btLogin">登入</string>
     <string name="ActivityLogin_toastLoginFail">帳號或密碼錯誤!!</string>
     <string name="ActivityLogin_toastFieldEmpty">帳號或密碼欄位不能是空白!!</string>
@@ -52,9 +53,12 @@
     <string name="ActivitySetting_autostart">自動啟動</string>
     <string name="ActivitySetting_autostart_detail">重開機後程式自動啟動</string>
     <string name="ActivitySetting_library_homepage">圖書館首頁</string>
+    <string name="ActivitySetting_library_facebook">圖書館臉書</string>
     <string name="ActivitySetting_about">關於本程式</string>
     <string name="ActivitySetting_logout">登出</string>
     <string name="ActivitySetting_logout_detail">登出後會清除您的圖書館帳號資料，但會保留系統紀錄。</string>
+    <string name="ActivitySettings_LogoutNotice_Title">中興大學圖書館APP</string>
+    <string name="ActivitySettings_LogoutNotice_Message">若登出將無法接收到推播通知的各項訊息。</string>
     <string name="ActivityLock_tvInfo">請馬上更新此APP的版本，以免您未收到相關通知！！</string>
     <string name="NotificationTitle">中興大學圖書館通知您</string>
     <string name="NotificationDue">到期書：</string>

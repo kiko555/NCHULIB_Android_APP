@@ -17,6 +17,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.widget.ExpandableListView;
 import android.widget.SimpleAdapter;
@@ -71,6 +72,22 @@ public class CirculationLogActivity extends ActionBarActivity {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        
+        myExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                //myExpandableListView.getCheckedItemIds()
+                String strgroupPosition = Integer.toString(groupPosition);
+                String strchildPosition = Integer.toString(childPosition);
+                String strid = String.valueOf(id);
+                
+                //Nothing here ever fires
+                System.err.println("child clicked,groupPosition:"+strgroupPosition+",childPosition:"+strchildPosition+",id:"+strid);
+                Toast.makeText(getApplicationContext(), "child clicked", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
 
         // 宣告一個自訂的BroadcastReceiver , 稍後我們會在onResume() 動態註冊
         mServiceReceiver = new mServiceReceiver();
