@@ -570,7 +570,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return mylist;
     }
-
+    
     /**
      * 將LOG寫入 SystemLog 表格
      * 

@@ -3,6 +3,9 @@ package tw.edu.nchu.libapp;
 
 import java.util.HashMap;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -40,6 +43,7 @@ public class HTTPServiceClass extends Service {
     String strPassword = "";
     String strJsonDeviceInfo = "";
     String strReturnContent = "";
+    String strRenewCirLogBarcode = "";
 
     // Handler that receives messages from the thread
     private final class ServiceHandler extends Handler {
@@ -49,6 +53,9 @@ public class HTTPServiceClass extends Service {
 
         // 宣告認證狀態所要用的hashmap
         HashMap<String, String> hmOpResult;
+
+        String strRenewOpResult="";
+        String strRenewOpInfo="";
 
         @Override
         public void handleMessage(Message msg) {
@@ -88,6 +95,36 @@ public class HTTPServiceClass extends Service {
                     // 呼叫jsonClass處理JSON並寫入資料庫，會回傳交易狀態的各項值
                     hmOpResult = jsonClass.setTokenResultJSONtoDB(
                             strReturnContent, getApplicationContext());
+                }
+            } else if (strOP.equals("RenewCirLog")) {
+                logJobType = "RenewCirLog";
+
+                // 呼叫Token認證程序
+                AuthClass authclass = new AuthClass();
+                try {
+                    strReturnContent = authclass.doRenewCirLog(
+                            getApplicationContext(), logJobType,
+                            strJsonDeviceInfo, strRenewCirLogBarcode);
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+                // 如果真的有回傳值
+                if (strReturnContent != null) {
+                    // 呼叫jsonClass處理JSON並寫入資料庫，會回傳交易狀態的各項值
+                    hmOpResult = jsonClass.setTokenResultJSONtoDB(
+                            strReturnContent, getApplicationContext());
+                    try {
+                        JSONObject jsonObj = new JSONObject(strReturnContent);
+                        strRenewOpResult = jsonObj.getJSONObject("RenewResult")
+                                .getJSONArray("Opresult").getString(0);
+                        strRenewOpInfo = jsonObj.getJSONObject("RenewResult")
+                                .getJSONArray("OpInfo").getString(0);
+                    } catch (JSONException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -244,6 +281,9 @@ public class HTTPServiceClass extends Service {
             strPassword = intent.getStringExtra("txPassword");
         } else if (strOP.equals("TokenAuth")) {
             // 目前不需先做額外處理
+        } else if (strOP.equals("RenewCirLog")) {
+            // 取得要續借的Barcode
+            strRenewCirLogBarcode = intent.getStringExtra("RenewCirLogBarcode");
         }
 
         // For each start request, send a message to start a job and deliver the
@@ -271,4 +311,4 @@ public class HTTPServiceClass extends Service {
     }
 
 }
-///:~
+// /:~

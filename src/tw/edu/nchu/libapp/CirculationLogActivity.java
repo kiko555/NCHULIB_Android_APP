@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -41,6 +43,8 @@ public class CirculationLogActivity extends ActionBarActivity {
     SimpleAdapter saPartonLoan_RequestAdapter;
     protected SimpleExpandableListAdapter mySimpleExpandableListAdapter = null;
     ExpandableListView myExpandableListView;
+    // 建立子清單
+    ArrayList<ArrayList<HashMap<String, String>>> menusubitems = new ArrayList<ArrayList<HashMap<String, String>>>();
 
     // 宣告自訂的廣播接受器
     mServiceReceiver mServiceReceiver;
@@ -72,22 +76,106 @@ public class CirculationLogActivity extends ActionBarActivity {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
-        myExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                //myExpandableListView.getCheckedItemIds()
-                String strgroupPosition = Integer.toString(groupPosition);
-                String strchildPosition = Integer.toString(childPosition);
-                String strid = String.valueOf(id);
-                
-                //Nothing here ever fires
-                System.err.println("child clicked,groupPosition:"+strgroupPosition+",childPosition:"+strchildPosition+",id:"+strid);
-                Toast.makeText(getApplicationContext(), "child clicked", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
+        myExpandableListView
+                .setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+                    @Override
+                    public boolean onChildClick(ExpandableListView parent,
+                            View v, int groupPosition, int childPosition,
+                            long id) {
+                        // myExpandableListView.getCheckedItemIds()
+                        String strgroupPosition = Integer
+                                .toString(groupPosition);
+                        String strchildPosition = Integer
+                                .toString(childPosition);
+                        String strid = String.valueOf(id);
+
+                        String strTitle = menusubitems.get(1)
+                                .get(childPosition).get("Title").toString();
+                        final String strBarcode = menusubitems.get(1)
+                                .get(childPosition).get("Barcode").toString();
+
+                        if (groupPosition == 1) {
+                            // Nothing here ever fires
+                            // menusubitems.get(1).get(1);
+                            System.err.println("child clicked,groupPosition:"
+                                    + strgroupPosition + ",childPosition:"
+                                    + strchildPosition + ",id:" + strid + ","
+                                    + menusubitems.get(1).get(childPosition));
+                            Toast.makeText(
+                                    getApplicationContext(),
+                                    menusubitems.get(1).get(childPosition)
+                                            .get("Barcode").toString(),
+                                    Toast.LENGTH_SHORT).show();
+
+                            AlertDialog.Builder dialog = new AlertDialog.Builder(
+                                    CirculationLogActivity.this);
+
+                            dialog.setTitle("您正在進行續借功能"); // 設定dialog
+                                                          // 的title顯示內容
+                            dialog.setMessage("您是否要續借：\n書名：" + strTitle
+                                    + "\n登錄號：" + strBarcode);
+                            dialog.setIcon(android.R.drawable.ic_menu_info_details);// 設定dialog
+                            // 的ICON
+                            dialog.setCancelable(false); // 關閉 Android
+                                                         // 系統的主要功能鍵(menu,home等...)
+
+                            dialog.setPositiveButton(
+                                    R.string.ActivityLogin_adNotice_btAgree,
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(
+                                                DialogInterface dialog,
+                                                int which) {
+                                            // 按下"同意"以後要做的事情
+                                            // 宣告LOG物件，並決定工作類型
+                                            LOGClass logclass = new LOGClass();
+                                            String logJobType = "續借";
+
+                                            // 寫log
+                                            logclass.setLOGtoDB(
+                                                    CirculationLogActivity.this,
+                                                    logJobType,
+                                                    new java.text.SimpleDateFormat(
+                                                            "yyyy-MM-dd HH:mm:ss")
+                                                            .format(new java.util.Date()),
+                                                    "[" + strBarcode + "]續借");
+
+                                            setSupportProgressBarIndeterminateVisibility(true);
+                                            //RenewCirLogData(strBarcode);
+                                            RenewCirLogData("588600");
+
+                                            LoadListData();
+
+                                            try {
+                                                // 把清單附加上去
+                                                myExpandableListView
+                                                        .setAdapter(mySimpleExpandableListAdapter);
+                                            } catch (Exception e) {
+                                                // TODO Auto-generated catch
+                                                // block
+                                                e.printStackTrace();
+                                            }
+
+                                        }
+                                    });
+
+                            dialog.setNegativeButton(
+                                    R.string.ActivityLogin_adNotice_btNoAgree,
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(
+                                                DialogInterface dialog,
+                                                int which) {
+                                            // cbNotice.setChecked(false);
+                                        }
+                                    });
+
+                            dialog.show();
+
+                        }
+                        return true;
+                    }
+                });
 
         // 宣告一個自訂的BroadcastReceiver , 稍後我們會在onResume() 動態註冊
         mServiceReceiver = new mServiceReceiver();
@@ -149,6 +237,15 @@ public class CirculationLogActivity extends ActionBarActivity {
             setSupportProgressBarIndeterminateVisibility(true);
             UpdateCirLogData("Token登入");
             LoadListData();
+
+            try {
+                // 把清單附加上去
+                myExpandableListView.setAdapter(mySimpleExpandableListAdapter);
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
             return true;
         case R.id.action_settings:
             Intent intent = new Intent();
@@ -211,9 +308,6 @@ public class CirculationLogActivity extends ActionBarActivity {
         try {
             // 建立取用資料庫的物件
             DBHelper dbHelper = new DBHelper(CirculationLogActivity.this);
-
-            // 建立子清單
-            ArrayList<ArrayList<HashMap<String, String>>> menusubitems = new ArrayList<ArrayList<HashMap<String, String>>>();
 
             // 將回傳的全部的借閱資料陣列透過HashMap方式儲存， 最後轉入arylistPartonLoan 中
             ArrayList<HashMap<String, String>> arylistPartonLoan = dbHelper
@@ -317,6 +411,41 @@ public class CirculationLogActivity extends ActionBarActivity {
             // HTTP服務所要送出的值
             HTTPServiceIntent.putExtra("OP", "TokenAuth");
             HTTPServiceIntent.putExtra("jsonDeviceInfo", strDeviceInfo);
+
+            // 啟動HTTP服務
+            startService(HTTPServiceIntent);
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 更新借閱資料
+     * 
+     * @throws exceptions
+     *             No exceptions thrown
+     */
+    private void RenewCirLogData(String barcode) {
+        try {
+            // 宣告LOG物件，並決定工作類型
+            LOGClass logclass = new LOGClass();
+            String strBarcode = barcode;
+
+            // 取得設備資訊
+            DeviceClass deviceclass = new DeviceClass();
+            String strDeviceInfo = deviceclass.getDeviceInfoJSON(
+                    getApplicationContext(), "");
+
+            // 建立連線服務完成認證工作
+            Intent HTTPServiceIntent = new Intent(CirculationLogActivity.this,
+                    HTTPServiceClass.class);
+
+            // HTTP服務所要送出的值
+            HTTPServiceIntent.putExtra("OP", "RenewCirLog");
+            HTTPServiceIntent.putExtra("jsonDeviceInfo", strDeviceInfo);
+            HTTPServiceIntent.putExtra("RenewCirLogBarcode", strBarcode);
 
             // 啟動HTTP服務
             startService(HTTPServiceIntent);
