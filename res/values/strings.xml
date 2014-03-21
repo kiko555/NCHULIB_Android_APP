@@ -39,6 +39,8 @@
     <string name="ActivityCirculationLog_lvColon">:</string>
     <string name="ActivityCirculationLog_toastTokenSuccess">Data update success.</string>
     <string name="ActivityCirculationLog_toastTokenFail">Patron token or device token error!!</string>
+    <string name="ActivityCirculationLog_toastRenewSuccess">Renew success.</string>
+    <string name="ActivityCirculationLog_adNotice_btOk">OK</string>
     <string name="ActivitySettings_btLogout">Logout</string>
     <string name="ActivitySystemLog_tvJobType">Job Type</string>
     <string name="ActivitySystemLog_tvTime">Time</string>

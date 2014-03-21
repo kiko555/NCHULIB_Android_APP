@@ -54,8 +54,8 @@ public class HTTPServiceClass extends Service {
         // 宣告認證狀態所要用的hashmap
         HashMap<String, String> hmOpResult;
 
-        String strRenewOpResult="";
-        String strRenewOpInfo="";
+        String strRenewOpResult = "";
+        String strRenewOpInfo = "";
 
         @Override
         public void handleMessage(Message msg) {
@@ -99,7 +99,7 @@ public class HTTPServiceClass extends Service {
             } else if (strOP.equals("RenewCirLog")) {
                 logJobType = "RenewCirLog";
 
-                // 呼叫Token認證程序
+                // 呼叫續借程序
                 AuthClass authclass = new AuthClass();
                 try {
                     strReturnContent = authclass.doRenewCirLog(
@@ -115,6 +115,8 @@ public class HTTPServiceClass extends Service {
                     // 呼叫jsonClass處理JSON並寫入資料庫，會回傳交易狀態的各項值
                     hmOpResult = jsonClass.setTokenResultJSONtoDB(
                             strReturnContent, getApplicationContext());
+
+                    // 另外處理續借的結果
                     try {
                         JSONObject jsonObj = new JSONObject(strReturnContent);
                         strRenewOpResult = jsonObj.getJSONObject("RenewResult")
@@ -151,6 +153,23 @@ public class HTTPServiceClass extends Service {
                                             "yyyy-MM-dd HH:mm:ss")
                                             .format(new java.util.Date()),
                                     "5.連線完成但認證失敗-帳密或Token錯誤");
+                        }
+
+                        // 如果續借成功才執行
+                        if (strRenewOpResult.equals("Success")) {
+                            // 寫log
+                            logclass.setLOGtoDB(getApplicationContext(),
+                                    logJobType, new java.text.SimpleDateFormat(
+                                            "yyyy-MM-dd HH:mm:ss")
+                                            .format(new java.util.Date()),
+                                    "5.續借成功");
+                        } else {
+                            // 寫log
+                            logclass.setLOGtoDB(getApplicationContext(),
+                                    logJobType, new java.text.SimpleDateFormat(
+                                            "yyyy-MM-dd HH:mm:ss")
+                                            .format(new java.util.Date()),
+                                    "5.續借失敗" + strRenewOpInfo);
                         }
                     } else {
                         // 處理回傳是異常的
@@ -211,6 +230,8 @@ public class HTTPServiceClass extends Service {
                 intent.putExtra("AuthInfo", hmOpResult.get("AuthInfo"));
                 intent.putExtra("AppStableVersion",
                         hmOpResult.get("AppStableVersion"));
+                intent.putExtra("RenewOpResult", strRenewOpResult);
+                intent.putExtra("RenewOpInfo", strRenewOpInfo);
                 sendBroadcast(intent);
             } catch (Exception e) {
                 // TODO Auto-generated catch block

@@ -96,7 +96,7 @@ public class CirculationLogActivity extends ActionBarActivity {
                         final String strBarcode = menusubitems.get(1)
                                 .get(childPosition).get("Barcode").toString();
 
-                        if (groupPosition == 1) {
+                        if (groupPosition == 1 && childPosition > 0) {
                             // Nothing here ever fires
                             // menusubitems.get(1).get(1);
                             System.err.println("child clicked,groupPosition:"
@@ -142,7 +142,7 @@ public class CirculationLogActivity extends ActionBarActivity {
                                                     "[" + strBarcode + "]續借");
 
                                             setSupportProgressBarIndeterminateVisibility(true);
-                                            //RenewCirLogData(strBarcode);
+                                            // RenewCirLogData(strBarcode);
                                             RenewCirLogData("588600");
 
                                             LoadListData();
@@ -499,6 +499,65 @@ public class CirculationLogActivity extends ActionBarActivity {
                                         CirculationLogActivity.this,
                                         R.string.ActivityCirculationLog_toastTokenSuccess,
                                         Toast.LENGTH_SHORT).show();
+
+                                try {
+                                    // 針對續借結果的處理
+                                    String strRenewOpResult = "";
+                                    strRenewOpResult = intent
+                                            .getStringExtra("RenewOpResult");
+                                    String strRenewOpInfo = "";
+                                    strRenewOpInfo = intent
+                                            .getStringExtra("RenewOpInfo");
+
+                                    if (strRenewOpResult.equals("Success")) {
+                                        // 續借成功就丟通知
+                                        Toast.makeText(
+                                                CirculationLogActivity.this,
+                                                R.string.ActivityCirculationLog_toastRenewSuccess,
+                                                Toast.LENGTH_SHORT).show();
+                                    } else if (! strRenewOpInfo.equals("")) {
+                                        AlertDialog.Builder dialog = new AlertDialog.Builder(
+                                                CirculationLogActivity.this);
+
+                                        dialog.setTitle("續借失敗原因"); // 設定dialog
+                                                                   // 的title顯示內容
+                                        dialog.setMessage(intent
+                                                .getStringExtra("RenewOpInfo"));
+                                        dialog.setIcon(android.R.drawable.ic_menu_info_details);// 設定dialog
+                                        // 的ICON
+                                        dialog.setCancelable(false); // 關閉
+                                                                     // Android
+                                                                     // 系統的主要功能鍵(menu,home等...)
+
+                                        dialog.setPositiveButton(
+                                                R.string.ActivityCirculationLog_adNotice_btOk,
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(
+                                                            DialogInterface dialog,
+                                                            int which) {
+                                                        // 按下"同意"以後要做的事情
+                                                        // 宣告LOG物件，並決定工作類型
+                                                        LOGClass logclass = new LOGClass();
+                                                        String logJobType = "續借";
+
+                                                        // 寫log
+                                                        logclass.setLOGtoDB(
+                                                                CirculationLogActivity.this,
+                                                                logJobType,
+                                                                new java.text.SimpleDateFormat(
+                                                                        "yyyy-MM-dd HH:mm:ss")
+                                                                        .format(new java.util.Date()),
+                                                                "已通知讀者續借失敗");
+                                                    }
+                                                });
+
+                                        dialog.show();
+                                    }
+                                } catch (Exception e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+
                             } else {
                                 // 認證失敗就丟個警告
                                 Toast.makeText(
