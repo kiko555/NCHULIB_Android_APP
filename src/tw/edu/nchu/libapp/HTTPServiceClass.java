@@ -163,7 +163,7 @@ public class HTTPServiceClass extends Service {
                                             "yyyy-MM-dd HH:mm:ss")
                                             .format(new java.util.Date()),
                                     "5.續借成功");
-                        } else {
+                        } else if (! strRenewOpResult.equals("")){
                             // 寫log
                             logclass.setLOGtoDB(getApplicationContext(),
                                     logJobType, new java.text.SimpleDateFormat(

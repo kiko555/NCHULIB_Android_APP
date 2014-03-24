@@ -99,15 +99,15 @@ public class CirculationLogActivity extends ActionBarActivity {
                         if (groupPosition == 1 && childPosition > 0) {
                             // Nothing here ever fires
                             // menusubitems.get(1).get(1);
-                            System.err.println("child clicked,groupPosition:"
-                                    + strgroupPosition + ",childPosition:"
-                                    + strchildPosition + ",id:" + strid + ","
-                                    + menusubitems.get(1).get(childPosition));
-                            Toast.makeText(
-                                    getApplicationContext(),
-                                    menusubitems.get(1).get(childPosition)
-                                            .get("Barcode").toString(),
-                                    Toast.LENGTH_SHORT).show();
+                            //System.err.println("child clicked,groupPosition:"
+                            //        + strgroupPosition + ",childPosition:"
+                            //        + strchildPosition + ",id:" + strid + ","
+                            //        + menusubitems.get(1).get(childPosition));
+                            //Toast.makeText(
+                            //        getApplicationContext(),
+                            //        menusubitems.get(1).get(childPosition)
+                            //                .get("Barcode").toString(),
+                            //        Toast.LENGTH_SHORT).show();
 
                             AlertDialog.Builder dialog = new AlertDialog.Builder(
                                     CirculationLogActivity.this);
@@ -122,7 +122,7 @@ public class CirculationLogActivity extends ActionBarActivity {
                                                          // 系統的主要功能鍵(menu,home等...)
 
                             dialog.setPositiveButton(
-                                    R.string.ActivityLogin_adNotice_btAgree,
+                                    R.string.ActivityCirculationLog_adNotice_btYes,
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(
                                                 DialogInterface dialog,
@@ -142,8 +142,8 @@ public class CirculationLogActivity extends ActionBarActivity {
                                                     "[" + strBarcode + "]續借");
 
                                             setSupportProgressBarIndeterminateVisibility(true);
-                                            // RenewCirLogData(strBarcode);
-                                            RenewCirLogData("588600");
+                                            RenewCirLogData(strBarcode);
+                                            //RenewCirLogData("588600");
 
                                             LoadListData();
 
@@ -161,7 +161,7 @@ public class CirculationLogActivity extends ActionBarActivity {
                                     });
 
                             dialog.setNegativeButton(
-                                    R.string.ActivityLogin_adNotice_btNoAgree,
+                                    R.string.ActivityCirculationLog_adNotice_btNo,
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(
                                                 DialogInterface dialog,
@@ -306,6 +306,8 @@ public class CirculationLogActivity extends ActionBarActivity {
     @SuppressLint("SimpleDateFormat")
     private void LoadListData() {
         try {
+            menusubitems.clear();
+            
             // 建立取用資料庫的物件
             DBHelper dbHelper = new DBHelper(CirculationLogActivity.this);
 

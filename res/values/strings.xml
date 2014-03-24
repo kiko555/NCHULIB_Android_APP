@@ -41,6 +41,8 @@
     <string name="ActivityCirculationLog_toastTokenFail">Patron token or device token error!!</string>
     <string name="ActivityCirculationLog_toastRenewSuccess">Renew success.</string>
     <string name="ActivityCirculationLog_adNotice_btOk">OK</string>
+    <string name="ActivityCirculationLog_adNotice_btYes">Yes</string>
+    <string name="ActivityCirculationLog_adNotice_btNo">NO</string>
     <string name="ActivitySettings_btLogout">Logout</string>
     <string name="ActivitySystemLog_tvJobType">Job Type</string>
     <string name="ActivitySystemLog_tvTime">Time</string>
