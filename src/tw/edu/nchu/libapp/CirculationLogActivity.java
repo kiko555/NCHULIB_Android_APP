@@ -84,6 +84,7 @@ public class CirculationLogActivity extends ActionBarActivity {
                     public boolean onChildClick(ExpandableListView parent,
                             View v, int groupPosition, int childPosition,
                             long id) {
+
                         // myExpandableListView.getCheckedItemIds()
                         String strgroupPosition = Integer
                                 .toString(groupPosition);
@@ -91,23 +92,24 @@ public class CirculationLogActivity extends ActionBarActivity {
                                 .toString(childPosition);
                         String strid = String.valueOf(id);
 
-                        String strTitle = menusubitems.get(1)
-                                .get(childPosition).get("Title").toString();
-                        final String strBarcode = menusubitems.get(1)
-                                .get(childPosition).get("Barcode").toString();
-
                         if (groupPosition == 1 && childPosition > 0) {
+
+                            String strTitle = menusubitems.get(1)
+                                    .get(childPosition).get("Title").toString();
+                            final String strBarcode = menusubitems.get(1)
+                                    .get(childPosition).get("Barcode")
+                                    .toString();
                             // Nothing here ever fires
                             // menusubitems.get(1).get(1);
-                            //System.err.println("child clicked,groupPosition:"
-                            //        + strgroupPosition + ",childPosition:"
-                            //        + strchildPosition + ",id:" + strid + ","
-                            //        + menusubitems.get(1).get(childPosition));
-                            //Toast.makeText(
-                            //        getApplicationContext(),
-                            //        menusubitems.get(1).get(childPosition)
-                            //                .get("Barcode").toString(),
-                            //        Toast.LENGTH_SHORT).show();
+                            // System.err.println("child clicked,groupPosition:"
+                            // + strgroupPosition + ",childPosition:"
+                            // + strchildPosition + ",id:" + strid + ","
+                            // + menusubitems.get(1).get(childPosition));
+                            // Toast.makeText(
+                            // getApplicationContext(),
+                            // menusubitems.get(1).get(childPosition)
+                            // .get("Barcode").toString(),
+                            // Toast.LENGTH_SHORT).show();
 
                             AlertDialog.Builder dialog = new AlertDialog.Builder(
                                     CirculationLogActivity.this);
@@ -143,7 +145,7 @@ public class CirculationLogActivity extends ActionBarActivity {
 
                                             setSupportProgressBarIndeterminateVisibility(true);
                                             RenewCirLogData(strBarcode);
-                                            //RenewCirLogData("588600");
+                                            // RenewCirLogData("588600");
 
                                             LoadListData();
 
@@ -307,7 +309,7 @@ public class CirculationLogActivity extends ActionBarActivity {
     private void LoadListData() {
         try {
             menusubitems.clear();
-            
+
             // 建立取用資料庫的物件
             DBHelper dbHelper = new DBHelper(CirculationLogActivity.this);
 
@@ -517,7 +519,7 @@ public class CirculationLogActivity extends ActionBarActivity {
                                                 CirculationLogActivity.this,
                                                 R.string.ActivityCirculationLog_toastRenewSuccess,
                                                 Toast.LENGTH_SHORT).show();
-                                    } else if (! strRenewOpInfo.equals("")) {
+                                    } else if (!strRenewOpInfo.equals("")) {
                                         AlertDialog.Builder dialog = new AlertDialog.Builder(
                                                 CirculationLogActivity.this);
 

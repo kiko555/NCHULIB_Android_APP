@@ -97,7 +97,7 @@ public class TaskServiceClass extends Service {
                     .getDefaultSharedPreferences(getBaseContext());
 
             // 30小時後再執行排程工作
-            mThreadHandler.postDelayed(this, 10800000); // 10800000 = 3小時
+            mThreadHandler.postDelayed(this, 900000); // 10800000 = 3小時
 
             // 讀取設定檔是否允許同步
             if (mPerferences.getBoolean("autosync", true)) {
