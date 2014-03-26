@@ -43,6 +43,8 @@ public class CirculationLogActivity extends ActionBarActivity {
     SimpleAdapter saPartonLoan_RequestAdapter;
     protected SimpleExpandableListAdapter mySimpleExpandableListAdapter = null;
     ExpandableListView myExpandableListView;
+    // 建立母清單
+    ArrayList<HashMap<String, String>> menuitems = new ArrayList<HashMap<String, String>>();
     // 建立子清單
     ArrayList<ArrayList<HashMap<String, String>>> menusubitems = new ArrayList<ArrayList<HashMap<String, String>>>();
 
@@ -308,6 +310,7 @@ public class CirculationLogActivity extends ActionBarActivity {
     @SuppressLint("SimpleDateFormat")
     private void LoadListData() {
         try {
+            menuitems.clear();
             menusubitems.clear();
 
             // 建立取用資料庫的物件
@@ -334,9 +337,8 @@ public class CirculationLogActivity extends ActionBarActivity {
             menusubitems.add(arylistPartonLoan_OverDue);
             menusubitems.add(arylistPartonLoan_Request);
 
-            // 建立母清單，計有四個項目，並填入預設值
+            // 母清單，計有四個項目，並填入預設值
             // 母清單在子之下，是為了拿到子的數量
-            ArrayList<HashMap<String, String>> menuitems = new ArrayList<HashMap<String, String>>();
             HashMap<String, String> item1 = new HashMap<String, String>();
             HashMap<String, String> item2 = new HashMap<String, String>();
             HashMap<String, String> item3 = new HashMap<String, String>();
