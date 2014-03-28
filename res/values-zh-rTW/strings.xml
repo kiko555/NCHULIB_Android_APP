@@ -59,6 +59,7 @@
     <string name="ActivitySetting_library_homepage">圖書館首頁</string>
     <string name="ActivitySetting_library_facebook">圖書館臉書</string>
     <string name="ActivitySetting_about">關於本程式</string>
+    <string name="ActivitySetting_about_Version">版本：</string>
     <string name="ActivitySetting_logout">登出</string>
     <string name="ActivitySetting_logout_detail">登出後會清除您的圖書館帳號資料，但會保留系統紀錄。</string>
     <string name="ActivitySettings_LogoutNotice_Title">中興大學圖書館APP</string>

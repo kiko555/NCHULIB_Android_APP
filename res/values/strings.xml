@@ -57,6 +57,7 @@
     <string name="ActivitySetting_library_homepage">Library homepage</string>
     <string name="ActivitySetting_library_facebook">Library facebook</string>
     <string name="ActivitySetting_about">About</string>
+    <string name="ActivitySetting_about_Version">version:</string>
     <string name="ActivitySetting_logout">Logout</string>
     <string name="ActivitySetting_logout_detail">Clear your account, but keep the system log.</string>
     <string name="ActivitySettings_LogoutNotice_Title">NCHU Library APP</string>

@@ -74,6 +74,7 @@ public class CirculationLogActivity extends ActionBarActivity {
         try {
             // 把清單附加上去
             myExpandableListView.setAdapter(mySimpleExpandableListAdapter);
+            mySimpleExpandableListAdapter.notifyDataSetChanged();
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -155,6 +156,8 @@ public class CirculationLogActivity extends ActionBarActivity {
                                                 // 把清單附加上去
                                                 myExpandableListView
                                                         .setAdapter(mySimpleExpandableListAdapter);
+                                                mySimpleExpandableListAdapter
+                                                        .notifyDataSetChanged();
                                             } catch (Exception e) {
                                                 // TODO Auto-generated catch
                                                 // block
@@ -199,6 +202,7 @@ public class CirculationLogActivity extends ActionBarActivity {
         try {
             // 把清單附加上去
             myExpandableListView.setAdapter(mySimpleExpandableListAdapter);
+            mySimpleExpandableListAdapter.notifyDataSetChanged();
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -245,6 +249,7 @@ public class CirculationLogActivity extends ActionBarActivity {
             try {
                 // 把清單附加上去
                 myExpandableListView.setAdapter(mySimpleExpandableListAdapter);
+                mySimpleExpandableListAdapter.notifyDataSetChanged();
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -380,6 +385,7 @@ public class CirculationLogActivity extends ActionBarActivity {
                     R.layout.activity_cirlog_subitem, new String[] { "Title",
                             "Time" }, new int[] { R.id.CirLogListView_Title,
                             R.id.CirLogListView_Time });
+            mySimpleExpandableListAdapter.notifyDataSetChanged();
 
             // 關閉資料庫
             dbHelper.close();
@@ -596,6 +602,11 @@ public class CirculationLogActivity extends ActionBarActivity {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
+                
+                mySimpleExpandableListAdapter.notifyDataSetChanged();
+                myExpandableListView.collapseGroup(1);  
+                myExpandableListView.expandGroup(1); 
+                myExpandableListView.collapseGroup(1);
 
             }
         }

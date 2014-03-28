@@ -2,13 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceScreen
-        android:key="PatronBarCode"
         android:defaultValue=""
+        android:key="PatronBarCode"
         android:summary=""
         android:title="@string/ActivitySetting_patronid" >
-        
     </PreferenceScreen>
-    <CheckBoxPreference
+
+    <CheckBoxPreference
         android:defaultValue="true"
         android:key="autosync"
         android:summary="@string/ActivitySetting_autosync_detail"
@@ -35,11 +35,9 @@
             android:data="https://www.facebook.com/nchulib
 " />
     </PreferenceScreen>
-    <PreferenceScreen android:title="@string/ActivitySetting_about" >
-        <intent
-            android:action="android.intent.action.MAIN"
-            android:targetClass="tw.edu.nchu.libapp.MainActivity"
-            android:targetPackage="tw.edu.nchu.libapp" />
+    <PreferenceScreen
+        android:key="about"
+        android:title="@string/ActivitySetting_about" >
     </PreferenceScreen>
     <PreferenceScreen
         android:key="logoutKey"

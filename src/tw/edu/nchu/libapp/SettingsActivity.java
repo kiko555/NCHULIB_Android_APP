@@ -7,6 +7,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -71,6 +74,21 @@ public class SettingsActivity extends PreferenceActivity implements
         // 寫入設定畫面中的使用者資訊
         Preference pref = (Preference) findPreference("PatronBarCode");
         pref.setSummary(aryPatron[1].toString());
+
+        try {
+            // 寫入設定畫面中的使用者資訊
+            Preference prefAbout = (Preference) findPreference("about");
+            PackageManager manager = this.getPackageManager();
+            PackageInfo info = manager.getPackageInfo(
+                    SettingsActivity.this.getPackageName(), 0);
+
+            prefAbout.setSummary(SettingsActivity.this
+                    .getString(R.string.ActivitySetting_about_Version)
+                    + info.versionName);
+        } catch (NameNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         // 實作設定的登出欄監聽功能
         Preference mPreferences = (Preference) findPreference("logoutKey");
@@ -160,7 +178,7 @@ public class SettingsActivity extends PreferenceActivity implements
                     SettingsActivity.this);
 
             dialog.setTitle(R.string.ActivitySettings_LogoutNotice_Title); // 設定dialog
-                                                                    // 的title顯示內容
+            // 的title顯示內容
             dialog.setMessage(R.string.ActivitySettings_LogoutNotice_Message);
             dialog.setIcon(android.R.drawable.ic_menu_info_details);// 設定dialog
             // 的ICON
