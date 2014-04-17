@@ -10,7 +10,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="false" >
+        android:layout_centerVertical="false"
+        android:layout_marginLeft="@dimen/abc_action_bar_default_height"
+        android:layout_marginRight="@dimen/abc_action_bar_default_height" >
 
         <TableRow
             android:id="@+id/tableRow2"
@@ -25,7 +27,7 @@
         </TableRow>
 
         <TableRow
-            android:id="@+id/tableRow2"
+            android:id="@+id/tableRow3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal" >
@@ -44,7 +46,7 @@
         </TableRow>
 
         <TableRow
-            android:id="@+id/tableRow3"
+            android:id="@+id/tableRow4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal" >
@@ -86,7 +88,7 @@
         </TableRow>
 
         <TableRow
-            android:id="@+id/tableRow4"
+            android:id="@+id/tableRow6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal" >

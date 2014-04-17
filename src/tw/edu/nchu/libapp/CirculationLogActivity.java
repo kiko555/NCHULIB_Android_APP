@@ -117,10 +117,15 @@ public class CirculationLogActivity extends ActionBarActivity {
                             AlertDialog.Builder dialog = new AlertDialog.Builder(
                                     CirculationLogActivity.this);
 
-                            dialog.setTitle("您正在進行續借功能"); // 設定dialog
-                                                          // 的title顯示內容
-                            dialog.setMessage("您是否要續借：\n書名：" + strTitle
-                                    + "\n登錄號：" + strBarcode);
+                            dialog.setTitle(CirculationLogActivity.this
+                                    .getString(R.string.ActivityCirculationLog_renew_Title)); // 設定dialog
+                            // 的title顯示內容
+                            dialog.setMessage(CirculationLogActivity.this
+                                    .getString(R.string.ActivityCirculationLog_renew_Message1)
+                                    + strTitle
+                                    + CirculationLogActivity.this
+                                            .getString(R.string.ActivityCirculationLog_renew_Message2)
+                                    + strBarcode);
                             dialog.setIcon(android.R.drawable.ic_menu_info_details);// 設定dialog
                             // 的ICON
                             dialog.setCancelable(false); // 關閉 Android
@@ -602,10 +607,10 @@ public class CirculationLogActivity extends ActionBarActivity {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                
+
                 mySimpleExpandableListAdapter.notifyDataSetChanged();
-                myExpandableListView.collapseGroup(1);  
-                myExpandableListView.expandGroup(1); 
+                myExpandableListView.collapseGroup(1);
+                myExpandableListView.expandGroup(1);
                 myExpandableListView.collapseGroup(1);
 
             }

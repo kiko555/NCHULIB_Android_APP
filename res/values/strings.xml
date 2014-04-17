@@ -3,7 +3,7 @@
 
     <string name="app_name">NCHU Library</string>
     <string name="action_login">Login</string>
-    <string name="action_cirlog">Circulation</string>
+    <string name="action_cirlog">Circulation Record</string>
     <string name="action_settings">Settings</string>
     <string name="action_refresh">Refresh</string>
     <string name="action_systemlog">System Log</string>
@@ -16,19 +16,24 @@
     <string name="ActivityLogin_tvTitle">1.The username is Student ID number.\n2.The password is the same with Single Sign On. </string>
     <string name="ActivityLogin_txID">Single Sign On System ID</string>
     <string name="ActivityLogin_txPassword">Password</string>
-    <string name="ActivityLogin_cbNotice">Accept the terms</string>
-    <string name="ActivityLogin_adNotice_Title">NCHU Library APP Terms</string>
-    <string name="ActivityLogin_adNotice_Message">Bla bla bla bla....</string>
+    <string name="ActivityLogin_cbNotice">Agree to Terms of Use</string>
+    <string name="ActivityLogin_adNotice_Title">NCHU Library APP Service Agreement</string>
+    <string name="ActivityLogin_adNotice_Message">1. Push Notification Service: 
+the Library will now send circulation notices via APP message, which includes the Due Date Notice, Overdue Notice and Hold Pickup Notice.\n
+2. Library APP messages were sent as courtesy notice. 
+Failure to receive notifications may NOT be used as an excuse to waive overdue fines or extend load periods.
+Patrons should confirm personal circulation status on a regular basis.
+</string>
     <string name="ActivityLogin_adNotice_btAgree">Agree</string>
-    <string name="ActivityLogin_adNotice_btNoAgree">No</string>
+    <string name="ActivityLogin_adNotice_btNoAgree">Disagree</string>
     <string name="ActivityLogin_btLogin">Login</string>
     <string name="ActivityLogin_toastLoginFail">ID or Password Error!!</string>
     <string name="ActivityLogin_toastFieldEmpty">ID or Password Field Is Empty!!</string>
-    <string name="ActivityCirculationLog_lvLoanList">Loan list</string>
+    <string name="ActivityCirculationLog_lvLoanList">Loans</string>
     <string name="ActivityCirculationLog_lvTitle">Title</string>
-    <string name="ActivityCirculationLog_lvDueList">Due notice list</string>
-    <string name="ActivityCirculationLog_lvOverduesList">Overdues notice list</string>
-    <string name="ActivityCirculationLog_lvRequestList">Request list</string>
+    <string name="ActivityCirculationLog_lvDueList">Due Date Notice</string>
+    <string name="ActivityCirculationLog_lvOverduesList">Overdues Notice</string>
+    <string name="ActivityCirculationLog_lvRequestList">Hold Pickup Notice</string>
     <string name="ActivityCirculationLog_lvDuedate">Duedate</string>
     <string name="ActivityCirculationLog_lvOverDue">Overdue</string>
     <string name="ActivityCirculationLog_lvArrivalDate">arrival date</string>
@@ -43,6 +48,9 @@
     <string name="ActivityCirculationLog_adNotice_btOk">OK</string>
     <string name="ActivityCirculationLog_adNotice_btYes">Yes</string>
     <string name="ActivityCirculationLog_adNotice_btNo">NO</string>
+    <string name="ActivityCirculationLog_renew_Title">Renew function</string>
+    <string name="ActivityCirculationLog_renew_Message1">Renew list:\nBook title:</string>
+    <string name="ActivityCirculationLog_renew_Message2">\nCall number:</string>
     <string name="ActivitySettings_btLogout">Logout</string>
     <string name="ActivitySystemLog_tvJobType">Job Type</string>
     <string name="ActivitySystemLog_tvTime">Time</string>

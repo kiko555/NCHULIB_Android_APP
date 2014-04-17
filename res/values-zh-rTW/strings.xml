@@ -46,6 +46,9 @@
     <string name="ActivityCirculationLog_adNotice_btOk">確定</string>
     <string name="ActivityCirculationLog_adNotice_btYes">是</string>
     <string name="ActivityCirculationLog_adNotice_btNo">否</string>
+    <string name="ActivityCirculationLog_renew_Title">您正在進行續借功能</string>
+    <string name="ActivityCirculationLog_renew_Message1">您是否要續借：\n書名：</string>
+    <string name="ActivityCirculationLog_renew_Message2">\n登錄號：</string>
     <string name="ActivitySystemLog_tvJobType">工作類型</string>
     <string name="ActivitySystemLog_tvTime">時間</string>
     <string name="ActivitySystemLog_tvNote">說明</string>
