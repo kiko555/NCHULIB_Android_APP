@@ -82,7 +82,7 @@ public class AuthClass {
         try {
             // 進行連線
             strReturnContent = httpTaskClass
-                    .doPostWork("https://api.lib.nchu.edu.tw/php/appagent/");
+                    .doPostWork("http://api.lib.nchu.edu.tw/php/appagent/");
         } catch (Exception e) {
             // 寫log
             logclass.setLOGtoDB(context, logJobType,
@@ -165,7 +165,7 @@ public class AuthClass {
         try {
             // 進行連線
             strReturnContent = httpTaskClass
-                    .doPostWork("https://api.lib.nchu.edu.tw/php/appagent/");
+                    .doPostWork("http://api.lib.nchu.edu.tw/php/appagent/");
 
         } catch (Exception e) {
             // 寫log
@@ -253,7 +253,7 @@ public class AuthClass {
         try {
             // 進行連線
             strReturnContent = httpTaskClass
-                    .doPostWork("https://api.lib.nchu.edu.tw/php/appagent/");
+                    .doPostWork("http://api.lib.nchu.edu.tw/php/appagent/");
 
         } catch (Exception e) {
             // 寫log
